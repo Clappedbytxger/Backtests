@@ -1,0 +1,6 @@
+ticker,name,tbill_sharpe,tbill_cagr,n_trades
+SPY,S&P 500 (USA),0.51,0.0817,16
+QQQ,Nasdaq 100 (USA),0.5,0.0905,16
+^GDAXI,DAX (Deutschland),0.5,0.0839,16
+^FTSE,FTSE 100 (UK),0.29,0.0476,16
+^N225,Nikkei 225 (Japan),0.38,0.0703,16

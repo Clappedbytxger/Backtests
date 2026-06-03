@@ -1,0 +1,9 @@
+{
+  "id": "0003",
+  "label": "Sell-in-May De-Risking Overlay (gepoolt)",
+  "cagr": 0.10834392853051589,
+  "annual_volatility": 0.11592001161083686,
+  "sharpe": 0.7748989968472613,
+  "max_drawdown": -0.323506460369244,
+  "is_strategy": true
+}

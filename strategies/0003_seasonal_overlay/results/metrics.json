@@ -1,0 +1,130 @@
+{
+  "labels": {
+    "buyhold": "Buy & Hold (immer investiert)",
+    "cash": "Sell-in-May (Sommer Cash)",
+    "tbill": "Sell-in-May (Sommer T-Bills)",
+    "overlay": "De-Risking Overlay (Sommer 50%)"
+  },
+  "portfolio_metrics": {
+    "buyhold": {
+      "total_return": 6.600455594390711,
+      "cagr": 0.1358655180692918,
+      "annual_volatility": 0.14233683835659372,
+      "sharpe": 0.8275512586257213,
+      "sortino": 1.0257318013817929,
+      "calmar": 0.41997775844790775,
+      "max_drawdown": -0.3235064603692436,
+      "max_drawdown_duration_days": 367,
+      "n_periods": 4012
+    },
+    "cash": {
+      "total_return": 2.3552495357947865,
+      "cagr": 0.07900038383214447,
+      "annual_volatility": 0.10568094137620859,
+      "sharpe": 0.5852317053410284,
+      "sortino": 0.7478781642305387,
+      "calmar": 0.24420032830866806,
+      "max_drawdown": -0.3235064603692439,
+      "max_drawdown_duration_days": 465,
+      "n_periods": 4012
+    },
+    "tbill": {
+      "total_return": 2.78017697960858,
+      "cagr": 0.08711237888725831,
+      "annual_volatility": 0.10566175167846516,
+      "sharpe": 0.6562288804288623,
+      "sortino": 0.7571370079023629,
+      "calmar": 0.269275546422875,
+      "max_drawdown": -0.3235064603692439,
+      "max_drawdown_duration_days": 323,
+      "n_periods": 4012
+    },
+    "overlay": {
+      "total_return": 4.143362643052358,
+      "cagr": 0.10834392853051589,
+      "annual_volatility": 0.11592001161083686,
+      "sharpe": 0.7748989968472613,
+      "sortino": 0.9209505667025747,
+      "calmar": 0.33490499202660196,
+      "max_drawdown": -0.323506460369244,
+      "max_drawdown_duration_days": 462,
+      "n_periods": 4012
+    }
+  },
+  "cash_significance": {
+    "metrics": {
+      "total_return": 2.3552495357947865,
+      "cagr": 0.07900038383214447,
+      "annual_volatility": 0.10568094137620859,
+      "sharpe": 0.5852317053410284,
+      "sortino": 0.7478781642305387,
+      "calmar": 0.24420032830866806,
+      "max_drawdown": -0.3235064603692439,
+      "max_drawdown_duration_days": 465,
+      "n_periods": 4012
+    },
+    "permutation": {
+      "observed": 0.5852317053410284,
+      "p_value": 0.328335832083958,
+      "null_mean": 0.5013343963575173,
+      "null_std": 0.18281363065084075,
+      "n_perm": 2000,
+      "metric": "sharpe"
+    },
+    "bootstrap_sharpe_ci": {
+      "statistic": "sharpe",
+      "point": 0.5873383815277682,
+      "ci_low": 0.10086325092702729,
+      "ci_high": 1.0797933593655065,
+      "alpha": 0.05
+    },
+    "t_test": {
+      "t_stat": 3.082806873949002,
+      "p_value": 0.002064514257509647,
+      "n": 4012
+    },
+    "deflated_sharpe": {
+      "observed_sharpe": 0.04867050545467106,
+      "expected_max_sharpe_under_null": 0.852804496149574,
+      "n_trials": 3,
+      "psr_deflated": 0.0
+    }
+  },
+  "per_market_panel": [
+    {
+      "ticker": "SPY",
+      "name": "S&P 500 (USA)",
+      "tbill_sharpe": 0.51,
+      "tbill_cagr": 0.0817,
+      "n_trades": 16
+    },
+    {
+      "ticker": "QQQ",
+      "name": "Nasdaq 100 (USA)",
+      "tbill_sharpe": 0.5,
+      "tbill_cagr": 0.0905,
+      "n_trades": 16
+    },
+    {
+      "ticker": "^GDAXI",
+      "name": "DAX (Deutschland)",
+      "tbill_sharpe": 0.5,
+      "tbill_cagr": 0.0839,
+      "n_trades": 16
+    },
+    {
+      "ticker": "^FTSE",
+      "name": "FTSE 100 (UK)",
+      "tbill_sharpe": 0.29,
+      "tbill_cagr": 0.0476,
+      "n_trades": 16
+    },
+    {
+      "ticker": "^N225",
+      "name": "Nikkei 225 (Japan)",
+      "tbill_sharpe": 0.38,
+      "tbill_cagr": 0.0703,
+      "n_trades": 16
+    }
+  ]
+}

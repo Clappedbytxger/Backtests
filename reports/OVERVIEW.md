@@ -6,10 +6,11 @@ Kosten**.
 
 ## Kennzahlen im Vergleich
 
-| ID   | Strategie                                 |  CAGR | Volatilität | Sharpe |  Max DD |
-| ---- | ----------------------------------------- | ----: | ----------: | -----: | ------: |
-| 0001 | Sell-in-May (DAX)                         | 7.57% |      14.10% |   0.45 | -38.78% |
-| 0002 | Sell-in-May Portfolio (gepoolt, 5 Märkte) | 7.90% |      10.57% |   0.59 | -32.35% |
+| ID   | Strategie                                 |   CAGR | Volatilität | Sharpe |  Max DD |
+| ---- | ----------------------------------------- | -----: | ----------: | -----: | ------: |
+| 0001 | Sell-in-May (DAX)                         |  7.57% |      14.10% |   0.45 | -38.78% |
+| 0002 | Sell-in-May Portfolio (gepoolt, 5 Märkte) |  7.90% |      10.57% |   0.59 | -32.35% |
+| 0003 | Sell-in-May De-Risking Overlay (gepoolt)  | 10.83% |      11.59% |   0.77 | -32.35% |
 
 ## Visualisierungen
 
