@@ -1,56 +1,63 @@
-# Strategy NNNN — <Name>
+# Strategie NNNN — <Name>
 
-- **Category:** <seasonal | mean-reversion | momentum | ...>
+> Konventionen für jeden Report: **auf Deutsch** schreiben, Indizes/Aktien mit
+> **vollem Namen** nennen (nicht den Ticker), Tabellen mit `quantlab.reporting`
+> ausrichten und jede Visualisierung mit einer erklärenden Caption versehen.
+
+- **Kategorie:** <seasonal | mean-reversion | momentum | ...>
 - **Status:** <idea | testing | validated | rejected>
-- **Date:** <YYYY-MM-DD>
-- **Universe:** <tickers>
-- **Sample:** in-sample <range> / out-of-sample <range>
+- **Datum:** <YYYY-MM-DD>
+- **Universum:** <volle Namen>
+- **Stichprobe:** In-Sample <Zeitraum> / Out-of-Sample <Zeitraum>
 
-## 1. Hypothesis
+## 1. Hypothese
 
-One-sentence claim. What edge, on what assets, why now.
+Ein Satz: Welcher Edge, auf welchen Assets, warum jetzt.
 
-## 2. Macro rationale
+## 2. Makro-Begründung
 
-*Why should this exist?* The economic cause (flows, incentives, supply/demand,
-behavioral). A pattern without a cause is treated as data-mined until proven.
+*Warum sollte das existieren?* Die ökonomische Ursache (Flows, Anreize,
+Angebot/Nachfrage, Verhalten). Ein Muster ohne Ursache gilt als data-gemint, bis
+das Gegenteil bewiesen ist.
 
-## 3. Rules
+## 3. Regeln
 
-Exact entry/exit logic, position sizing, holding period. Note the look-ahead
-guard (signals shifted by the engine).
+Exakte Entry-/Exit-Logik, Positionsgrößen, Haltedauer. Look-Ahead-Schutz
+vermerken (Signale werden von der Engine verzögert).
 
-## 4. Cost & execution assumptions
+## 4. Kosten- & Ausführungsannahmen
 
-IBKR commission model, slippage (bps), fees. Execution timing.
+IBKR-Kommissionsmodell, Slippage (bps), Gebühren, Ausführungszeitpunkt.
 
-## 5. Results (out-of-sample, net of costs)
+## 5. Ergebnisse (Out-of-Sample, netto nach Kosten)
 
-| Metric | Value |
-|--------|-------|
-| CAGR | |
-| Sharpe | |
-| Sortino | |
-| Calmar | |
-| Max drawdown (+ duration) | |
-| Win rate | |
-| Profit factor | |
-| Payoff ratio | |
-| Expectancy | |
-| Avg holding period | |
-| # Trades | |
+| Kennzahl                  | Wert |
+| ------------------------- | ---: |
+| CAGR                      |      |
+| Sharpe                    |      |
+| Sortino                   |      |
+| Calmar                    |      |
+| Max Drawdown (+ Dauer)    |      |
+| Trefferquote              |      |
+| Profit-Faktor             |      |
+| Payoff-Ratio              |      |
+| Expectancy                |      |
+| Ø Haltedauer              |      |
+| Trades                    |      |
 
-## 6. Significance
+## 6. Signifikanz
 
-- Permutation test p-value:
-- Bootstrap 95% CI (Sharpe):
-- Deflated Sharpe Ratio (trials tried = N):
-- t-test on mean return:
+| Test                          | Wert |
+| ----------------------------- | ---: |
+| Permutationstest p-Wert       |      |
+| Bootstrap Sharpe 95%-KI       |      |
+| Deflated Sharpe (Varianten N) |      |
+| t-Test mittlere Rendite       |      |
 
-## 7. Robustness
+## 7. Robustheit
 
-Across tickers / parameters / sub-periods. Does it survive out-of-sample?
+Über Märkte / Parameter / Teilperioden. Übersteht es das Out-of-Sample?
 
 ## 8. Verdict
 
-Keep / reject / iterate — and the single reason why.
+Behalten / ablehnen / iterieren — und der eine Grund dafür.

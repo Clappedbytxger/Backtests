@@ -1,103 +1,117 @@
-# Strategy 0001 — Seasonal Calendar Effects
+# Strategie 0001 — Saisonale Kalendereffekte
 
-- **Category:** seasonal
-- **Status:** rejected (as a standalone edge) / iterate (sell-in-May as overlay)
-- **Date:** 2026-06-03
-- **Universe:** SPY, QQQ, ^GDAXI, ^FTSE, ^N225 (broad equity indices)
-- **Sample:** in-sample ≤ 2010 (selection only) / out-of-sample 2011–2026 (evaluation)
+- **Kategorie:** seasonal
+- **Status:** abgelehnt (als eigenständiger Edge) / iterieren (Sell-in-May als Overlay)
+- **Datum:** 2026-06-03
+- **Universum:** S&P 500 (USA), Nasdaq 100 (USA), DAX (Deutschland),
+  FTSE 100 (UK), Nikkei 225 (Japan)
+- **Stichprobe:** In-Sample ≤ 2010 (nur Auswahl) / Out-of-Sample 2011–2026 (Auswertung)
 
-## 1. Hypothesis
+## 1. Hypothese
 
-Recurring calendar windows — turn-of-month, year-end, and the May–October
-"summer lull" — produce abnormal equity-index returns that can be traded long-only
-with a better risk-adjusted profile than buy & hold, net of IBKR costs.
+Wiederkehrende Kalenderfenster — Turn-of-Month (Monatswechsel), Jahreswechsel und
+die „Sommerflaute" (Mai–Oktober) — erzeugen abnormale Renditen auf breiten
+Aktienindizes, die sich long-only mit besserem risikoadjustiertem Profil als Buy
+& Hold handeln lassen, netto nach IBKR-Kosten.
 
-## 2. Macro rationale
+## 2. Makro-Begründung
 
-- **Turn-of-month:** month-end pension/salary inflows, fund reinvestment and
-  index rebalancing concentrate buying pressure at the boundary.
-- **Turn-of-year:** tax-loss selling exhausts into year-end, window dressing,
-  thin holiday liquidity, new-year inflows.
-- **Sell-in-May (Halloween):** historically weaker summer returns linked to
-  seasonal liquidity and risk-appetite cycles.
+- **Turn-of-Month:** Monatsend-Zuflüsse aus Pensions-/Gehaltszahlungen,
+  Fonds-Reinvestitionen und Index-Rebalancing bündeln Kaufdruck an der Grenze.
+- **Jahreswechsel:** Tax-Loss-Selling läuft zum Jahresende aus, Window-Dressing,
+  dünne Feiertagsliquidität, Neujahres-Zuflüsse.
+- **Sell-in-May (Halloween):** historisch schwächere Sommerrenditen, verknüpft mit
+  saisonalen Liquiditäts- und Risikoappetit-Zyklen.
 
-## 3. Rules
+## 3. Regeln
 
-Long-only position weight of 1.0 inside the calendar window, else flat.
-Signals are decision-time and shifted one bar by the engine (no look-ahead).
-Effect/ticker for the deep-dive was chosen **only** on in-sample Sharpe.
+Long-only-Positionsgewicht 1.0 innerhalb des Kalenderfensters, sonst flat.
+Signale sind Entscheidungszeit-Signale und werden von der Engine um einen
+Handelstag verzögert (kein Look-Ahead). Effekt/Markt für die Vertiefung wurde
+**ausschließlich** anhand des In-Sample-Sharpe gewählt.
 
-## 4. Cost & execution assumptions
+## 4. Kosten- & Ausführungsannahmen
 
-IBKR tiered commission ($0.0035/share, $0.35 min, 1% cap), **2 bps** slippage
-(`IBKR_LIQUID_ETF`), 0.2 bps regulatory. Costs charged on every position change;
-all numbers below are **net**.
+IBKR gestaffelte Kommission ($0,0035/Aktie, $0,35 Minimum, 1% Deckel),
+**2 Basispunkte** Slippage (`IBKR_LIQUID_ETF`), 0,2 bps Regulierungsgebühr.
+Kosten werden bei jeder Positionsänderung berechnet; alle Zahlen sind **netto**.
 
-## 5. Out-of-sample panel (net of costs, 2011–2026)
+## 5. Out-of-Sample-Panel (netto, 2011–2026)
 
-| Ticker | Effect | OOS Sharpe | Buy&Hold Sharpe | CAGR | Exposure | #Trades | Win rate | Profit factor |
-|--------|--------|-----------:|----------------:|-----:|---------:|--------:|---------:|--------------:|
-| SPY | turn_of_month | 0.12 | 0.75 | 2.7% | 19% | 186 | 60% | 1.38 |
-| SPY | turn_of_year | -0.48 | 0.75 | 0.6% | 4% | 16 | 69% | 1.76 |
-| SPY | sell_in_may | 0.46 | 0.75 | 7.4% | 50% | 16 | 75% | 7.72 |
-| QQQ | turn_of_month | 0.18 | 0.87 | 3.3% | 19% | 186 | 61% | 1.37 |
-| QQQ | sell_in_may | 0.46 | 0.87 | 8.2% | 50% | 16 | 81% | 6.40 |
-| ^GDAXI | turn_of_month | -0.20 | 0.42 | -0.4% | 19% | 186 | 56% | 1.01 |
-| ^GDAXI | sell_in_may | 0.45 | 0.42 | 7.6% | 50% | 16 | 69% | 3.97 |
-| ^FTSE | sell_in_may | 0.23 | 0.18 | 4.0% | 50% | 16 | 88% | 3.81 |
-| ^N225 | sell_in_may | 0.33 | 0.59 | 6.2% | 50% | 16 | 69% | 3.46 |
+| Markt              | Effekt        | OOS Sharpe | B&H Sharpe |  CAGR | Marktzeit | Trades | Trefferq. | Profit-Faktor |
+| ------------------ | ------------- | ---------: | ---------: | ----: | --------: | -----: | --------: | ------------: |
+| S&P 500 (USA)      | Turn-of-Month |       0.12 |       0.75 |  2.6% |       19% |    186 |       60% |          1.38 |
+| S&P 500 (USA)      | Jahreswechsel |      -0.48 |       0.75 |  0.5% |        4% |     16 |       69% |          1.76 |
+| S&P 500 (USA)      | Sell-in-May   |       0.46 |       0.75 |  7.4% |       50% |     16 |       75% |          7.72 |
+| Nasdaq 100 (USA)   | Turn-of-Month |       0.18 |       0.87 |  3.3% |       19% |    186 |       61% |          1.37 |
+| Nasdaq 100 (USA)   | Jahreswechsel |      -0.37 |       0.87 |  0.5% |        4% |     16 |       56% |          1.50 |
+| Nasdaq 100 (USA)   | Sell-in-May   |       0.46 |       0.87 |  8.2% |       50% |     16 |       81% |          6.40 |
+| DAX (Deutschland)  | Turn-of-Month |      -0.20 |       0.42 | -0.4% |       19% |    186 |       56% |          1.01 |
+| DAX (Deutschland)  | Jahreswechsel |      -0.23 |       0.42 |  1.2% |        4% |     16 |       88% |          3.78 |
+| DAX (Deutschland)  | Sell-in-May   |       0.45 |       0.42 |  7.6% |       50% |     16 |       69% |          3.97 |
+| FTSE 100 (UK)      | Turn-of-Month |      -0.01 |       0.18 |  1.7% |       19% |    186 |       62% |          1.22 |
+| FTSE 100 (UK)      | Jahreswechsel |      -0.36 |       0.18 |  1.1% |        4% |     16 |       69% |          3.23 |
+| FTSE 100 (UK)      | Sell-in-May   |       0.23 |       0.18 |  4.0% |       50% |     16 |       88% |          3.81 |
+| Nikkei 225 (Japan) | Turn-of-Month |      -0.11 |       0.59 |  0.2% |       20% |    186 |       54% |          1.06 |
+| Nikkei 225 (Japan) | Jahreswechsel |      -0.26 |       0.59 |  0.9% |        4% |     16 |       62% |          2.13 |
+| Nikkei 225 (Japan) | Sell-in-May   |       0.33 |       0.59 |  6.2% |       50% |     16 |       69% |          3.46 |
 
-(Full panel incl. all turn_of_year rows in `results/oos_panel.csv`.)
+### Vertiefung: gewählter Effekt (Sell-in-May auf DAX)
 
-### Deep-dive: selected effect (sell_in_may on ^GDAXI)
+| Kennzahl        |               Wert |
+| --------------- | -----------------: |
+| CAGR            |              7.57% |
+| Sharpe          | 0.45 (B&H 0.42)    |
+| Sortino         |               0.59 |
+| Max Drawdown    |            -38.78% |
+| Trefferquote    |              68.8% |
+| Profit-Faktor   |               3.97 |
+| Ø Haltedauer    |           121 Tage |
+| Trades          |                 16 |
 
-| Metric | Value |
-|--------|-------|
-| CAGR | 7.57% |
-| Sharpe | 0.45 (buy & hold 0.42) |
-| Sortino | 0.59 |
-| Max drawdown | -38.8% |
-| Win rate | 68.8% |
-| Profit factor | 3.97 |
-| Avg holding period | 121 days |
-| # Trades | 16 |
+## 6. Signifikanz
 
-## 6. Significance
+| Test                          |          Wert |
+| ----------------------------- | ------------: |
+| Permutationstest p-Wert       |         0.114 |
+| Bootstrap Sharpe 95%-KI       | [-0.06, 0.95] |
+| Deflated Sharpe (P[Sharpe>0]) |         0.000 |
+| Getestete Varianten           |            15 |
 
-- **Permutation test p-value:** 0.114 — not significant (≈11% of random timings
-  matched it).
-- **Deflated Sharpe Ratio:** ≈0.000 — after correcting for the 15 variants tried,
-  the result is fully consistent with selection luck.
-- Conclusion: the in-sample winner does **not** survive honest significance testing.
+- **Permutationstest p = 0,114** — nicht signifikant (≈11% zufälliger Timings
+  erreichten dasselbe Ergebnis).
+- **Deflated Sharpe ≈ 0** — nach Korrektur für die 15 getesteten Varianten ist das
+  Resultat vollständig mit Auswahl-Zufall vereinbar.
+- Fazit: Der In-Sample-Gewinner übersteht ehrliche Signifikanztests **nicht**.
 
-## 7. Robustness
+## 7. Robustheit
 
-- **turn_of_month** has the statistical power (186 trades) but **no OOS edge**
-  after costs (Sharpe 0.12 / 0.18 / -0.20 / -0.01 / -0.11). The classic anomaly
-  appears largely arbitraged away post-2010. Note exposure is only ~19%.
-- **sell_in_may** is **positive and consistent across all five markets**
-  (Sharpe 0.23–0.46) — a genuine robustness signal — but:
-  - it **underperforms buy & hold in strong bull markets** (US) because it sits
-    out half the year;
-  - only 16 trades per market → weak power individually;
-  - it does its real job on the **drawdown** side: the equity curve
-    (`results/plots/equity.png`) shows it sidesteps the 2011 selloff and softens
-    2020 while ending near buy & hold — i.e. similar return at ~half the exposure.
+- **Turn-of-Month** hat die statistische Power (186 Trades), aber **keinen
+  OOS-Edge** nach Kosten (Sharpe 0,12 / 0,18 / -0,20 / -0,01 / -0,11). Die
+  klassische Anomalie scheint nach 2010 weitgehend wegarbitragiert. Marktzeit nur
+  ~19%.
+- **Sell-in-May** ist **über alle fünf Märkte positiv und konsistent**
+  (Sharpe 0,23–0,46) — ein echtes Robustheitssignal — aber:
+  - es unterperformt Buy & Hold in starken Bullenmärkten (USA), weil es das halbe
+    Jahr aussetzt;
+  - nur 16 Trades pro Markt → einzeln schwache Power;
+  - sein eigentlicher Nutzen liegt auf der **Drawdown**-Seite: die Kapitalkurve
+    (`results/plots/equity.png`) umschifft den 2011er-Ausverkauf und dämpft 2020,
+    endet aber nahe Buy & Hold — also ähnliche Rendite bei ~halber Marktzeit.
 
 ## 8. Verdict
 
-**Rejected as a standalone return edge.** No calendar effect beats buy & hold
-net of costs with statistical significance in the OOS sample, and the in-sample
-winner is killed by the Deflated Sharpe Ratio. This is the framework working
-correctly — it refuses to confirm a data-mined pattern.
+**Abgelehnt als eigenständiger Rendite-Edge.** Kein Kalendereffekt schlägt Buy &
+Hold netto nach Kosten statistisch signifikant im OOS-Zeitraum, und der
+In-Sample-Gewinner wird vom Deflated Sharpe erledigt. Das ist das Framework, das
+korrekt arbeitet — es weigert sich, ein data-gemintes Muster zu bestätigen.
 
-**Worth iterating:** sell-in-May's cross-market consistency and exposure-halving
-drawdown reduction make it a candidate **risk-overlay**, not an alpha source.
-Next steps: (a) pool the 5 markets to lift trade count and test significance
-with real power; (b) test it as a tactical de-risking filter on top of a
-buy-and-hold core; (c) compare staying in T-bills (`^IRX`) during the summer
-months rather than flat cash.
+**Wert der Iteration:** Die marktübergreifende Konsistenz von Sell-in-May und die
+Halbierung der Marktzeit bei ähnlicher Rendite machen es zu einem Kandidaten für
+ein **Risiko-Overlay**, nicht für eine Alpha-Quelle. Genau das wird in
+**Strategie 0002** (gepooltes Sell-in-May) mit echter statistischer Power getestet.
 
-### Artifacts
+### Artefakte
 `results/metrics.json`, `results/oos_panel.csv`, `results/trades.csv`,
+`results/card.json`, `results/equity.csv`,
 `results/plots/{equity,drawdown,monthly_heatmap,bucket_tdom_from_end}.png`
