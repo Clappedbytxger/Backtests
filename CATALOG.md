@@ -14,6 +14,7 @@ out-of-sample, netto nach Kosten, sofern nicht anders vermerkt.
 | 0004 | Saisonale Rohstoff-Fenster   | seasonal  | Rohstoffe mit realem Angebots-/Nachfrage-Saisontreiber schlagen Buy & Hold (Seasonax-Idee) | abgelehnt |   0.01 |  1.6% | -38.0% |     107 |  0.432 | 0.00 | Kein Fenster schlägt B&H; Erdgas trotz stärkster Story am schlechtesten (ETF-Contango/Roll-Decay)           |
 | 0005 | Kurzfristige Futures-Fenster | seasonal  | Kurzes Fenster auf Futures (statt ETF) umgeht Roll-Decay; IS-Scan wählt, OOS validiert     | abgelehnt |  -0.04 |  1.9% |  -4.3% |      83 |    n/a | 0.00 | 7/8 Fenster kollabieren OOS (IS-Sharpe 4-8 = Overfit); nur Benzin KW9 hält OOS (Perm p≈0) → Lead, kein Edge |
 | 0006 | Benzin-Saisonfenster KW9     | seasonal  | Vorab fixierte Benzin-KW9-Regel (aus 0005) übersteht einen echten Forward-Test 2016–2026   | Kandidat  |   0.86 | 13.8% | -13.3% |      11 |  0.000 | 1.00 | Erster nicht abgelehnter Edge: Bootstrap-Sharpe-KI [0,44;1,23] schließt Null aus, robustes Plateau (47/54), Makro-Ursache; aber nur 11 Trades → Demut |
+| 0007 | Benzin-Overlay auf Aktien    | seasonal  | 0006-Kapital nicht brachliegen lassen: Index-Buy&Hold + Umstieg in Benzin nur in KW9        | Kandidat  |   1.20 | 30.0% | -34.1% |      11 |  0.000 | 1.00 | Forward (S&P 500): Overlay 30,0%/Sharpe 1,20 vs B&H 13,4%/0,68; gleiches für DAX. Kein neuer Edge, sondern kapitaleffiziente Hebelung von 0006 |
 
 ## Kategorien
 

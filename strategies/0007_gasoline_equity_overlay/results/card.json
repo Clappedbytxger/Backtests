@@ -1,0 +1,9 @@
+{
+  "id": "0007",
+  "label": "Benzin-Overlay auf S&P 500",
+  "cagr": 0.20222098548757317,
+  "annual_volatility": 0.22578975087771014,
+  "sharpe": 0.838845238296011,
+  "max_drawdown": -0.48607802573009207,
+  "is_strategy": true
+}

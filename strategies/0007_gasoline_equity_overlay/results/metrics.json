@@ -1,0 +1,125 @@
+{
+  "gas_ticker": "RB=F",
+  "iso_week": 9,
+  "hold_days": 5,
+  "indices": {
+    "^GSPC": {
+      "name": "S&P 500",
+      "start": "2000-11-01",
+      "end": "2026-06-03",
+      "full": {
+        "overlay": {
+          "label": "S&P 500 + Benzin-Overlay",
+          "cagr": 0.20222098548757317,
+          "sharpe": 0.838845238296011,
+          "sortino": 1.2282685333737027,
+          "annual_volatility": 0.22578975087771014,
+          "calmar": 0.4160257711379486,
+          "max_drawdown": -0.48607802573009207,
+          "total_return": 107.98782363031371
+        },
+        "buy_hold": {
+          "label": "S&P 500 Buy & Hold",
+          "cagr": 0.06786888189580287,
+          "sharpe": 0.3350583710866662,
+          "sortino": 0.42354163823841384,
+          "annual_volatility": 0.1919934013197697,
+          "calmar": 0.11953926621036962,
+          "max_drawdown": -0.5677538774277291,
+          "total_return": 4.326170692989187
+        }
+      },
+      "forward": {
+        "overlay": {
+          "label": "S&P 500 + Overlay (Forward)",
+          "cagr": 0.29953791535275487,
+          "sharpe": 1.1962058207125905,
+          "sortino": 1.764836913607677,
+          "annual_volatility": 0.2227535290826788,
+          "calmar": 0.879236724402157,
+          "max_drawdown": -0.34067948601262954,
+          "total_return": 14.194599832019211
+        },
+        "buy_hold": {
+          "label": "S&P 500 B&H (Forward)",
+          "cagr": 0.13436615193849288,
+          "sharpe": 0.681736144696323,
+          "sortino": 0.8250407531948906,
+          "annual_volatility": 0.17967893958290165,
+          "calmar": 0.39606871143837474,
+          "max_drawdown": -0.3392496000265328,
+          "total_return": 2.7034650592727187
+        }
+      },
+      "gasoline_trades": {
+        "n_trades": 26,
+        "win_rate": 0.9615384615384616,
+        "profit_factor": 72.96017064243298,
+        "payoff_ratio": 2.918406825697319,
+        "expectancy": 0.12092582255951773,
+        "avg_holding_days": 5.0,
+        "avg_win": 0.12751052857522122,
+        "avg_loss": 0.043691827833069186
+      }
+    },
+    "^GDAXI": {
+      "name": "DAX",
+      "start": "2000-11-01",
+      "end": "2026-06-03",
+      "full": {
+        "overlay": {
+          "label": "DAX + Benzin-Overlay",
+          "cagr": 0.18989473096557363,
+          "sharpe": 0.7268881116158039,
+          "sortino": 1.0855894809694648,
+          "annual_volatility": 0.25655457959684336,
+          "calmar": 0.3152731676224423,
+          "max_drawdown": -0.6023180862412734,
+          "total_return": 77.3440310498541
+        },
+        "buy_hold": {
+          "label": "DAX Buy & Hold",
+          "cagr": 0.05136330289443203,
+          "sharpe": 0.24695631259783696,
+          "sortino": 0.32946101231219027,
+          "annual_volatility": 0.22739445245761988,
+          "calmar": 0.07429934689741899,
+          "max_drawdown": -0.6913022124588324,
+          "total_return": 2.51263552714176
+        }
+      },
+      "forward": {
+        "overlay": {
+          "label": "DAX + Overlay (Forward)",
+          "cagr": 0.2520389454712111,
+          "sharpe": 1.0033090414265835,
+          "sortino": 1.5558289869202306,
+          "annual_volatility": 0.23007848332282263,
+          "calmar": 0.7065997332910654,
+          "max_drawdown": -0.35669266997499727,
+          "total_return": 8.92451098355792
+        },
+        "buy_hold": {
+          "label": "DAX B&H (Forward)",
+          "cagr": 0.08536848923265028,
+          "sharpe": 0.42422638598634205,
+          "sortino": 0.5408373834259692,
+          "annual_volatility": 0.188459026323907,
+          "calmar": 0.22013881600396504,
+          "max_drawdown": -0.38779389651624485,
+          "total_return": 1.3080998709007896
+        }
+      },
+      "gasoline_trades": {
+        "n_trades": 26,
+        "win_rate": 0.9615384615384616,
+        "profit_factor": 72.96017064243298,
+        "payoff_ratio": 2.918406825697319,
+        "expectancy": 0.12092582255951773,
+        "avg_holding_days": 5.0,
+        "avg_win": 0.12751052857522122,
+        "avg_loss": 0.043691827833069186
+      }
+    }
+  }
+}
