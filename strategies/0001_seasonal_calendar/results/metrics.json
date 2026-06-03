@@ -1,0 +1,223 @@
+{
+  "effect": "sell_in_may",
+  "ticker": "^GDAXI",
+  "oos_start": "2011-01-01",
+  "n_trials_tried": 15,
+  "portfolio_metrics": {
+    "total_return": 2.1022917252364497,
+    "cagr": 0.07571472947540636,
+    "annual_volatility": 0.1410075295147573,
+    "sharpe": 0.4479304050749127,
+    "sortino": 0.5852503581226128,
+    "calmar": 0.19524476830499735,
+    "max_drawdown": -0.38779389651624496,
+    "max_drawdown_duration_days": 500,
+    "n_periods": 3909
+  },
+  "trade_stats": {
+    "n_trades": 16,
+    "win_rate": 0.6875,
+    "profit_factor": 3.966676302179468,
+    "payoff_ratio": 1.8030346828088493,
+    "expectancy": 0.08222105821528924,
+    "avg_holding_days": 121.25,
+    "avg_win": 0.15990680966224946,
+    "avg_loss": 0.08868759496802323
+  },
+  "significance": {
+    "permutation": {
+      "observed": 0.4479304050749127,
+      "p_value": 0.11444277861069466,
+      "null_mean": 0.21904839124073472,
+      "null_std": 0.1842958884790131,
+      "n_perm": 2000,
+      "metric": "sharpe"
+    },
+    "bootstrap_sharpe_ci": {
+      "statistic": "sharpe",
+      "point": 0.44362761575509246,
+      "ci_low": -0.0633848505868846,
+      "ci_high": 0.9501749006059895,
+      "alpha": 0.05
+    },
+    "t_test": {
+      "t_stat": 2.31731459237287,
+      "p_value": 0.020538022659047285,
+      "n": 3909
+    },
+    "deflated_sharpe": {
+      "observed_sharpe": 0.037063989249130576,
+      "expected_max_sharpe_under_null": 1.770683583594126,
+      "n_trials": 15,
+      "psr_deflated": 0.0
+    }
+  },
+  "buy_hold_sharpe": 0.4153158768676277,
+  "oos_panel": [
+    {
+      "ticker": "SPY",
+      "effect": "turn_of_month",
+      "oos_sharpe": 0.12,
+      "buyhold_sharpe": 0.75,
+      "cagr": 0.0265,
+      "exposure": 0.191,
+      "n_trades": 186,
+      "win_rate": 0.597,
+      "profit_factor": 1.38
+    },
+    {
+      "ticker": "SPY",
+      "effect": "turn_of_year",
+      "oos_sharpe": -0.48,
+      "buyhold_sharpe": 0.75,
+      "cagr": 0.0055,
+      "exposure": 0.036,
+      "n_trades": 16,
+      "win_rate": 0.688,
+      "profit_factor": 1.76
+    },
+    {
+      "ticker": "SPY",
+      "effect": "sell_in_may",
+      "oos_sharpe": 0.46,
+      "buyhold_sharpe": 0.75,
+      "cagr": 0.0736,
+      "exposure": 0.498,
+      "n_trades": 16,
+      "win_rate": 0.75,
+      "profit_factor": 7.72
+    },
+    {
+      "ticker": "QQQ",
+      "effect": "turn_of_month",
+      "oos_sharpe": 0.18,
+      "buyhold_sharpe": 0.87,
+      "cagr": 0.0328,
+      "exposure": 0.191,
+      "n_trades": 186,
+      "win_rate": 0.613,
+      "profit_factor": 1.37
+    },
+    {
+      "ticker": "QQQ",
+      "effect": "turn_of_year",
+      "oos_sharpe": -0.37,
+      "buyhold_sharpe": 0.87,
+      "cagr": 0.0054,
+      "exposure": 0.036,
+      "n_trades": 16,
+      "win_rate": 0.562,
+      "profit_factor": 1.5
+    },
+    {
+      "ticker": "QQQ",
+      "effect": "sell_in_may",
+      "oos_sharpe": 0.46,
+      "buyhold_sharpe": 0.87,
+      "cagr": 0.0823,
+      "exposure": 0.498,
+      "n_trades": 16,
+      "win_rate": 0.812,
+      "profit_factor": 6.4
+    },
+    {
+      "ticker": "^GDAXI",
+      "effect": "turn_of_month",
+      "oos_sharpe": -0.2,
+      "buyhold_sharpe": 0.42,
+      "cagr": -0.0037,
+      "exposure": 0.19,
+      "n_trades": 186,
+      "win_rate": 0.559,
+      "profit_factor": 1.01
+    },
+    {
+      "ticker": "^GDAXI",
+      "effect": "turn_of_year",
+      "oos_sharpe": -0.23,
+      "buyhold_sharpe": 0.42,
+      "cagr": 0.0118,
+      "exposure": 0.036,
+      "n_trades": 16,
+      "win_rate": 0.875,
+      "profit_factor": 3.78
+    },
+    {
+      "ticker": "^GDAXI",
+      "effect": "sell_in_may",
+      "oos_sharpe": 0.45,
+      "buyhold_sharpe": 0.42,
+      "cagr": 0.0757,
+      "exposure": 0.496,
+      "n_trades": 16,
+      "win_rate": 0.688,
+      "profit_factor": 3.97
+    },
+    {
+      "ticker": "^FTSE",
+      "effect": "turn_of_month",
+      "oos_sharpe": -0.01,
+      "buyhold_sharpe": 0.18,
+      "cagr": 0.0167,
+      "exposure": 0.191,
+      "n_trades": 186,
+      "win_rate": 0.624,
+      "profit_factor": 1.22
+    },
+    {
+      "ticker": "^FTSE",
+      "effect": "turn_of_year",
+      "oos_sharpe": -0.36,
+      "buyhold_sharpe": 0.18,
+      "cagr": 0.0106,
+      "exposure": 0.036,
+      "n_trades": 16,
+      "win_rate": 0.688,
+      "profit_factor": 3.23
+    },
+    {
+      "ticker": "^FTSE",
+      "effect": "sell_in_may",
+      "oos_sharpe": 0.23,
+      "buyhold_sharpe": 0.18,
+      "cagr": 0.0397,
+      "exposure": 0.5,
+      "n_trades": 16,
+      "win_rate": 0.875,
+      "profit_factor": 3.81
+    },
+    {
+      "ticker": "^N225",
+      "effect": "turn_of_month",
+      "oos_sharpe": -0.11,
+      "buyhold_sharpe": 0.59,
+      "cagr": 0.0024,
+      "exposure": 0.197,
+      "n_trades": 186,
+      "win_rate": 0.538,
+      "profit_factor": 1.06
+    },
+    {
+      "ticker": "^N225",
+      "effect": "turn_of_year",
+      "oos_sharpe": -0.26,
+      "buyhold_sharpe": 0.59,
+      "cagr": 0.0086,
+      "exposure": 0.037,
+      "n_trades": 16,
+      "win_rate": 0.625,
+      "profit_factor": 2.13
+    },
+    {
+      "ticker": "^N225",
+      "effect": "sell_in_may",
+      "oos_sharpe": 0.33,
+      "buyhold_sharpe": 0.59,
+      "cagr": 0.0623,
+      "exposure": 0.5,
+      "n_trades": 16,
+      "win_rate": 0.688,
+      "profit_factor": 3.46
+    }
+  ]
+}

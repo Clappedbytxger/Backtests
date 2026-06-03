@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ipynb_checkpoints/
+
+# venv
+.venv/
+venv/
+
+# Data cache (don't commit downloaded market data)
+data/cache/
+*.parquet
+
+# Generated results (keep reports, ignore heavy artifacts if needed)
+# strategies/**/results/plots/
+
+# OS / editors
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Secrets
+.env
+*.key
