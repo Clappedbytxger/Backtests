@@ -127,6 +127,23 @@ def month_window_signal(
     return feats["month"].isin(months).astype(float).rename(name)
 
 
+def week_window_signal(
+    index: pd.DatetimeIndex,
+    weeks: list[int],
+    name: str = "week_window",
+) -> pd.Series:
+    """Long (weight 1.0) during the given ISO calendar weeks, else flat.
+
+    A short-horizon seasonal building block: a contiguous run of one to a few
+    ISO weeks (~5-15 trading days) repeated every year. Used to test whether a
+    *short* seasonal price kick exists once roll/carry decay is largely avoided
+    (relevant when trading futures rather than long-held commodity ETFs). The
+    week set may wrap the year boundary (e.g. ``[51, 52, 1]``).
+    """
+    feats = add_calendar_features(index)
+    return feats["week"].isin(weeks).astype(float).rename(name)
+
+
 def sell_in_may_signal(index: pd.DatetimeIndex) -> pd.Series:
     """Long Nov-Apr, flat May-Oct ("Halloween indicator").
 

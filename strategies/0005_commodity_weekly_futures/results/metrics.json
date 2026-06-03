@@ -1,0 +1,162 @@
+{
+  "is_end": "2015-12-31",
+  "oos_start": "2016-01-01",
+  "n_assets": 8,
+  "n_trials_per_asset": 156,
+  "screen_panel": [
+    {
+      "ticker": "RB=F",
+      "name": "Benzin",
+      "weeks": "9",
+      "k_weeks": 1,
+      "is_sharpe": 7.55,
+      "oos_sharpe": 0.86,
+      "buyhold_sharpe": 0.38,
+      "cagr": 0.1375,
+      "max_drawdown": -0.1332,
+      "n_trades": 11,
+      "win_rate": 0.909,
+      "perm_p": 0.0,
+      "dsr": 0.0
+    },
+    {
+      "ticker": "NG=F",
+      "name": "Erdgas",
+      "weeks": "22",
+      "k_weeks": 1,
+      "is_sharpe": 5.65,
+      "oos_sharpe": 0.13,
+      "buyhold_sharpe": 0.36,
+      "cagr": 0.0273,
+      "max_drawdown": -0.138,
+      "n_trades": 11,
+      "win_rate": 0.545,
+      "perm_p": 0.163,
+      "dsr": 0.0
+    },
+    {
+      "ticker": "ZC=F",
+      "name": "Mais",
+      "weeks": "50",
+      "k_weeks": 1,
+      "is_sharpe": 8.53,
+      "oos_sharpe": -0.03,
+      "buyhold_sharpe": 0.13,
+      "cagr": 0.0184,
+      "max_drawdown": -0.0238,
+      "n_trades": 10,
+      "win_rate": 0.8,
+      "perm_p": 0.04,
+      "dsr": 0.0
+    },
+    {
+      "ticker": "ZW=F",
+      "name": "Weizen",
+      "weeks": "28",
+      "k_weeks": 1,
+      "is_sharpe": 5.39,
+      "oos_sharpe": -0.28,
+      "buyhold_sharpe": 0.17,
+      "cagr": 0.0027,
+      "max_drawdown": -0.1263,
+      "n_trades": 10,
+      "win_rate": 0.4,
+      "perm_p": 0.311,
+      "dsr": 0.0
+    },
+    {
+      "ticker": "SI=F",
+      "name": "Silber",
+      "weeks": "7",
+      "k_weeks": 1,
+      "is_sharpe": 3.98,
+      "oos_sharpe": -0.37,
+      "buyhold_sharpe": 0.59,
+      "cagr": 0.001,
+      "max_drawdown": -0.1233,
+      "n_trades": 11,
+      "win_rate": 0.727,
+      "perm_p": 0.525,
+      "dsr": 0.0
+    },
+    {
+      "ticker": "ZS=F",
+      "name": "Sojabohnen",
+      "weeks": "26",
+      "k_weeks": 1,
+      "is_sharpe": 5.93,
+      "oos_sharpe": -0.58,
+      "buyhold_sharpe": 0.14,
+      "cagr": -0.0071,
+      "max_drawdown": -0.1369,
+      "n_trades": 10,
+      "win_rate": 0.3,
+      "perm_p": 0.365,
+      "dsr": 0.0
+    },
+    {
+      "ticker": "BZ=F",
+      "name": "Roh\u00f6l (Brent)",
+      "weeks": "16",
+      "k_weeks": 1,
+      "is_sharpe": 7.88,
+      "oos_sharpe": -0.77,
+      "buyhold_sharpe": 0.39,
+      "cagr": -0.0351,
+      "max_drawdown": -0.388,
+      "n_trades": 11,
+      "win_rate": 0.364,
+      "perm_p": 0.941,
+      "dsr": 0.0
+    },
+    {
+      "ticker": "GC=F",
+      "name": "Gold",
+      "weeks": "47",
+      "k_weeks": 1,
+      "is_sharpe": 5.28,
+      "oos_sharpe": -1.26,
+      "buyhold_sharpe": 0.79,
+      "cagr": -0.003,
+      "max_drawdown": -0.0551,
+      "n_trades": 10,
+      "win_rate": 0.5,
+      "perm_p": 0.885,
+      "dsr": 0.0
+    }
+  ],
+  "portfolio_metrics": {
+    "total_return": 0.21232087566465685,
+    "cagr": 0.01869132378111016,
+    "annual_volatility": 0.024616774390751817,
+    "sharpe": -0.03992041070770316,
+    "sortino": -0.07442115517658184,
+    "calmar": 0.4388893045469094,
+    "max_drawdown": -0.04258778600313873,
+    "max_drawdown_duration_days": 695,
+    "n_periods": 2620
+  },
+  "portfolio_significance": {
+    "permutation": {
+      "observed": -0.03992041070770316,
+      "p_value": 0.0004997501249375312,
+      "null_mean": -1.6457464748275112,
+      "null_std": 0.5304809767780098,
+      "n_perm": 2000,
+      "metric": "sharpe"
+    },
+    "bootstrap_sharpe_ci": {
+      "statistic": "sharpe",
+      "point": -0.05956357163353156,
+      "ci_low": -0.6854141714993834,
+      "ci_high": 0.5160729860980724,
+      "alpha": 0.05
+    },
+    "deflated_sharpe": {
+      "observed_sharpe": 0.048161966300843045,
+      "expected_max_sharpe_under_null": 2.68328119119103,
+      "n_trials": 156,
+      "psr_deflated": 0.0
+    }
+  }
+}

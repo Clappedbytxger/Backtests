@@ -1,0 +1,9 @@
+{
+  "id": "0005",
+  "label": "Futures-Saison-Fenster kurzfristig (8 Assets)",
+  "cagr": 0.01869132378111016,
+  "annual_volatility": 0.024616774390751817,
+  "sharpe": -0.03992041070770316,
+  "max_drawdown": -0.04258778600313873,
+  "is_strategy": true
+}

@@ -65,3 +65,15 @@ class CostModel:
 IBKR_LIQUID_ETF = CostModel(slippage_bps=2.0)
 IBKR_DEFAULT = CostModel()
 IBKR_ILLIQUID = CostModel(slippage_bps=10.0)
+
+# Liquid futures (e.g. CL, NG, GC, ZC): IBKR commission is per *contract* and
+# tiny relative to notional, so it is folded into a few bps rather than a
+# per-share charge. Slippage (half-spread + impact) dominates the round-trip
+# cost on daily data; 2 bps/side is realistic for the front month of liquid
+# commodity futures, plus a small exchange/regulatory pad.
+IBKR_FUTURES = CostModel(
+    commission_per_share=0.0,
+    min_commission=0.0,
+    slippage_bps=2.0,
+    regulatory_bps=0.5,
+)
