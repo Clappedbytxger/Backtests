@@ -1,0 +1,6 @@
+ticker,name,sharpe,buyhold_sharpe,cagr,max_drawdown,exposure,n_trades,win_rate,profit_factor
+SPY,S&P 500 (USA),0.46,0.75,0.0736,-0.3372,0.498,16,0.75,7.72
+QQQ,Nasdaq 100 (USA),0.46,0.87,0.0823,-0.2856,0.498,16,0.812,6.4
+^GDAXI,DAX (Deutschland),0.45,0.42,0.0757,-0.3878,0.496,16,0.688,3.97
+^FTSE,FTSE 100 (UK),0.23,0.18,0.0397,-0.3493,0.5,16,0.875,3.81
+^N225,Nikkei 225 (Japan),0.33,0.59,0.0623,-0.3445,0.5,16,0.688,3.46

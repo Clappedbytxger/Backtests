@@ -1,0 +1,9 @@
+{
+  "id": "0002",
+  "label": "Sell-in-May Portfolio (gepoolt, 5 M\u00e4rkte)",
+  "cagr": 0.07900038383214447,
+  "annual_volatility": 0.10568094137620859,
+  "sharpe": 0.5852317053410284,
+  "max_drawdown": -0.3235064603692439,
+  "is_strategy": true
+}

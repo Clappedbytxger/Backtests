@@ -1,0 +1,9 @@
+{
+  "id": "0001",
+  "label": "Sell-in-May (^GDAXI)",
+  "cagr": 0.07571472947540636,
+  "annual_volatility": 0.1410075295147573,
+  "sharpe": 0.4479304050749127,
+  "max_drawdown": -0.38779389651624496,
+  "is_strategy": true
+}

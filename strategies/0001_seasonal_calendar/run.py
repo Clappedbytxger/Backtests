@@ -187,6 +187,20 @@ def evaluate_oos(prices: pd.DataFrame, effect: str, ticker: str) -> dict:
         PLOTS / "bucket_tdom_from_end.png")
 
     res["trades"].to_csv(RESULTS / "trades.csv", index=False)
+
+    # Standardized artifacts for the cross-strategy comparison (reports/).
+    res["equity"].rename("equity").to_csv(RESULTS / "equity.csv")
+    card = {
+        "id": "0001",
+        "label": f"Sell-in-May ({ticker})",
+        "cagr": m["cagr"],
+        "annual_volatility": m["annual_volatility"],
+        "sharpe": m["sharpe"],
+        "max_drawdown": m["max_drawdown"],
+        "is_strategy": True,
+    }
+    with open(RESULTS / "card.json", "w") as fh:
+        json.dump(card, fh, indent=2)
     return summary
 
 

@@ -1,0 +1,124 @@
+{
+  "portfolio_metrics": {
+    "total_return": 2.3552495357947865,
+    "cagr": 0.07900038383214447,
+    "annual_volatility": 0.10568094137620859,
+    "sharpe": 0.5852317053410284,
+    "sortino": 0.7478781642305387,
+    "calmar": 0.24420032830866806,
+    "max_drawdown": -0.3235064603692439,
+    "max_drawdown_duration_days": 465,
+    "n_periods": 4012
+  },
+  "benchmark_metrics": {
+    "total_return": 6.600455594390711,
+    "cagr": 0.1358655180692918,
+    "annual_volatility": 0.14233683835659372,
+    "sharpe": 0.8275512586257213,
+    "sortino": 1.0257318013817929,
+    "calmar": 0.41997775844790775,
+    "max_drawdown": -0.3235064603692436,
+    "max_drawdown_duration_days": 367,
+    "n_periods": 4012
+  },
+  "trade_stats": {
+    "n_trades": 80,
+    "win_rate": 0.7625,
+    "profit_factor": 4.610798991846649,
+    "payoff_ratio": 1.436150505657153,
+    "expectancy": 0.07060211830192836,
+    "avg_holding_days": 120.425,
+    "avg_win": 0.11823628087649618,
+    "avg_loss": 0.08232861417431572
+  },
+  "significance": {
+    "permutation": {
+      "observed": 0.5852317053410284,
+      "p_value": 0.29735132433783107,
+      "null_mean": 0.4829110875932446,
+      "null_std": 0.18380780647451608,
+      "n_perm": 2000,
+      "metric": "sharpe"
+    },
+    "bootstrap_sharpe_ci": {
+      "statistic": "sharpe",
+      "point": 0.5873383815277682,
+      "ci_low": 0.10086325092702729,
+      "ci_high": 1.0797933593655065,
+      "alpha": 0.05
+    },
+    "t_test": {
+      "t_stat": 3.082806873949002,
+      "p_value": 0.002064514257509647,
+      "n": 4012
+    },
+    "deflated_sharpe": {
+      "observed_sharpe": 0.04867050545467106,
+      "expected_max_sharpe_under_null": 0.852804496149574,
+      "n_trials": 3,
+      "psr_deflated": 0.0
+    }
+  },
+  "per_market_panel": [
+    {
+      "ticker": "SPY",
+      "name": "S&P 500 (USA)",
+      "sharpe": 0.46,
+      "buyhold_sharpe": 0.75,
+      "cagr": 0.0736,
+      "max_drawdown": -0.3372,
+      "exposure": 0.498,
+      "n_trades": 16,
+      "win_rate": 0.75,
+      "profit_factor": 7.72
+    },
+    {
+      "ticker": "QQQ",
+      "name": "Nasdaq 100 (USA)",
+      "sharpe": 0.46,
+      "buyhold_sharpe": 0.87,
+      "cagr": 0.0823,
+      "max_drawdown": -0.2856,
+      "exposure": 0.498,
+      "n_trades": 16,
+      "win_rate": 0.812,
+      "profit_factor": 6.4
+    },
+    {
+      "ticker": "^GDAXI",
+      "name": "DAX (Deutschland)",
+      "sharpe": 0.45,
+      "buyhold_sharpe": 0.42,
+      "cagr": 0.0757,
+      "max_drawdown": -0.3878,
+      "exposure": 0.496,
+      "n_trades": 16,
+      "win_rate": 0.688,
+      "profit_factor": 3.97
+    },
+    {
+      "ticker": "^FTSE",
+      "name": "FTSE 100 (UK)",
+      "sharpe": 0.23,
+      "buyhold_sharpe": 0.18,
+      "cagr": 0.0397,
+      "max_drawdown": -0.3493,
+      "exposure": 0.5,
+      "n_trades": 16,
+      "win_rate": 0.875,
+      "profit_factor": 3.81
+    },
+    {
+      "ticker": "^N225",
+      "name": "Nikkei 225 (Japan)",
+      "sharpe": 0.33,
+      "buyhold_sharpe": 0.59,
+      "cagr": 0.0623,
+      "max_drawdown": -0.3445,
+      "exposure": 0.5,
+      "n_trades": 16,
+      "win_rate": 0.688,
+      "profit_factor": 3.46
+    }
+  ]
+}
