@@ -111,6 +111,22 @@ def turn_of_year_signal(
     return (in_december | in_january).astype(float).rename("turn_of_year")
 
 
+def month_window_signal(
+    index: pd.DatetimeIndex,
+    months: list[int],
+    name: str = "month_window",
+) -> pd.Series:
+    """Long (weight 1.0) during the given calendar months, else flat.
+
+    A generic building block for macro-seasonal windows (e.g. natural-gas
+    heating demand Sep-Dec, gasoline pre-driving-season Feb-May). The window is
+    a *pre-specified* hypothesis from supply/demand cycles, not chosen from the
+    price — so it does not carry in-sample selection bias.
+    """
+    feats = add_calendar_features(index)
+    return feats["month"].isin(months).astype(float).rename(name)
+
+
 def sell_in_may_signal(index: pd.DatetimeIndex) -> pd.Series:
     """Long Nov-Apr, flat May-Oct ("Halloween indicator").
 

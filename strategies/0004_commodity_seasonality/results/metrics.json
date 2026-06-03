@@ -1,0 +1,170 @@
+{
+  "oos_start": "2016-01-01",
+  "n_assets": 10,
+  "screen_panel": [
+    {
+      "ticker": "SLV",
+      "name": "Silber",
+      "window": "8-9-10-11-12",
+      "sharpe": 0.36,
+      "buyhold_sharpe": 0.59,
+      "cagr": 0.0721,
+      "max_drawdown": -0.267,
+      "exposure": 0.405,
+      "n_trades": 10,
+      "win_rate": 0.7,
+      "perm_p": 0.443
+    },
+    {
+      "ticker": "UGA",
+      "name": "Benzin",
+      "window": "2-3-4-5",
+      "sharpe": 0.32,
+      "buyhold_sharpe": 0.47,
+      "cagr": 0.071,
+      "max_drawdown": -0.7298,
+      "exposure": 0.348,
+      "n_trades": 11,
+      "win_rate": 0.545,
+      "perm_p": 0.362
+    },
+    {
+      "ticker": "BNO",
+      "name": "Roh\u00f6l (Brent)",
+      "window": "2-3-4-5",
+      "sharpe": 0.31,
+      "buyhold_sharpe": 0.52,
+      "cagr": 0.0683,
+      "max_drawdown": -0.7126,
+      "exposure": 0.348,
+      "n_trades": 11,
+      "win_rate": 0.545,
+      "perm_p": 0.398
+    },
+    {
+      "ticker": "GLD",
+      "name": "Gold",
+      "window": "8-9-10-11-12",
+      "sharpe": 0.23,
+      "buyhold_sharpe": 0.78,
+      "cagr": 0.0374,
+      "max_drawdown": -0.176,
+      "exposure": 0.405,
+      "n_trades": 10,
+      "win_rate": 0.7,
+      "perm_p": 0.731
+    },
+    {
+      "ticker": "USO",
+      "name": "Roh\u00f6l (WTI)",
+      "window": "2-3-4-5",
+      "sharpe": 0.06,
+      "buyhold_sharpe": 0.27,
+      "cagr": -0.0089,
+      "max_drawdown": -0.8383,
+      "exposure": 0.348,
+      "n_trades": 11,
+      "win_rate": 0.545,
+      "perm_p": 0.582
+    },
+    {
+      "ticker": "WEAT",
+      "name": "Weizen",
+      "window": "3-4-5-6",
+      "sharpe": -0.14,
+      "buyhold_sharpe": -0.19,
+      "cagr": -0.0218,
+      "max_drawdown": -0.4148,
+      "exposure": 0.349,
+      "n_trades": 11,
+      "win_rate": 0.455,
+      "perm_p": 0.42
+    },
+    {
+      "ticker": "DBA",
+      "name": "Agrar (breit)",
+      "window": "3-4-5-6",
+      "sharpe": -0.18,
+      "buyhold_sharpe": 0.23,
+      "cagr": -0.0008,
+      "max_drawdown": -0.2696,
+      "exposure": 0.349,
+      "n_trades": 11,
+      "win_rate": 0.545,
+      "perm_p": 0.711
+    },
+    {
+      "ticker": "SOYB",
+      "name": "Sojabohnen",
+      "window": "4-5-6-7",
+      "sharpe": -0.27,
+      "buyhold_sharpe": 0.17,
+      "cagr": -0.0165,
+      "max_drawdown": -0.3239,
+      "exposure": 0.337,
+      "n_trades": 11,
+      "win_rate": 0.545,
+      "perm_p": 0.811
+    },
+    {
+      "ticker": "CORN",
+      "name": "Mais",
+      "window": "3-4-5-6",
+      "sharpe": -0.3,
+      "buyhold_sharpe": -0.09,
+      "cagr": -0.0286,
+      "max_drawdown": -0.3689,
+      "exposure": 0.349,
+      "n_trades": 11,
+      "win_rate": 0.182,
+      "perm_p": 0.713
+    },
+    {
+      "ticker": "UNG",
+      "name": "Erdgas",
+      "window": "9-10-11-12",
+      "sharpe": -0.46,
+      "buyhold_sharpe": -0.2,
+      "cagr": -0.1694,
+      "max_drawdown": -0.9279,
+      "exposure": 0.32,
+      "n_trades": 10,
+      "win_rate": 0.3,
+      "perm_p": 0.891
+    }
+  ],
+  "portfolio_metrics": {
+    "total_return": 0.1738861497324038,
+    "cagr": 0.015545548590293556,
+    "annual_volatility": 0.1044941327762478,
+    "sharpe": 0.010545922962017566,
+    "sortino": 0.012961523465015327,
+    "calmar": 0.04092440427015102,
+    "max_drawdown": -0.3798601071300626,
+    "max_drawdown_duration_days": 2456,
+    "n_periods": 2619
+  },
+  "portfolio_significance": {
+    "permutation": {
+      "observed": 0.010545922962017566,
+      "p_value": 0.43228385807096453,
+      "null_mean": -0.005426142509352463,
+      "null_std": 0.08944930428197223,
+      "n_perm": 2000,
+      "metric": "sharpe"
+    },
+    "bootstrap_sharpe_ci": {
+      "statistic": "sharpe",
+      "point": 0.012863817622616385,
+      "ci_low": -0.5864519184360342,
+      "ci_high": 0.6063400851626602,
+      "alpha": 0.05
+    },
+    "deflated_sharpe": {
+      "observed_sharpe": 0.012602774006121309,
+      "expected_max_sharpe_under_null": 1.5745983013449718,
+      "n_trials": 10,
+      "psr_deflated": 0.0
+    }
+  }
+}

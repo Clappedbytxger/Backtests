@@ -1,0 +1,9 @@
+{
+  "id": "0004",
+  "label": "Rohstoff-Saison-Portfolio (10 Assets)",
+  "cagr": 0.015545548590293556,
+  "annual_volatility": 0.1044941327762478,
+  "sharpe": 0.010545922962017566,
+  "max_drawdown": -0.3798601071300626,
+  "is_strategy": true
+}
