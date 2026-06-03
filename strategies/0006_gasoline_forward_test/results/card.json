@@ -1,0 +1,9 @@
+{
+  "id": "0006",
+  "label": "Benzin Saison KW9 (Forward-Test)",
+  "cagr": 0.13754998983965594,
+  "annual_volatility": 0.1359903736483551,
+  "sharpe": 0.8647592025675699,
+  "max_drawdown": -0.13318946114898844,
+  "is_strategy": true
+}

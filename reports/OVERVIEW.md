@@ -13,6 +13,7 @@ Kosten**.
 | 0003 | Sell-in-May De-Risking Overlay (gepoolt)      | 10.83% |      11.59% |   0.77 | -32.35% |
 | 0004 | Rohstoff-Saison-Portfolio (10 Assets)         |  1.55% |      10.45% |   0.01 | -37.99% |
 | 0005 | Futures-Saison-Fenster kurzfristig (8 Assets) |  1.87% |       2.46% |  -0.04 |  -4.26% |
+| 0006 | Benzin Saison KW9 (Forward-Test)              | 13.75% |      13.60% |   0.86 | -13.32% |
 
 ## Visualisierungen
 
