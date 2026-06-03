@@ -50,3 +50,14 @@ Every strategy must survive cost, look-ahead and significance scrutiny.
   the same command that then installs packages can corrupt pip (`WinError 32`
   file lock + leftover `~ip` dist). Fix: don't self-upgrade pip mid-install; if
   pip breaks, recreate the venv and run `ensurepip --upgrade`.
+- **2026-06-03 (0005):** Continuous front-month futures can print a *non-positive*
+  price — WTI (`CL=F`) settled at -$37.63 on 2020-04-20. Simple `pct_change`
+  returns are undefined across a zero crossing and produce nonsense (CAGR -100%,
+  MaxDD -264%). Guard any futures backtest with `if (close <= 0).any(): skip`,
+  or use a ratio-adjusted continuous series. "Futures are cleaner than ETFs" is
+  only half true — they have their own artifacts (negative prints, roll gaps).
+- **2026-06-03 (0005):** In-sample optimization Sharpes are meaningless alone.
+  Picking the best of 156 weekly windows in-sample gave Sharpes of 4-8 that
+  collapsed to ~0 OOS for 7/8 assets. Always charge the Deflated Sharpe the full
+  search width (`n_trials` = configs scanned), and treat a single OOS survivor
+  among many as a lead needing a pre-registered forward test, not an edge.
