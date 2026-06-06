@@ -1,0 +1,223 @@
+# Seasonal calendar — single source of truth for every seasonal edge.
+#
+# This registry drives both the full-year calendar build
+# (strategies/full_year_seasonal_calendar) and the coverage report
+# (analysis/calendar_coverage.py). Edit HERE, not in the strategy scripts.
+#
+# status:   confirmed  -> survived a real OOS test, tradeable in the calendar
+#           testing    -> a lead with evidence but not yet graduated (NOT traded)
+#           rejected   -> killed by a guard (roll artifact / drift trap / etc.)
+# forward:  pre-registered   -> frozen rule passed a genuine time-forward test
+#           cross-instrument -> frozen rule passed on unseen sibling instruments
+#           none             -> no clean OOS yet
+# kind:     week  -> event_signal(week, hold_days)         [ISO-week anchored]
+#           date  -> date_window_signal(start_md, end_md)  [calendar-date anchored]
+#           cny   -> Chinese-New-Year-relative window       [moving feast]
+# overlay:  true  -> eligible for the assembled calendar (fixed week/date legs)
+#           false -> needs a custom signal (e.g. moving feast) — excluded for now
+#
+# Only `status: confirmed` AND `overlay: true` edges enter the traded calendar.
+
+edges:
+  # ---- Confirmed, pre-registered forward tests -----------------------------
+  - id: "0006"
+    name: Benzin KW9
+    ticker: RB=F
+    kind: week
+    week: 9
+    hold_days: 5
+    status: confirmed
+    forward: pre-registered
+    overlay: true
+    oos_tickers: []
+    macro: >-
+      RBOB summer-blend switchover + spring refinery maintenance tighten
+      gasoline supply into the driving season (early March kick).
+    refs: ["0005", "0006", "0007"]
+
+  - id: "0009"
+    name: Mastrind KW21
+    ticker: GF=F
+    kind: week
+    week: 21
+    hold_days: 5
+    status: confirmed
+    forward: pre-registered
+    overlay: true
+    oos_tickers: []
+    macro: >-
+      Feeder-cattle grazing season + grilling demand firm prices in late May
+      (ISO week 21). Pre-registered forward test 2016-2026 passed.
+    refs: ["0008", "0009"]
+
+  # ---- Testing leads (Seasonax-mined; cross-instrument evidence) -----------
+  # These are NOT traded until Phase 1 graduates them to `confirmed`.
+  - id: "0018"
+    name: Platin Jahreswechsel
+    ticker: PL=F
+    kind: date
+    start_md: [12, 18]
+    end_md: [1, 10]
+    status: confirmed       # graduated in 0037: stress p=0.010, PPLT+PA OOS pass
+    forward: cross-instrument
+    overlay: true
+    oos_tickers: [PPLT, PA=F]
+    macro: >-
+      PGM jewellery demand ahead of Chinese New Year + year-start industrial
+      restocking. Roll-artifact excluded in 0019; PPLT (physical, no roll) and
+      palladium confirmed the frozen rule (0021/0037). Represents the PGM
+      turn-of-year season in the calendar.
+    refs: ["0018", "0019", "0021", "0037"]
+
+  - id: "0032"
+    name: Mais WASDE-Kern
+    ticker: ZC=F
+    kind: date
+    start_md: [12, 8]
+    end_md: [12, 18]
+    status: testing         # 0037 stress-fail, but kept in calendar by user choice
+    forward: cross-instrument
+    overlay: true
+    oos_tickers: [ZW=F]
+    macro: >-
+      December WASDE firms front-month corn; wheat confirms the grain driver
+      (frozen window p=0.010). CAVEAT (0037): 78% of the edge sits on 6 WASDE
+      report days (11-16 Dec); excluding them drops perm p 0.000->0.153, so this
+      behaves more like a USDA-report event than a robust window. Did NOT pass
+      the strict confirmed bar — traded by explicit user choice with this
+      concentration caveat; size accordingly.
+    refs: ["0030", "0032", "0037"]
+
+  - id: "0035"
+    name: Baumwolle Jahresende
+    ticker: CT=F
+    kind: date
+    start_md: [11, 21]
+    end_md: [12, 29]
+    status: testing         # 0037: top stats + roll-clean, but NO independent OOS
+    forward: none
+    overlay: true
+    oos_tickers: []
+    macro: >-
+      Harvest pressure passes into year-end firming in cotton (fibre sector,
+      independent of PGM/grain). Roll-clean (28% on roll days, stress p stays
+      0.003), bootstrap CI [0.03;0.77] excludes zero, both halves positive.
+      Stays TESTING: no liquid fibre sibling exists for a cross-instrument OOS,
+      so it cannot meet the confirmed bar without a pre-registered live forward
+      (registered for the 2026 season).
+    refs: ["0035", "0037"]
+
+  - id: "0031"
+    name: Palladium Jahreswechsel
+    ticker: PA=F
+    kind: date
+    start_md: [12, 6]
+    end_md: [1, 25]
+    status: confirmed       # 0037: stress p=0.017, boot[0.08;0.74] — but redundant
+    forward: cross-instrument
+    overlay: false   # correlated with 0018 (same PGM driver) — no diversification
+    oos_tickers: []
+    macro: >-
+      PGM sibling of platinum: year-start restocking + CNY. Confirmed as a real
+      edge (0037: roll-clean 17%, stress p stays 0.017, bootstrap CI [0.08;0.74]
+      excludes zero) — but it is the SAME PGM turn-of-year driver as 0018 (and
+      was used as platinum's cross-instrument OOS). Kept out of the traded
+      calendar to avoid double-counting; platinum represents the PGM season.
+    refs: ["0031", "0037"]
+
+  - id: "0025"
+    name: Zink Sommerfenster
+    ticker: LME_ZINC      # special loader: quantlab.lme_data.get_lme_metal("zinc")
+    kind: date
+    start_md: [7, 4]
+    end_md: [7, 30]
+    status: rejected        # 0037: OOS Sharpe -0.03, boot CI touches zero
+    forward: none
+    overlay: false
+    oos_tickers: []
+    macro: >-
+      REJECTED (0037). Galvanising / construction summer demand on clean LME
+      cash settlement. Perm p=0.031 full-sample, but OOS Sharpe -0.03 (collapses
+      after 2017), bootstrap CI [-0.25;0.64] touches zero and no sibling asset
+      exists — risk-adjusted too fragile. July stays uncovered.
+    refs: ["0025", "0037"]
+
+  - id: "0023"
+    name: Gold CNY
+    ticker: GC=F
+    kind: cny
+    cny_offset_days: [-15, 2]   # -15 to +2 CALENDAR days around Chinese New Year
+    coverage_months: [1, 2]
+    status: testing
+    forward: cross-instrument
+    overlay: true    # Phase 2: cny_window_signal built; fills the February gap
+    oos_tickers: [GLD, SI=F]
+    macro: >-
+      Chinese-New-Year gold buying. Reproduced exactly with the new
+      cny_window_signal (calendar-day window): real timing edge (perm p=0.009),
+      independently confirmed on physical GLD (p=0.020) and the unseen silver
+      future (p=0.025). CAVEAT: every bootstrap Sharpe CI touches zero
+      (risk-adjusted fragile) and it shares the CNY-demand driver with platinum
+      (0018) = partly correlated. Traded as a flagged testing leg; size small.
+    refs: ["0023", "0024", "0037"]
+
+  # ---- Rejected (kept for the record + coverage honesty) -------------------
+  - id: "0028"
+    name: Erdgas Herbst
+    ticker: NG=F
+    kind: date
+    start_md: [9, 21]
+    end_md: [11, 1]
+    status: rejected
+    forward: none
+    overlay: false
+    oos_tickers: []
+    macro: >-
+      REJECTED — roll artifact. 105% of mean trade PnL sat on ~6 monthly-expiry
+      days/year; ±1-day exclusion flipped perm p 0.002 -> 0.773 (0029).
+    refs: ["0028", "0029"]
+
+  - id: "0034"
+    name: Zucker Sommer
+    ticker: SB=F
+    kind: date
+    start_md: [6, 8]
+    end_md: [7, 3]
+    status: rejected
+    forward: none
+    overlay: false
+    oos_tickers: []
+    macro: >-
+      REJECTED — IS/OOS collapse (OOS 2013-26 net negative) plus ~48% of the
+      edge on the July roll; post-exclusion p 0.009 -> 0.051.
+    refs: ["0034"]
+
+  - id: "0026"
+    name: Kakao April
+    ticker: CC=F
+    kind: date
+    start_md: [4, 8]
+    end_md: [4, 20]
+    status: rejected
+    forward: none
+    overlay: false
+    oos_tickers: []
+    macro: >-
+      REJECTED — drift trap (perm p=0.074). Cocoa drifts strongly, so almost any
+      short spring window looks green; median trade ~0 (fat-tail driven).
+    refs: ["0026"]
+
+  - id: "0027"
+    name: Kaffee Frost
+    ticker: KC=F
+    kind: date
+    start_md: [7, 15]
+    end_md: [8, 28]
+    status: rejected
+    forward: none
+    overlay: false
+    oos_tickers: []
+    macro: >-
+      REJECTED — fat-tail lottery (perm p=0.187). A frost surprise cannot be
+      timed; entire edge from a few shock years (2020/21/25).
+    refs: ["0027"]

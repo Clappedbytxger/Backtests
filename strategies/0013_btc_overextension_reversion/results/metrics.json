@@ -1,0 +1,74 @@
+{
+  "locked_combo": {
+    "sigma": 2.5,
+    "hold_h": 6,
+    "vol_window_h": 168
+  },
+  "is_sharpe": -0.924129938658833,
+  "n_trials": 9,
+  "oos_net": {
+    "total_return": -0.8974315832478327,
+    "cagr": -0.4857006371074899,
+    "annual_volatility": 0.24149991050634886,
+    "sharpe": -2.7113694490635094,
+    "sortino": -3.2645684468955487,
+    "calmar": -0.5399488592756455,
+    "max_drawdown": -0.8995308143794749,
+    "max_drawdown_duration_days": 1242,
+    "n_periods": 1250
+  },
+  "oos_gross": {
+    "total_return": -0.29497338507912363,
+    "cagr": -0.09702441155223085,
+    "annual_volatility": 0.2470478161509203,
+    "sharpe": -0.3697738708629495,
+    "sortino": -0.48457677742501104,
+    "calmar": -0.24473906619437233,
+    "max_drawdown": -0.3964402294285696,
+    "max_drawdown_duration_days": 1238,
+    "n_periods": 1250
+  },
+  "buy_hold": {
+    "total_return": 2.9503638003663064,
+    "cagr": 0.49354403310170625,
+    "annual_volatility": 0.4710122580076174,
+    "sharpe": 1.0439553784688043,
+    "sortino": 1.608253644847468,
+    "calmar": 0.9963691303550235,
+    "max_drawdown": -0.4953425573570791,
+    "max_drawdown_duration_days": 240,
+    "n_periods": 1250
+  },
+  "trade_stats": {
+    "n_trades": 803,
+    "win_rate": 0.44333748443337484,
+    "profit_factor": 0.620862524415212,
+    "payoff_ratio": 0.7795661472292128,
+    "expectancy": -0.002699750012276799,
+    "avg_holding_days": 6.064757160647572,
+    "avg_win": 0.009972127702842455,
+    "avg_loss": 0.012791894232819206
+  },
+  "permutation": {
+    "observed": -0.8583568063243722,
+    "p_value": 0.9930034982508745,
+    "null_mean": -0.6234971768013531,
+    "null_std": 0.09726136503652212,
+    "n_perm": 2000,
+    "metric": "sharpe"
+  },
+  "bootstrap": {
+    "statistic": "sharpe",
+    "point": -2.282756885264219,
+    "ci_low": -3.142338957954156,
+    "ci_high": -1.4069633833170683,
+    "alpha": 0.05
+  },
+  "deflated_sharpe": {
+    "observed_sharpe": -0.13762744985498052,
+    "expected_max_sharpe_under_null": 1.520778190702004,
+    "n_trials": 9,
+    "psr_deflated": 0.0
+  },
+  "oos_grid_positive": "0/9"
+}

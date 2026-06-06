@@ -1,0 +1,9 @@
+{
+  "id": "0011",
+  "label": "Erweiterter Futures-Screen (19 M\u00e4rkte, 3 Rohstoffe)",
+  "cagr": 0.005299705667665799,
+  "annual_volatility": 0.020840276659974784,
+  "sharpe": -0.686178370878373,
+  "max_drawdown": -0.04906293939779849,
+  "is_strategy": true
+}

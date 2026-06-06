@@ -1,0 +1,315 @@
+{
+  "0018": {
+    "name": "Platin Jahreswechsel",
+    "ticker": "PL=F",
+    "window": [
+      [
+        12,
+        18
+      ],
+      [
+        1,
+        10
+      ]
+    ],
+    "full": {
+      "sharpe": 0.3690606449998758,
+      "cagr": 0.04701476240442237,
+      "max_dd": -0.17554806489587782,
+      "expectancy": 0.04201040389212037,
+      "win_rate": 0.8518518518518519,
+      "n_trades": 27,
+      "perm_p": 0.0034982508745627187,
+      "boot_lo": -0.03437462318485445,
+      "boot_hi": 0.7838504564434498,
+      "dsr": 0.0,
+      "is_sharpe": 0.4652551876690031,
+      "oos_sharpe": 0.33115596797940117,
+      "split": "2013-01-01"
+    },
+    "stress": {
+      "base": {
+        "expectancy": 0.04201040389212037,
+        "win_rate": 0.8518518518518519,
+        "n_trades": 27,
+        "sharpe": 0.3690606449998758,
+        "perm_p": 0.0034982508745627187
+      },
+      "roll_excluded": {
+        "expectancy": 0.016032528992557773,
+        "win_rate": 0.6530612244897959,
+        "n_trades": 49,
+        "sharpe": 0.23190520194047048,
+        "perm_p": 0.010494752623688156
+      },
+      "share_on_roll_days": 0.22737036388502688,
+      "n_roll_days_held": 105,
+      "roll_zones": [
+        [
+          [
+            12,
+            24
+          ],
+          [
+            12,
+            31
+          ]
+        ]
+      ]
+    },
+    "stress_label": "Jahresend-Tage (Roll-Probe)",
+    "cross": [
+      {
+        "ticker": "PPLT",
+        "ok": true,
+        "perm_p": 0.004497751124437781,
+        "win_rate": 0.8235294117647058,
+        "expectancy": 0.045434449140493986,
+        "n_trades": 17,
+        "boot_lo": -0.09667254799126128,
+        "boot_hi": 0.8172231513135946
+      },
+      {
+        "ticker": "PA=F",
+        "ok": true,
+        "perm_p": 0.004497751124437781,
+        "win_rate": 0.9259259259259259,
+        "expectancy": 0.0660055041201857,
+        "n_trades": 27,
+        "boot_lo": 0.008309023563118023,
+        "boot_hi": 0.6304077756618743
+      }
+    ],
+    "suggested_verdict": "confirmed"
+  },
+  "0032": {
+    "name": "Mais WASDE-Kern",
+    "ticker": "ZC=F",
+    "window": [
+      [
+        12,
+        8
+      ],
+      [
+        12,
+        18
+      ]
+    ],
+    "full": {
+      "sharpe": 0.4390805251320953,
+      "cagr": 0.03956976817200242,
+      "max_dd": -0.05168967134569791,
+      "expectancy": 0.04014276266390461,
+      "win_rate": 0.9230769230769231,
+      "n_trades": 26,
+      "perm_p": 0.0004997501249375312,
+      "boot_lo": 0.05365335422089688,
+      "boot_hi": 0.7539627255689105,
+      "dsr": 0.0,
+      "is_sharpe": 0.6694033950498954,
+      "oos_sharpe": 0.16279378347816595,
+      "split": "2013-01-01"
+    },
+    "stress": {
+      "base": {
+        "expectancy": 0.04014276266390461,
+        "win_rate": 0.9230769230769231,
+        "n_trades": 26,
+        "sharpe": 0.4390805251320953,
+        "perm_p": 0.0004997501249375312
+      },
+      "roll_excluded": {
+        "expectancy": 0.006317404881464143,
+        "win_rate": 0.6304347826086957,
+        "n_trades": 46,
+        "sharpe": -0.3709639719624709,
+        "perm_p": 0.15292353823088456
+      },
+      "share_on_roll_days": 0.7792251536855876,
+      "n_roll_days_held": 106,
+      "roll_zones": [
+        [
+          [
+            12,
+            11
+          ],
+          [
+            12,
+            16
+          ]
+        ]
+      ]
+    },
+    "stress_label": "WASDE-Cluster 11.-16.12.",
+    "cross": [
+      {
+        "ticker": "ZW=F",
+        "ok": true,
+        "perm_p": 0.009995002498750625,
+        "win_rate": 0.7307692307692307,
+        "expectancy": 0.027493706561803524,
+        "n_trades": 26,
+        "boot_lo": -0.2538589597626195,
+        "boot_hi": 0.5249181372041127
+      }
+    ],
+    "suggested_verdict": "rejected"
+  },
+  "0035": {
+    "name": "Baumwolle Jahresende",
+    "ticker": "CT=F",
+    "window": [
+      [
+        11,
+        21
+      ],
+      [
+        12,
+        29
+      ]
+    ],
+    "full": {
+      "sharpe": 0.403679473594922,
+      "cagr": 0.055299230871507676,
+      "max_dd": -0.15898290065434117,
+      "expectancy": 0.05839642171934823,
+      "win_rate": 0.7692307692307693,
+      "n_trades": 26,
+      "perm_p": 0.0009995002498750624,
+      "boot_lo": 0.026194117470206113,
+      "boot_hi": 0.7695869572004649,
+      "dsr": 0.0,
+      "is_sharpe": 0.5185435024034561,
+      "oos_sharpe": 0.2523113673456852,
+      "split": "2013-01-01"
+    },
+    "stress": {
+      "base": {
+        "expectancy": 0.05839642171934823,
+        "win_rate": 0.7692307692307693,
+        "n_trades": 26,
+        "sharpe": 0.403679473594922,
+        "perm_p": 0.0009995002498750624
+      },
+      "roll_excluded": {
+        "expectancy": 0.024613481766894076,
+        "win_rate": 0.6938775510204082,
+        "n_trades": 49,
+        "sharpe": 0.31628195152719935,
+        "perm_p": 0.0034982508745627187
+      },
+      "share_on_roll_days": 0.2820799552834484,
+      "n_roll_days_held": 116,
+      "roll_zones": [
+        [
+          [
+            11,
+            23
+          ],
+          [
+            11,
+            30
+          ]
+        ]
+      ]
+    },
+    "stress_label": "Dez-Kontrakt-Roll Ende Nov",
+    "cross": [],
+    "suggested_verdict": "confirmed"
+  },
+  "0031": {
+    "name": "Palladium Jahreswechsel",
+    "ticker": "PA=F",
+    "window": [
+      [
+        12,
+        6
+      ],
+      [
+        1,
+        25
+      ]
+    ],
+    "full": {
+      "sharpe": 0.42138103392828175,
+      "cagr": 0.08704322889603278,
+      "max_dd": -0.27766861139720744,
+      "expectancy": 0.09017013417597175,
+      "win_rate": 0.6666666666666666,
+      "n_trades": 27,
+      "perm_p": 0.005497251374312844,
+      "boot_lo": 0.07886107788577407,
+      "boot_hi": 0.7351133756281446,
+      "dsr": 1.333366228693514e-148,
+      "is_sharpe": 0.5062024771656636,
+      "oos_sharpe": 0.331363915086009,
+      "split": "2013-01-01"
+    },
+    "stress": {
+      "base": {
+        "expectancy": 0.09017013417597175,
+        "win_rate": 0.6666666666666666,
+        "n_trades": 27,
+        "sharpe": 0.42138103392828175,
+        "perm_p": 0.005497251374312844
+      },
+      "roll_excluded": {
+        "expectancy": 0.030150443878923565,
+        "win_rate": 0.5490196078431373,
+        "n_trades": 51,
+        "sharpe": 0.3268608365857939,
+        "perm_p": 0.017491254372813594
+      },
+      "share_on_roll_days": 0.16795704110256696,
+      "n_roll_days_held": 112,
+      "roll_zones": [
+        [
+          [
+            12,
+            24
+          ],
+          [
+            12,
+            31
+          ]
+        ]
+      ]
+    },
+    "stress_label": "Jahresend-Roll-Zone",
+    "cross": [],
+    "suggested_verdict": "confirmed"
+  },
+  "0025": {
+    "name": "Zink Sommerfenster",
+    "ticker": "LME_ZINC",
+    "window": [
+      [
+        7,
+        4
+      ],
+      [
+        7,
+        30
+      ]
+    ],
+    "full": {
+      "sharpe": 0.21578483805023768,
+      "cagr": 0.03380126414898954,
+      "max_dd": -0.130187747035573,
+      "expectancy": 0.0371375718010839,
+      "win_rate": 0.6666666666666666,
+      "n_trades": 18,
+      "perm_p": 0.031484257871064465,
+      "boot_lo": -0.24683556759009767,
+      "boot_hi": 0.6427865008373274,
+      "dsr": 0.0,
+      "is_sharpe": 0.4180245208046211,
+      "oos_sharpe": -0.028067527350545143,
+      "split": "2017-01-01"
+    },
+    "stress": null,
+    "stress_label": "kein Roll (LME-Cash-Spot)",
+    "cross": [],
+    "suggested_verdict": "rejected"
+  }
+}

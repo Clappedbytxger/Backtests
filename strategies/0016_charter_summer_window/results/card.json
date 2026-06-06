@@ -1,0 +1,9 @@
+{
+  "id": "0016",
+  "label": "Charter Communications Sommerfenster 4.6.-22.7.",
+  "cagr": 0.07020279548389152,
+  "annual_volatility": 0.08573100961457472,
+  "sharpe": 0.6032045962680034,
+  "max_drawdown": -0.16290662631469455,
+  "is_strategy": true
+}

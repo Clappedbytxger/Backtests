@@ -1,0 +1,9 @@
+{
+  "id": "0023",
+  "label": "Gold Vorfest-Fenster Chinesisches Neujahr (-15d/+2d)",
+  "cagr": 0.02418308451225082,
+  "annual_volatility": 0.041013952323001035,
+  "sharpe": 0.12013301886259885,
+  "max_drawdown": -0.06813920143490393,
+  "is_strategy": true
+}

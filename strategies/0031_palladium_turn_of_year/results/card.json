@@ -1,0 +1,9 @@
+{
+  "id": "0031",
+  "label": "Palladium (Palladium-Future) Jahreswechsel 6.12.-25.1.",
+  "cagr": 0.08704322889603278,
+  "annual_volatility": 0.18804072872466446,
+  "sharpe": 0.42138103392828175,
+  "max_drawdown": -0.27766861139720744,
+  "is_strategy": true
+}

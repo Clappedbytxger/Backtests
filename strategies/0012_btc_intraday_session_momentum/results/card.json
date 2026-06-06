@@ -1,0 +1,10 @@
+{
+  "id": "0012",
+  "name": "BTC Intraday Session-Momentum",
+  "category": "momentum / intraday",
+  "oos_sharpe": -3.6545995417385906,
+  "oos_cagr": -0.5933788226892436,
+  "perm_p": 1.0,
+  "dsr": 0.0,
+  "n_trades": 1250
+}

@@ -1,0 +1,10 @@
+{
+  "id": "0013",
+  "name": "BTC Over-Extension Reversion",
+  "category": "mean-reversion / intraday",
+  "oos_sharpe": -2.7113694490635094,
+  "oos_cagr": -0.4857006371074899,
+  "perm_p": 0.9930034982508745,
+  "dsr": 0.0,
+  "n_trades": 803
+}

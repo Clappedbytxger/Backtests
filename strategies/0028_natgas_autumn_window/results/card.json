@@ -1,0 +1,9 @@
+{
+  "id": "0028",
+  "label": "Erdgas (Natural-Gas-Future) Herbstfenster 21.9.-1.11.",
+  "cagr": 0.1296217608518213,
+  "annual_volatility": 0.24600555525072357,
+  "sharpe": 0.5316837002556565,
+  "max_drawdown": -0.44057464889856524,
+  "is_strategy": true
+}

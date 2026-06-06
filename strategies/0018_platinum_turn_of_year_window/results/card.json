@@ -1,0 +1,9 @@
+{
+  "id": "0018",
+  "label": "Platin (Platin-Futures) Jahreswechsel-Fenster 18.12.-17.1.",
+  "cagr": 0.05677328864838116,
+  "annual_volatility": 0.08606080085759825,
+  "sharpe": 0.45481429640177434,
+  "max_drawdown": -0.17554806489587782,
+  "is_strategy": true
+}

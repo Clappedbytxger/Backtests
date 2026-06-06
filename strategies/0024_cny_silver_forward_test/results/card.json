@@ -1,0 +1,9 @@
+{
+  "id": "0024",
+  "label": "CNY-Fenster Forward auf Silber (SI=F, \u221215/+2)",
+  "cagr": 0.03420457724252701,
+  "annual_volatility": 0.07777066335093348,
+  "sharpe": 0.21677081855912023,
+  "max_drawdown": -0.1341294396549605,
+  "is_strategy": true
+}

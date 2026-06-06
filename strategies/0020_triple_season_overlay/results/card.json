@@ -1,0 +1,9 @@
+{
+  "id": "0020",
+  "label": "Benzin+Mastrind+Platin-Overlay auf S&P 500",
+  "cagr": 0.2931224884724395,
+  "annual_volatility": 0.23849927661004106,
+  "sharpe": 1.1126123130698755,
+  "max_drawdown": -0.3926915786729752,
+  "is_strategy": true
+}

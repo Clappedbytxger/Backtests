@@ -1,0 +1,9 @@
+{
+  "id": "0017",
+  "label": "Nasdaq, Inc. Sommerfenster 11.6.-1.9.",
+  "cagr": 0.04572914893738056,
+  "annual_volatility": 0.16707308275489893,
+  "sharpe": 0.2321465195592772,
+  "max_drawdown": -0.4034437363328698,
+  "is_strategy": true
+}

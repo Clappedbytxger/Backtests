@@ -1,0 +1,9 @@
+{
+  "id": "0025",
+  "label": "LME Zink (Cash-Settlement) Sommerfenster 4.7.-30.7.",
+  "cagr": 0.03380126414898954,
+  "annual_volatility": 0.07536460614819844,
+  "sharpe": 0.21578483805023768,
+  "max_drawdown": -0.130187747035573,
+  "is_strategy": true
+}

@@ -1,0 +1,159 @@
+{
+  "legs": [
+    {
+      "ticker": "RB=F",
+      "week": 9,
+      "name": "Benzin"
+    },
+    {
+      "ticker": "GF=F",
+      "week": 21,
+      "name": "Mastrind"
+    }
+  ],
+  "hold_days": 5,
+  "indices": {
+    "^GSPC": {
+      "name": "S&P 500",
+      "start": "2001-04-03",
+      "end": "2026-06-03",
+      "full": {
+        "overlay": {
+          "label": "S&P 500 + Dual-Overlay",
+          "cagr": 0.26218154715221154,
+          "sharpe": 1.0395558862258438,
+          "sortino": 1.549350590278462,
+          "annual_volatility": 0.22988818308039957,
+          "calmar": 0.5571437165487824,
+          "max_drawdown": -0.47058153823629356,
+          "total_return": 331.065650816998
+        },
+        "buy_hold": {
+          "label": "S&P 500 Buy & Hold",
+          "cagr": 0.08017970493033655,
+          "sharpe": 0.3957925160600517,
+          "sortino": 0.49856114146472746,
+          "annual_volatility": 0.19103971961922683,
+          "calmar": 0.14122264614660063,
+          "max_drawdown": -0.5677538774277283,
+          "total_return": 5.841332197720153
+        }
+      },
+      "forward": {
+        "overlay": {
+          "label": "S&P 500 + Overlay (Forward)",
+          "cagr": 0.3617470249297736,
+          "sharpe": 1.3585363752649497,
+          "sortino": 2.0640484803396797,
+          "annual_volatility": 0.23207413060806487,
+          "calmar": 1.061839763713754,
+          "max_drawdown": -0.34067948601262943,
+          "total_return": 23.572668473975593
+        },
+        "buy_hold": {
+          "label": "S&P 500 B&H (Forward)",
+          "cagr": 0.13458510015633895,
+          "sharpe": 0.6822870835006793,
+          "sortino": 0.826334125850403,
+          "annual_volatility": 0.1798660480742627,
+          "calmar": 0.3967141011980943,
+          "max_drawdown": -0.3392496000265328,
+          "total_return": 2.7034650592727187
+        }
+      },
+      "leg_trades": {
+        "RB=F": {
+          "n_trades": 25,
+          "win_rate": 0.96,
+          "profit_factor": 71.77807435978221,
+          "payoff_ratio": 2.990753098324259,
+          "expectancy": 0.12369693757135092,
+          "avg_holding_days": 5.0,
+          "avg_win": 0.13067146946320177,
+          "avg_loss": 0.043691827833069186
+        },
+        "GF=F": {
+          "n_trades": 26,
+          "win_rate": 0.9615384615384616,
+          "profit_factor": 21.073000747204183,
+          "payoff_ratio": 0.8429200298881673,
+          "expectancy": 0.04089286965927649,
+          "avg_holding_days": 5.0,
+          "avg_win": 0.04464728034872876,
+          "avg_loss": 0.05296739757703023
+        }
+      }
+    },
+    "^GDAXI": {
+      "name": "DAX",
+      "start": "2001-04-03",
+      "end": "2026-06-03",
+      "full": {
+        "overlay": {
+          "label": "DAX + Dual-Overlay",
+          "cagr": 0.2449945264802027,
+          "sharpe": 0.8959338794159625,
+          "sortino": 1.3547180191439343,
+          "annual_volatility": 0.2594766053752352,
+          "calmar": 0.4374626937569858,
+          "max_drawdown": -0.560035244093978,
+          "total_return": 215.6488887164969
+        },
+        "buy_hold": {
+          "label": "DAX Buy & Hold",
+          "cagr": 0.06285976844423136,
+          "sharpe": 0.2950589013248838,
+          "sortino": 0.39244307621563956,
+          "annual_volatility": 0.22648725806057,
+          "calmar": 0.09683415350071657,
+          "max_drawdown": -0.6491487370080247,
+          "total_return": 3.4649533133464843
+        }
+      },
+      "forward": {
+        "overlay": {
+          "label": "DAX + Overlay (Forward)",
+          "cagr": 0.31480971766358,
+          "sharpe": 1.1798534771397318,
+          "sortino": 1.8814223559463978,
+          "annual_volatility": 0.23878999362160933,
+          "calmar": 0.8825797224418632,
+          "max_drawdown": -0.35669266997499705,
+          "total_return": 15.265581946427655
+        },
+        "buy_hold": {
+          "label": "DAX B&H (Forward)",
+          "cagr": 0.08554162005477584,
+          "sharpe": 0.4250838721412903,
+          "sortino": 0.5416605691409759,
+          "annual_volatility": 0.18845085908940248,
+          "calmar": 0.22058526661518113,
+          "max_drawdown": -0.38779389651624485,
+          "total_return": 1.3080998709007878
+        }
+      },
+      "leg_trades": {
+        "RB=F": {
+          "n_trades": 25,
+          "win_rate": 0.96,
+          "profit_factor": 71.77807435978221,
+          "payoff_ratio": 2.990753098324259,
+          "expectancy": 0.12369693757135092,
+          "avg_holding_days": 5.0,
+          "avg_win": 0.13067146946320177,
+          "avg_loss": 0.043691827833069186
+        },
+        "GF=F": {
+          "n_trades": 26,
+          "win_rate": 0.9615384615384616,
+          "profit_factor": 21.958867065871644,
+          "payoff_ratio": 0.8783546826348657,
+          "expectancy": 0.042697563255467245,
+          "avg_holding_days": 5.0,
+          "avg_win": 0.04652416168876714,
+          "avg_loss": 0.05296739757703023
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "id": "0009",
+  "label": "Mastrind Saison KW21 (Forward-Test)",
+  "cagr": 0.054639285473268684,
+  "annual_volatility": 0.06814251734697681,
+  "sharpe": 0.5225205226388074,
+  "max_drawdown": -0.06019089305007064,
+  "is_strategy": true
+}

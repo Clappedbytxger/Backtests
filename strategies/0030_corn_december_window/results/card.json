@@ -1,0 +1,9 @@
+{
+  "id": "0030",
+  "label": "Mais (Corn-Future) Dezemberfenster 1.-31.12.",
+  "cagr": 0.050585103276193255,
+  "annual_volatility": 0.06767606775741729,
+  "sharpe": 0.47020296072832074,
+  "max_drawdown": -0.11839755615816872,
+  "is_strategy": true
+}

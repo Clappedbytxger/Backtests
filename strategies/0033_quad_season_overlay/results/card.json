@@ -1,0 +1,9 @@
+{
+  "id": "0033",
+  "label": "Quad-Saison-Overlay (Benzin+Mastrind+Mais+Platin) auf S&P 500",
+  "cagr": 0.3302306569979685,
+  "annual_volatility": 0.24023978098302623,
+  "sharpe": 1.224140862433343,
+  "max_drawdown": -0.3926915786729753,
+  "is_strategy": true
+}

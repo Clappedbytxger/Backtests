@@ -1,0 +1,406 @@
+{
+  "Sojabohnen Ernte-Tief": {
+    "candidate": {
+      "name": "Sojabohnen Ernte-Tief",
+      "ticker": "ZS=F",
+      "month": "Okt",
+      "kind": "date",
+      "start_md": [
+        10,
+        1
+      ],
+      "end_md": [
+        10,
+        21
+      ],
+      "roll_zones": [],
+      "oos_tickers": [
+        "ZM=F",
+        "ZL=F"
+      ],
+      "macro": "US-Sojaernte-Druck bodet Anfang Okt, dann SA-Pflanzwetter-Pr\u00e4mie."
+    },
+    "full": {
+      "sharpe": -0.13226129118042249,
+      "cagr": 0.01027688751900313,
+      "expectancy": 0.012176688821695977,
+      "win_rate": 0.6153846153846154,
+      "n_trades": 26,
+      "perm_p": 0.26036981509245377,
+      "boot_lo": -0.5010206671929298,
+      "boot_hi": 0.26557930099295646,
+      "dsr": 0.0,
+      "is_sharpe": -0.09705796202614914,
+      "oos_sharpe": -0.21254382884890294
+    },
+    "stress": null,
+    "cross": [
+      {
+        "ticker": "ZM=F",
+        "ok": true,
+        "perm_p": 0.020989505247376312,
+        "win_rate": 0.7307692307692307,
+        "n_trades": 26
+      },
+      {
+        "ticker": "ZL=F",
+        "ok": true,
+        "perm_p": 0.10394802598700649,
+        "win_rate": 0.7692307692307693,
+        "n_trades": 26
+      }
+    ],
+    "verdict": "reject"
+  },
+  "Weizen Herbst-Export": {
+    "candidate": {
+      "name": "Weizen Herbst-Export",
+      "ticker": "ZW=F",
+      "month": "Sep",
+      "kind": "date",
+      "start_md": [
+        9,
+        1
+      ],
+      "end_md": [
+        9,
+        25
+      ],
+      "roll_zones": [],
+      "oos_tickers": [
+        "KE=F"
+      ],
+      "macro": "Nordhalbkugel-Aussaat + Export-Nachfrage festigen Weizen im Sep."
+    },
+    "full": {
+      "sharpe": 0.12063704785411444,
+      "cagr": 0.026723630565355316,
+      "expectancy": 0.0281603908185422,
+      "win_rate": 0.7307692307692307,
+      "n_trades": 26,
+      "perm_p": 0.06946526736631684,
+      "boot_lo": -0.2621024786873781,
+      "boot_hi": 0.48087757980725004,
+      "dsr": 0.0,
+      "is_sharpe": 0.031276480890721284,
+      "oos_sharpe": 0.22292374539591808
+    },
+    "stress": null,
+    "cross": [
+      {
+        "ticker": "KE=F",
+        "ok": true,
+        "perm_p": 0.034482758620689655,
+        "win_rate": 0.6923076923076923,
+        "n_trades": 26
+      }
+    ],
+    "verdict": "reject"
+  },
+  "Heiz\u00f6l Vorwinter": {
+    "candidate": {
+      "name": "Heiz\u00f6l Vorwinter",
+      "ticker": "HO=F",
+      "month": "Sep/Okt",
+      "kind": "date",
+      "start_md": [
+        9,
+        5
+      ],
+      "end_md": [
+        10,
+        20
+      ],
+      "roll_zones": [
+        [
+          [
+            9,
+            24
+          ],
+          [
+            9,
+            30
+          ]
+        ],
+        [
+          [
+            10,
+            24
+          ],
+          [
+            10,
+            31
+          ]
+        ]
+      ],
+      "oos_tickers": [],
+      "macro": "Destillat-Bevorratung vor der Heizsaison treibt Heiz\u00f6l im Herbst."
+    },
+    "full": {
+      "sharpe": -0.05787178155834934,
+      "cagr": 0.004856274917950376,
+      "expectancy": 0.01243854587082511,
+      "win_rate": 0.5769230769230769,
+      "n_trades": 26,
+      "perm_p": 0.559720139930035,
+      "boot_lo": -0.443189709861099,
+      "boot_hi": 0.33619869285728887,
+      "dsr": 0.0,
+      "is_sharpe": -0.10453165899644386,
+      "oos_sharpe": -0.0038694993257016507
+    },
+    "stress": {
+      "base": {
+        "expectancy": 0.01243854587082511,
+        "win_rate": 0.5769230769230769,
+        "n_trades": 26,
+        "sharpe": -0.05787178155834934,
+        "perm_p": 0.559720139930035
+      },
+      "roll_excluded": {
+        "expectancy": -0.0029769212887701957,
+        "win_rate": 0.5576923076923077,
+        "n_trades": 52,
+        "sharpe": -0.21940041581339975,
+        "perm_p": 0.8220889555222389
+      },
+      "share_on_roll_days": 1.1595037644620587,
+      "n_roll_days_held": 130,
+      "roll_zones": [
+        [
+          [
+            9,
+            24
+          ],
+          [
+            9,
+            30
+          ]
+        ],
+        [
+          [
+            10,
+            24
+          ],
+          [
+            10,
+            31
+          ]
+        ]
+      ]
+    },
+    "cross": [],
+    "verdict": "reject"
+  },
+  "Benzin April-Fortsetzung": {
+    "candidate": {
+      "name": "Benzin April-Fortsetzung",
+      "ticker": "RB=F",
+      "month": "Apr",
+      "kind": "date",
+      "start_md": [
+        3,
+        20
+      ],
+      "end_md": [
+        4,
+        18
+      ],
+      "roll_zones": [
+        [
+          [
+            3,
+            26
+          ],
+          [
+            3,
+            31
+          ]
+        ],
+        [
+          [
+            4,
+            24
+          ],
+          [
+            4,
+            30
+          ]
+        ]
+      ],
+      "oos_tickers": [],
+      "macro": "Driving-Season-Aufbau setzt sich nach dem KW9-Kick (0006) fort."
+    },
+    "full": {
+      "sharpe": 0.1741818484269716,
+      "cagr": 0.03460446690845065,
+      "expectancy": 0.037282982370440726,
+      "win_rate": 0.5769230769230769,
+      "n_trades": 26,
+      "perm_p": 0.10744627686156921,
+      "boot_lo": -0.2131847078603781,
+      "boot_hi": 0.5887520661683513,
+      "dsr": 0.0,
+      "is_sharpe": 0.36199620140230804,
+      "oos_sharpe": 0.07605512454874952
+    },
+    "stress": {
+      "base": {
+        "expectancy": 0.037282982370440726,
+        "win_rate": 0.5769230769230769,
+        "n_trades": 26,
+        "sharpe": 0.1741818484269716,
+        "perm_p": 0.10744627686156921
+      },
+      "roll_excluded": {
+        "expectancy": 0.019097959361569626,
+        "win_rate": 0.6346153846153846,
+        "n_trades": 52,
+        "sharpe": 0.17916417311734664,
+        "perm_p": 0.08895552223888056
+      },
+      "share_on_roll_days": 0.391422434833166,
+      "n_roll_days_held": 106,
+      "roll_zones": [
+        [
+          [
+            3,
+            26
+          ],
+          [
+            3,
+            31
+          ]
+        ],
+        [
+          [
+            4,
+            24
+          ],
+          [
+            4,
+            30
+          ]
+        ]
+      ]
+    },
+    "cross": [],
+    "verdict": "reject"
+  },
+  "Mageres Schwein Grill": {
+    "candidate": {
+      "name": "Mageres Schwein Grill",
+      "ticker": "HE=F",
+      "month": "Jun",
+      "kind": "date",
+      "start_md": [
+        6,
+        1
+      ],
+      "end_md": [
+        6,
+        25
+      ],
+      "roll_zones": [],
+      "oos_tickers": [
+        "LE=F"
+      ],
+      "macro": "Sommer-Grillnachfrage st\u00fctzt Schweine vor dem Juli-Hoch."
+    },
+    "full": {
+      "sharpe": -0.26784527633761335,
+      "cagr": -0.001722165705581924,
+      "expectancy": 0.0013941965790682563,
+      "win_rate": 0.5769230769230769,
+      "n_trades": 26,
+      "perm_p": 0.767616191904048,
+      "boot_lo": -0.6628683053951521,
+      "boot_hi": 0.12771285560069687,
+      "dsr": 0.0,
+      "is_sharpe": -0.4019977629020665,
+      "oos_sharpe": -0.19031852364779617
+    },
+    "stress": null,
+    "cross": [
+      {
+        "ticker": "LE=F",
+        "ok": true,
+        "perm_p": 0.3503248375812094,
+        "win_rate": 0.6153846153846154,
+        "n_trades": 26
+      }
+    ],
+    "verdict": "reject"
+  },
+  "Kupfer Sommerflaute (kontra)": {
+    "candidate": {
+      "name": "Kupfer Sommerflaute (kontra)",
+      "ticker": "LME_COPPER",
+      "month": "Aug",
+      "kind": "date",
+      "start_md": [
+        8,
+        1
+      ],
+      "end_md": [
+        8,
+        25
+      ],
+      "roll_zones": [],
+      "oos_tickers": [],
+      "macro": "China-Restocking nach Sommerflaute; LME-Cash (kein Roll)."
+    },
+    "full": {
+      "sharpe": -0.3986662064063955,
+      "cagr": -0.004994067180574935,
+      "expectancy": -0.004147991690963397,
+      "win_rate": 0.5,
+      "n_trades": 18,
+      "perm_p": 0.768615692153923,
+      "boot_lo": -0.8526516186578008,
+      "boot_hi": 0.05592724225728625,
+      "dsr": 0.0,
+      "is_sharpe": -0.5394458105822659,
+      "oos_sharpe": -0.2319502179149655
+    },
+    "stress": null,
+    "cross": [],
+    "verdict": "reject"
+  },
+  "Broadridge Sommerfenster": {
+    "candidate": {
+      "name": "Broadridge Sommerfenster",
+      "ticker": "BR",
+      "month": "Jun/Jul",
+      "kind": "date",
+      "start_md": [
+        6,
+        5
+      ],
+      "end_md": [
+        7,
+        25
+      ],
+      "cost": "CostModel(commission_per_share=0.0035, min_commission=0.35, max_commission_pct=0.01, slippage_bps=3.0, regulatory_bps=0.2)",
+      "roll_zones": [],
+      "oos_tickers": [],
+      "macro": "Seasonax-Lead (US11133T1034). FY-Ende 30.6. + Pre-Earnings-Drift (Q4-Report Anfang Aug) \u2014 d\u00fcnne Story; driftstarke Einzelaktie."
+    },
+    "full": {
+      "sharpe": 0.2516182282813519,
+      "cagr": 0.03604999429423805,
+      "expectancy": 0.03812511695205016,
+      "win_rate": 0.7368421052631579,
+      "n_trades": 19,
+      "perm_p": 0.1374312843578211,
+      "boot_lo": -0.21114818683521527,
+      "boot_hi": 0.6848762007947444,
+      "dsr": 0.0,
+      "is_sharpe": -0.04855990999307502,
+      "oos_sharpe": 0.561937588560505
+    },
+    "stress": null,
+    "cross": [],
+    "verdict": "reject"
+  }
+}

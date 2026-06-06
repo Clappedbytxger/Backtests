@@ -1,0 +1,9 @@
+{
+  "id": "0008",
+  "label": "Breiter Futures-Saison-Screen (16 Rohstoffe)",
+  "cagr": 0.006097720518953409,
+  "annual_volatility": 0.011621189716145074,
+  "sharpe": -1.1751524085490443,
+  "max_drawdown": -0.022431890306641167,
+  "is_strategy": true
+}

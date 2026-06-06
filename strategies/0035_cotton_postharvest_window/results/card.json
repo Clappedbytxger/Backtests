@@ -1,0 +1,9 @@
+{
+  "id": "0035",
+  "label": "Baumwolle (Cotton-Future) Fenster 21.11.-29.12.",
+  "cagr": 0.055299230871507676,
+  "annual_volatility": 0.0954122083000934,
+  "sharpe": 0.403679473594922,
+  "max_drawdown": -0.15898290065434117,
+  "is_strategy": true
+}

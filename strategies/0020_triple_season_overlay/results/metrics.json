@@ -1,0 +1,194 @@
+{
+  "legs": [
+    {
+      "ticker": "RB=F",
+      "kind": "week",
+      "week": 9,
+      "name": "Benzin"
+    },
+    {
+      "ticker": "GF=F",
+      "kind": "week",
+      "week": 21,
+      "name": "Mastrind"
+    },
+    {
+      "ticker": "PL=F",
+      "kind": "date",
+      "start_md": [
+        12,
+        18
+      ],
+      "end_md": [
+        1,
+        10
+      ],
+      "name": "Platin"
+    }
+  ],
+  "hold_days": 5,
+  "indices": {
+    "^GSPC": {
+      "name": "S&P 500",
+      "start": "2001-04-03",
+      "end": "2026-06-03",
+      "full": {
+        "overlay": {
+          "label": "S&P 500 + Triple-Overlay",
+          "cagr": 0.2931224884724395,
+          "sharpe": 1.1126123130698755,
+          "sortino": 1.5921057784522732,
+          "annual_volatility": 0.23849927661004106,
+          "calmar": 0.7464445493407063,
+          "max_drawdown": -0.3926915786729752,
+          "total_return": 301.60871661425114
+        },
+        "buy_hold": {
+          "label": "S&P 500 Buy & Hold",
+          "cagr": 0.09038867094313674,
+          "sharpe": 0.4457961220332032,
+          "sortino": 0.556874787073556,
+          "annual_volatility": 0.19054564945348698,
+          "calmar": 0.18192926033503706,
+          "max_drawdown": -0.4968341583793552,
+          "total_return": 5.841332197720153
+        }
+      },
+      "forward": {
+        "overlay": {
+          "label": "S&P 500 + Overlay (Forward)",
+          "cagr": 0.39965686192143,
+          "sharpe": 1.381458377565985,
+          "sortino": 1.9814509690446827,
+          "annual_volatility": 0.2515880076358771,
+          "calmar": 1.1731168982291305,
+          "max_drawdown": -0.3406794860126292,
+          "total_return": 31.57960320685639
+        },
+        "buy_hold": {
+          "label": "S&P 500 B&H (Forward)",
+          "cagr": 0.1346948417290703,
+          "sharpe": 0.6825324266379564,
+          "sortino": 0.8262241587397962,
+          "annual_volatility": 0.17997111010305636,
+          "calmar": 0.3970375844762552,
+          "max_drawdown": -0.3392496000265328,
+          "total_return": 2.7034650592727187
+        }
+      },
+      "leg_trades": {
+        "RB=F": {
+          "n_trades": 22,
+          "win_rate": 0.9545454545454546,
+          "profit_factor": 57.368720561389914,
+          "payoff_ratio": 2.731843836256662,
+          "expectancy": 0.1119478379063016,
+          "avg_holding_days": 5.0,
+          "avg_win": 0.11935925056055734,
+          "avg_loss": 0.043691827833069186
+        },
+        "GF=F": {
+          "n_trades": 22,
+          "win_rate": 0.9090909090909091,
+          "profit_factor": 16.777598303306902,
+          "payoff_ratio": 1.6777598303306904,
+          "expectancy": 0.041150085870485305,
+          "avg_holding_days": 5.0,
+          "avg_win": 0.048134041529664995,
+          "avg_loss": 0.02868947072131156
+        },
+        "PL=F": {
+          "n_trades": 25,
+          "win_rate": 0.88,
+          "profit_factor": 18.05861234040032,
+          "payoff_ratio": 2.4625380464182256,
+          "expectancy": 0.04537640628002549,
+          "avg_holding_days": 13.96,
+          "avg_win": 0.054586858456268116,
+          "avg_loss": 0.022166909679086983
+        }
+      }
+    },
+    "^GDAXI": {
+      "name": "DAX",
+      "start": "2001-04-03",
+      "end": "2026-06-03",
+      "full": {
+        "overlay": {
+          "label": "DAX + Triple-Overlay",
+          "cagr": 0.27533364257035187,
+          "sharpe": 0.9660109531946663,
+          "sortino": 1.4302266721432773,
+          "annual_volatility": 0.2680179787817869,
+          "calmar": 0.45644932806188276,
+          "max_drawdown": -0.6032074660717295,
+          "total_return": 202.72953015947562
+        },
+        "buy_hold": {
+          "label": "DAX Buy & Hold",
+          "cagr": 0.07084050283892807,
+          "sharpe": 0.3258614564371678,
+          "sortino": 0.4286934267029624,
+          "annual_volatility": 0.2319583266238094,
+          "calmar": 0.10912830727428859,
+          "max_drawdown": -0.6491487370080247,
+          "total_return": 3.4649533133464905
+        }
+      },
+      "forward": {
+        "overlay": {
+          "label": "DAX + Overlay (Forward)",
+          "cagr": 0.3590752236231942,
+          "sharpe": 1.2634434905385918,
+          "sortino": 1.9980158082954933,
+          "annual_volatility": 0.25171449200774226,
+          "calmar": 1.0066795699736806,
+          "max_drawdown": -0.35669266997499727,
+          "total_return": 21.73825734983184
+        },
+        "buy_hold": {
+          "label": "DAX B&H (Forward)",
+          "cagr": 0.08561106906224691,
+          "sharpe": 0.42532629481980305,
+          "sortino": 0.5420401740372838,
+          "annual_volatility": 0.18852842084727173,
+          "calmar": 0.22076435403273723,
+          "max_drawdown": -0.38779389651624474,
+          "total_return": 1.3080998709007878
+        }
+      },
+      "leg_trades": {
+        "RB=F": {
+          "n_trades": 22,
+          "win_rate": 0.9545454545454546,
+          "profit_factor": 57.368720561389914,
+          "payoff_ratio": 2.731843836256662,
+          "expectancy": 0.1119478379063016,
+          "avg_holding_days": 5.0,
+          "avg_win": 0.11935925056055734,
+          "avg_loss": 0.043691827833069186
+        },
+        "GF=F": {
+          "n_trades": 22,
+          "win_rate": 0.9090909090909091,
+          "profit_factor": 17.595355346592196,
+          "payoff_ratio": 1.7595355346592196,
+          "expectancy": 0.043282905575074374,
+          "avg_holding_days": 5.0,
+          "avg_win": 0.05048014320471297,
+          "avg_loss": 0.02868947072131156
+        },
+        "PL=F": {
+          "n_trades": 25,
+          "win_rate": 0.88,
+          "profit_factor": 18.058612340400444,
+          "payoff_ratio": 2.462538046418242,
+          "expectancy": 0.04537640628002552,
+          "avg_holding_days": 12.44,
+          "avg_win": 0.05458685845626812,
+          "avg_loss": 0.022166909679086837
+        }
+      }
+    }
+  }
+}

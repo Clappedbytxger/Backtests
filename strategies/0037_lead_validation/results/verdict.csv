@@ -1,0 +1,6 @@
+id,name,ticker,perm_p,stress_perm_p,boot_lo,dsr,is_sharpe,oos_sharpe,suggested_verdict
+0018,Platin Jahreswechsel,PL=F,0.003,0.01,-0.03,0.0,0.47,0.33,confirmed
+0032,Mais WASDE-Kern,ZC=F,0.0,0.153,0.05,0.0,0.67,0.16,rejected
+0035,Baumwolle Jahresende,CT=F,0.001,0.003,0.03,0.0,0.52,0.25,confirmed
+0031,Palladium Jahreswechsel,PA=F,0.005,0.017,0.08,0.0,0.51,0.33,confirmed
+0025,Zink Sommerfenster,LME_ZINC,0.031,,-0.25,0.0,0.42,-0.03,rejected

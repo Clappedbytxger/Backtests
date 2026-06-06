@@ -1,0 +1,9 @@
+{
+  "id": "0027",
+  "label": "Kaffee (Arabica-Future) Frostfenster 15.7.-28.8.",
+  "cagr": 0.024788034918221902,
+  "annual_volatility": 0.13018105295512236,
+  "sharpe": 0.10058520433147564,
+  "max_drawdown": -0.43145169104086134,
+  "is_strategy": true
+}

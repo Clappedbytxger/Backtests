@@ -1,0 +1,9 @@
+{
+  "id": "0022",
+  "label": "Gold (Gold-Futures) Oster-Fenster -8d/+2d",
+  "cagr": 0.008014325902751196,
+  "annual_volatility": 0.03202186464386699,
+  "sharpe": -0.35309632770846494,
+  "max_drawdown": -0.08462920990928124,
+  "is_strategy": true
+}

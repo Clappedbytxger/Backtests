@@ -1,0 +1,90 @@
+{
+  "locked_combo": {
+    "vol_mult": 3.0,
+    "hold_h": 12,
+    "vol_window_h": 168,
+    "k_sigma": 1.5
+  },
+  "cost_round_trip_bps": {
+    "base": 16.0,
+    "stress": 24.000000000000004
+  },
+  "is_sharpe": -0.8493386567919323,
+  "n_trials": 9,
+  "oos_net": {
+    "total_return": -0.5217965672714594,
+    "cagr": -0.1937923676689386,
+    "annual_volatility": 0.3250308371505098,
+    "sharpe": -0.5589697082196251,
+    "sortino": -0.6950635952992728,
+    "calmar": -0.2930296008708857,
+    "max_drawdown": -0.661340585022764,
+    "max_drawdown_duration_days": 779,
+    "n_periods": 1250
+  },
+  "oos_gross": {
+    "total_return": 0.8234851719986451,
+    "cagr": 0.19174531403103945,
+    "annual_volatility": 0.3207002892447703,
+    "sharpe": 0.646979873473807,
+    "sortino": 0.8320777769279434,
+    "calmar": 0.4548121327079947,
+    "max_drawdown": -0.4215923460294905,
+    "max_drawdown_duration_days": 778,
+    "n_periods": 1250
+  },
+  "oos_cost_stress": {
+    "total_return": -0.7552433623935371,
+    "cagr": -0.33700467252784105,
+    "annual_volatility": 0.3277756204205472,
+    "sharpe": -1.1473218367751497,
+    "sortino": -1.4120895695911722,
+    "calmar": -0.41664904671798586,
+    "max_drawdown": -0.8088454184222504,
+    "max_drawdown_duration_days": 1178,
+    "n_periods": 1250
+  },
+  "buy_hold": {
+    "total_return": 2.9503638003663064,
+    "cagr": 0.49354403310170625,
+    "annual_volatility": 0.4710122580076174,
+    "sharpe": 1.0439553784688043,
+    "sortino": 1.608253644847468,
+    "calmar": 0.9963691303550235,
+    "max_drawdown": -0.4953425573570791,
+    "max_drawdown_duration_days": 240,
+    "n_periods": 1250
+  },
+  "trade_stats": {
+    "n_trades": 836,
+    "win_rate": 0.423444976076555,
+    "profit_factor": 0.9092508299986142,
+    "payoff_ratio": 1.2380194916930285,
+    "expectancy": -0.0006844523870880729,
+    "avg_holding_days": 10.958133971291867,
+    "avg_win": 0.016195236798119142,
+    "avg_loss": 0.01308156851066349
+  },
+  "permutation": {
+    "observed": -0.46237083940868046,
+    "p_value": 0.5317341329335332,
+    "null_mean": -0.4554128360498094,
+    "null_std": 0.09412313948928444,
+    "n_perm": 2000,
+    "metric": "sharpe"
+  },
+  "bootstrap": {
+    "statistic": "sharpe",
+    "point": -0.4846049209583698,
+    "ci_low": -1.3815896591625736,
+    "ci_high": 0.4592654442499724,
+    "alpha": 0.05
+  },
+  "deflated_sharpe": {
+    "observed_sharpe": -0.026068745076382002,
+    "expected_max_sharpe_under_null": 1.520778190702004,
+    "n_trials": 9,
+    "psr_deflated": 0.0
+  },
+  "oos_grid_positive": "0/9"
+}

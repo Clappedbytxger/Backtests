@@ -66,6 +66,21 @@ IBKR_LIQUID_ETF = CostModel(slippage_bps=2.0)
 IBKR_DEFAULT = CostModel()
 IBKR_ILLIQUID = CostModel(slippage_bps=10.0)
 
+# Bitget USDT-M perpetual futures (e.g. BTC/USDT). Bitget standard fees are
+# maker 0.02% / taker 0.06%. A systematic hourly strategy crosses the spread with
+# market orders (taker) on both entry and exit, so the binding commission is
+# 6 bps/side, booked here as ``regulatory_bps``. BTC/USDT perp is one of the most
+# liquid instruments on earth (top-of-book spread ~1 bp), so 2 bps/side is a
+# conservative slippage pad. Total = 8 bps/side, 16 bps round-trip.
+# NOTE: funding (charged every 8h) is NOT in this model — strategies that hold
+# across funding windows must treat it as an extra, regime-dependent cost.
+BITGET_PERP_TAKER = CostModel(
+    commission_per_share=0.0,
+    min_commission=0.0,
+    slippage_bps=2.0,    # half-spread + impact on BTC/USDT perp
+    regulatory_bps=6.0,  # Bitget taker fee 0.06%
+)
+
 # Liquid futures (e.g. CL, NG, GC, ZC): IBKR commission is per *contract* and
 # tiny relative to notional, so it is folded into a few bps rather than a
 # per-share charge. Slippage (half-spread + impact) dominates the round-trip
@@ -75,5 +90,35 @@ IBKR_FUTURES = CostModel(
     commission_per_share=0.0,
     min_commission=0.0,
     slippage_bps=2.0,
+    regulatory_bps=0.5,
+)
+
+# Micro index futures, intraday round-trips (prop-account context).
+# These contracts are the cheapest liquid markets per unit of notional because
+# the notional is large and the tick is tiny — the exact opposite of the BTC
+# perps (16 bps RT) where the intraday tests 0012-0015 died on cost.
+#
+# Micro E-mini S&P 500 (MES): $5 x index. At ES=5000 -> $25,000 notional.
+#   - IBKR commission ~ $0.62/side (commission + exchange + regulatory).
+#   - Spread is typically 1 tick = 0.25 pt = $1.25; a market order pays ~half a
+#     tick of effective spread + impact per side.
+#   - $0.62 comm + ~$0.90 slippage = ~$1.5/side on $25k = ~0.6 bps/side.
+# We DELIBERATELY pad this to 1.5 bps/side (3 bps round-trip) so the gross edge
+# must clear costs with the safety margin the prop framework demands. The open
+# auction can slip more than mid-session, so the pad is intentional.
+MES_INTRADAY = CostModel(
+    commission_per_share=0.0,
+    min_commission=0.0,
+    slippage_bps=1.0,    # ~half-tick + opening-auction impact, padded
+    regulatory_bps=0.5,  # commission + exchange/regulatory folded into bps
+)
+
+# Micro E-mini Nasdaq-100 (MNQ): $2 x index. At NQ=18000 -> $36,000 notional.
+# Even cheaper per notional than MES (larger notional, same $0.62 commission,
+# 0.25-pt tick = $0.50). Same conservative 1.5 bps/side pad applied.
+MNQ_INTRADAY = CostModel(
+    commission_per_share=0.0,
+    min_commission=0.0,
+    slippage_bps=1.0,
     regulatory_bps=0.5,
 )

@@ -1,0 +1,10 @@
+{
+  "id": "0014",
+  "name": "BTC Volume-Confirmed Impulse Continuation",
+  "category": "momentum / orderflow / intraday",
+  "oos_sharpe": -0.5589697082196251,
+  "oos_cagr": -0.1937923676689386,
+  "perm_p": 0.5317341329335332,
+  "dsr": 0.0,
+  "n_trades": 836
+}
