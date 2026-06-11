@@ -120,40 +120,70 @@ def deflated_sharpe_ratio(
     n_trials: int,
     returns: pd.Series | None = None,
     sharpe_variance_across_trials: float | None = None,
+    trial_sharpes: "np.ndarray | pd.Series | list | None" = None,
 ) -> dict:
     """Deflated Sharpe Ratio (Bailey & Lopez de Prado, 2014).
 
-    Corrects an observed (annualized-or-not) Sharpe for:
-      * the number of independent strategy variants tried (``n_trials``),
-        because the best of many random strategies looks good by chance;
+    Corrects an observed Sharpe for:
+      * the number of strategy variants tried (``n_trials``), because the best
+        of many random strategies looks good by chance;
       * non-normal returns (skew/kurtosis) when ``returns`` is provided.
 
-    Returns the probability that the true Sharpe is > 0 after deflation
-    (``psr_deflated``). Values close to 1 indicate a robust edge; near 0.5 or
-    below indicate the result is consistent with selection luck.
+    Returns the probability that the true Sharpe exceeds the selection-adjusted
+    benchmark (``psr_deflated``). Near 1 = robust edge; near 0.5 or below =
+    consistent with selection luck.
 
-    Note: ``observed_sharpe`` and ``n_obs`` must be on the *same* time base
-    (e.g. both per-period, non-annualized). Pass the raw per-period Sharpe.
+    **Scale contract.** ``observed_sharpe``, ``n_obs`` and the trial-Sharpe
+    variance must all be on the *same* time base — pass the raw **per-period**
+    (non-annualized) Sharpe, ``n_obs = len(returns)``, and per-period trial
+    Sharpes. Mixing an annualized observed Sharpe with a per-period ``n_obs``
+    double-counts the √(periods/yr) factor.
+
+    Benchmark (``SR*`` = expected max Sharpe under the null):
+      * ``n_trials <= 1`` (single pre-committed test): ``SR* = 0`` — the DSR
+        reduces to the plain Probabilistic Sharpe Ratio against zero. (The old
+        code evaluated ``z(1 - 1/1) = z(0) = -inf`` here, forcing DSR = 1.0 for
+        *every* forward test regardless of edge.)
+      * ``n_trials > 1``: ``SR* = sqrt(V) * E[max of n_trials std-normals]``,
+        where ``V`` is the variance of the per-period trial Sharpes. ``V`` is
+        taken from ``trial_sharpes`` if given (preferred — the real screen
+        dispersion), else ``sharpe_variance_across_trials``, else an analytic
+        null fallback ``1/(n_obs-1)`` (the sampling variance of a per-period
+        Sharpe estimator under SR≈0). The old hard-coded ``V = 1.0`` was on the
+        wrong scale for per-period Sharpes (~0.05), inflating ``SR*`` to ~2.6
+        and crushing every screened effect to DSR ≈ 0.
     """
-    if sharpe_variance_across_trials is None:
-        sharpe_variance_across_trials = 1.0  # variance of N(0,1) per-trial Sharpe
-
-    # Expected maximum Sharpe across n_trials independent N(0, var) draws.
     euler_mascheroni = 0.5772156649
     z = stats.norm.ppf
-    max_z = (1 - euler_mascheroni) * z(1 - 1.0 / n_trials) + euler_mascheroni * z(
-        1 - 1.0 / (n_trials * np.e)
-    )
-    expected_max_sharpe = np.sqrt(sharpe_variance_across_trials) * max_z
 
-    skew = kurt = 0.0
+    if n_trials <= 1:
+        # Single pre-committed test => no selection to deflate; PSR vs zero.
+        expected_max_sharpe = 0.0
+        var = float("nan")
+    else:
+        if trial_sharpes is not None:
+            arr = np.asarray(trial_sharpes, dtype=float)
+            arr = arr[np.isfinite(arr)]
+            var = float(np.var(arr, ddof=1)) if arr.size > 1 else 1.0 / max(n_obs - 1, 1)
+        elif sharpe_variance_across_trials is not None:
+            var = float(sharpe_variance_across_trials)
+        else:
+            # Analytic null: Var(SR_hat) ≈ 1/(n_obs-1) for a per-period Sharpe.
+            var = 1.0 / max(n_obs - 1, 1)
+        max_z = (1 - euler_mascheroni) * z(1 - 1.0 / n_trials) + euler_mascheroni * z(
+            1 - 1.0 / (n_trials * np.e)
+        )
+        expected_max_sharpe = np.sqrt(var) * max_z
+
+    skew = 0.0
+    kurt = 3.0  # non-excess kurtosis of a normal; correct PSR default
     if returns is not None:
         r = returns.dropna()
         skew = float(stats.skew(r))
         kurt = float(stats.kurtosis(r, fisher=False))  # non-excess kurtosis
 
     # Probabilistic Sharpe Ratio of observed vs the benchmark (expected max).
-    numerator = (observed_sharpe - expected_max_sharpe) * np.sqrt(n_obs - 1)
+    numerator = (observed_sharpe - expected_max_sharpe) * np.sqrt(max(n_obs - 1, 1))
     denominator = np.sqrt(
         1 - skew * observed_sharpe + (kurt - 1) / 4.0 * observed_sharpe**2
     )
@@ -162,6 +192,7 @@ def deflated_sharpe_ratio(
     return {
         "observed_sharpe": float(observed_sharpe),
         "expected_max_sharpe_under_null": float(expected_max_sharpe),
+        "sharpe_variance_used": float(var),
         "n_trials": int(n_trials),
         "psr_deflated": dsr,
     }
