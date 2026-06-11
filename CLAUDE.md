@@ -61,6 +61,35 @@ Every strategy must survive cost, look-ahead and significance scrutiny.
 
 ## Lessons Learned
 
+- **2026-06-11 (0059, Crypto-ML-Roadmap Phase 3 — ERSTES bestandenes
+  Ridge-Gate des Katalogs, trotzdem kein validierter Edge):** LightGBM gegen
+  die 0058-Messlatte unter identischen 28 CPCV-Splits. **Lehre 1: das
+  Ridge-Gate diskriminiert wirklich** — die KLEINSTE Konfig (15 Blätter,
+  lr 0.05, 100 Bäume) schlägt Ridge in 68-82% der Splits, während die
+  größte (31×300) in 0-11% gewinnt; Crypto-Nichtlinearität ist real aber
+  FLACH, Kapazität muss klein bleiben (Gegenstück zu 0057, wo gar nichts
+  gewann). **Lehre 2: die 0058-IC→PnL-Lücke war eine Kosten-/Konstruktions-
+  frage, kein Signalproblem** — vorregistrierte Hebel (Liquiditäts-Floor
+  $5M VOR dem Ranking statt Kosten-Strafe danach, Dezil-Konzentration,
+  Hold-Band-Buffer 2×, Monats-Rebalance) senken Turnover 22→6×/J und drehen
+  die Marktrelative von −0.56 auf +0.78; der stärkste Einzelhebel ist der
+  Liquiditäts-Floor. Plateau monoton = Mechanismus, kein Zell-Glück; Ridge
+  in identischer Zelle nur +0.40 → der GBT-Vorsprung überlebt die
+  Portfolio-Übersetzung. Wiederverwendbar: `ml_portfolio.
+  run_buffered_long_portfolio`. **Lehre 3: Batterie-Dissens ernst nehmen —
+  Permutation p<0.005 + PBO 0.003 und TROTZDEM kein Kandidat,** weil (a)
+  Bootstrap-KI der Hedge-Returns [−0.12,+1.16] die 0 berührt (der einzige
+  echte „Edge>0"-Test, Permutations-Null ist kosten-verseucht, Mittel
+  −0.30), (b) DSR 0.32 bei ehrlichen n_trials=62, (c) 2023 ein −3.2-Jahr
+  vs Markt (BTC-Dominanz-Ära; 6/7 Jahre positiv, aber ~2J Alpha-Unterwasser
+  — Faktor-Crash-Risiko, das IC/Sharpe nicht zeigen), (d) Dezil×Floor-Buch
+  = Median 8 Namen (min 2!) = kaum noch Querschnitt. **Lehre 4 (Methodik):
+  der CPCV-Stitch ist KEIN handelbarer Pfad** — Modelle, die 2020
+  vorhersagen, sind (purged) auch auf 2021-26 trainiert; CPCV beantwortet
+  Modellvergleich/Skill, den Pfad beweist nur Walk-Forward/Live. Eingefrorene
+  Regel (LGBM0 h28, ME, Dezil, Buffer 2×, Liq≥$5M) für Live-Forward
+  registriert 2026-06-11.
+
 - **2026-06-11 (0058, Crypto-ML-Roadmap Phasen 0-2 — Survivorship-freies
   Universum gebaut, Ridge-Messlatte steht):** Neue Infra `crypto_xsection` +
   `crypto_features` + `tests/test_crypto_universe.py` (8/8 grün).

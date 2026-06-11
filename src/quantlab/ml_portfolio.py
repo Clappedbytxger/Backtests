@@ -106,7 +106,17 @@ def run_ml_portfolio(
             long_only=long_only,
         )
     target = pd.DataFrame(rows).T.reindex(columns=returns.columns).fillna(0.0)
+    return _settle_targets(returns, target, cost_bps_per_side, rb_dates)
 
+
+def _settle_targets(
+    returns: pd.DataFrame,
+    target: pd.DataFrame,
+    cost_bps_per_side: float | pd.DataFrame,
+    rb_dates: pd.DatetimeIndex,
+) -> dict:
+    """Target weights at rebalance dates -> held weights, PnL, turnover costs."""
+    idx = returns.index
     w_daily = target.reindex(idx, method="ffill").fillna(0.0)
     held = w_daily.shift(1).fillna(0.0)
 
@@ -130,3 +140,70 @@ def run_ml_portfolio(
         "turnover": turnover_daily[turnover_daily > 0],
         "rebalance_dates": rb_dates,
     }
+
+
+def run_buffered_long_portfolio(
+    returns: pd.DataFrame,
+    predictions: pd.DataFrame,
+    vol: pd.DataFrame | None = None,
+    rebalance: str = "W",
+    quantile: float = 0.2,
+    buffer_mult: float = 2.0,
+    cost_bps_per_side: float | pd.DataFrame = 5.0,
+    min_names: int = 8,
+    pred_ffill_limit: int = 6,
+) -> dict:
+    """Long-only top-quantile book with a hold-band against turnover churn.
+
+    At each rebalance a NEW name must rank inside the top ``quantile``
+    fraction to enter, but a HELD name stays as long as it remains inside
+    the wider ``buffer_mult * quantile`` band (classic rank-buffering — cuts
+    the churn of names oscillating around the quantile boundary, which is
+    the dominant cost driver of a weekly-refit cross-section).
+
+    ``predictions`` may be sparse (e.g. weekly rows): they are forward-filled
+    up to ``pred_ffill_limit`` days so monthly rebalances can use the latest
+    weekly prediction — information only travels forward in time.
+
+    The book holds between ``k`` (target) and ``buffer_mult*k`` names;
+    inverse-vol weights, gross 1. A date with fewer than ``min_names`` valid
+    predictions liquidates the book (same convention as run_ml_portfolio).
+    """
+    returns = returns.sort_index()
+    idx = returns.index
+    rb_dates = _rebalance_dates(idx, rebalance)
+
+    pred_rb = predictions.reindex(idx).ffill(limit=pred_ffill_limit).reindex(rb_dates)
+    vol_rb = vol.reindex(idx).ffill(limit=pred_ffill_limit).reindex(rb_dates) if vol is not None else None
+
+    held: list[str] = []
+    rows = {}
+    for dt in rb_dates:
+        s = pred_rb.loc[dt].dropna()
+        out = pd.Series(0.0, index=pred_rb.columns)
+        if len(s) < min_names:
+            held = []
+            rows[dt] = out
+            continue
+        k = max(1, int(round(quantile * len(s))))
+        band = max(k, int(round(buffer_mult * quantile * len(s))))
+        ranked = s.sort_values(ascending=False)
+        band_set = set(ranked.index[:band])
+        keep = [n for n in held if n in band_set]
+        entrants = [n for n in ranked.index[:k] if n not in keep]
+        sel = keep + entrants[: max(0, k - len(keep))]
+        # if the band kept more than k names, that's fine — fewer trades.
+
+        if vol_rb is not None:
+            v = vol_rb.loc[dt].reindex(sel)
+            w = 1.0 / v.fillna(v.median())
+            if not np.isfinite(w).all() or w.sum() <= 0:
+                w = pd.Series(1.0, index=sel)
+        else:
+            w = pd.Series(1.0, index=sel)
+        out[sel] = w / w.sum()
+        held = sel
+        rows[dt] = out
+
+    target = pd.DataFrame(rows).T.reindex(columns=returns.columns).fillna(0.0)
+    return _settle_targets(returns, target, cost_bps_per_side, rb_dates)
