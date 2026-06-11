@@ -1,0 +1,76 @@
+{
+  "carry_signal": {
+    "contango_frac": 0.9224426694150992,
+    "nextday_vixy_contango_bps": -19.85396967325569,
+    "nextday_vixy_backwardation_bps": 20.74779759718882
+  },
+  "tail_risk": {
+    "worst_days": {
+      "2020-06-11": -0.33581503907942145,
+      "2021-11-26": -0.25014890724709815,
+      "2016-06-24": -0.24075457480543697,
+      "2024-08-02": -0.23958340019752056,
+      "2021-01-27": -0.20757464942849557
+    },
+    "feb2018_cum_pct": -10.97425711616703,
+    "feb2018_worst_day_pct": -13.602334874064837,
+    "mar2020_cum_pct": -26.15322647049424,
+    "mar2020_worst_day_pct": -18.352371867397643
+  },
+  "metrics_gated": {
+    "total_return": 69.26585231583094,
+    "cagr": 0.31799050781040417,
+    "annual_volatility": 0.5930172735556882,
+    "sharpe": 0.7399894998569618,
+    "sortino": 0.8233479381290314,
+    "calmar": 0.5055899493504785,
+    "max_drawdown": -0.6289494247639225,
+    "max_drawdown_duration_days": 819,
+    "n_periods": 3881
+  },
+  "metrics_always": {
+    "total_return": 11.081551377049497,
+    "cagr": 0.17561220720746662,
+    "annual_volatility": 0.6985837306787921,
+    "sharpe": 0.5740464585355598,
+    "sortino": 0.6116567066640848,
+    "calmar": 0.19129029520766183,
+    "max_drawdown": -0.9180403376806162,
+    "max_drawdown_duration_days": 1555,
+    "n_periods": 3881
+  },
+  "trades_gated": {
+    "n_trades": 97,
+    "win_rate": 0.38144329896907214,
+    "profit_factor": 2.7892059916478984,
+    "payoff_ratio": 4.523036743212809,
+    "expectancy": 0.08303208978317968,
+    "avg_holding_days": 36.896907216494846,
+    "avg_win": 0.33934091329425864,
+    "avg_loss": 0.07502501804865233
+  },
+  "significance": {
+    "permutation": {
+      "observed": 0.7446136532348129,
+      "p_value": 0.005497251374312844,
+      "null_mean": 0.5518599339184838,
+      "null_std": 0.07489171692172071,
+      "n_perm": 2000,
+      "metric": "sharpe"
+    },
+    "bootstrap": {
+      "statistic": "sharpe",
+      "point": 0.741365941843677,
+      "ci_low": 0.24396056217447742,
+      "ci_high": 1.2887467231979515,
+      "alpha": 0.05
+    },
+    "deflated_sharpe": {
+      "observed_sharpe": 0.04871860097579213,
+      "expected_max_sharpe_under_null": 0.008344169176996047,
+      "sharpe_variance_used": 0.0002577319587628866,
+      "n_trials": 2,
+      "psr_deflated": 0.992520530542325
+    }
+  }
+}
