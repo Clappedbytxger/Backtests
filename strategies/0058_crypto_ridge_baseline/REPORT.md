@@ -74,8 +74,11 @@ prognostizierbar und bleibt es.**
 
 | Variante (h=28) | Sharpe netto | Sharpe brutto | CAGR netto | MaxDD | Turnover |
 |---|---|---|---|---|---|
-| Long-only Top-Q | +0.56 | +0.69 | +14.9% | −85% | 22×/J |
-| Long-Short | −0.08 | +0.39 | −15.5% | −86% | 56×/J |
+| Long-only Top-Q | +0.58 | +0.70 | +16.3% | −85% | 22×/J |
+| Long-Short | −0.03 | +0.43 | −13.3% | −85% | 56×/J |
+
+*(Zahlen nach dem 0060-Peg-Guard-Rerun — Stablecoins RLUSD/„U" aus dem
+Universum entfernt; Änderungen innerhalb der Rundung, IC identisch.)*
 | Markt (cap-w.) | 0.61 | — | +21.6% | −86% | — |
 | Equal-Weight | 0.37 | — | −5.4% | −94% | — |
 | BTC B&H | 0.76 | — | +35.3% | −83% | — |

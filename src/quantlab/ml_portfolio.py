@@ -152,6 +152,7 @@ def run_buffered_long_portfolio(
     cost_bps_per_side: float | pd.DataFrame = 5.0,
     min_names: int = 8,
     pred_ffill_limit: int = 6,
+    min_k: int = 1,
 ) -> dict:
     """Long-only top-quantile book with a hold-band against turnover churn.
 
@@ -168,6 +169,9 @@ def run_buffered_long_portfolio(
     The book holds between ``k`` (target) and ``buffer_mult*k`` names;
     inverse-vol weights, gross 1. A date with fewer than ``min_names`` valid
     predictions liquidates the book (same convention as run_ml_portfolio).
+    ``min_k`` floors the target book size (concentration guard: a decile of
+    a small filtered universe can shrink to 2-3 names — idiosyncratic, not
+    cross-sectional); the buffer band widens proportionally.
     """
     returns = returns.sort_index()
     idx = returns.index
@@ -185,8 +189,11 @@ def run_buffered_long_portfolio(
             held = []
             rows[dt] = out
             continue
-        k = max(1, int(round(quantile * len(s))))
+        k = min(len(s), max(1, min_k, int(round(quantile * len(s)))))
         band = max(k, int(round(buffer_mult * quantile * len(s))))
+        if min_k > 1:  # widen the band proportionally with the floored k
+            band = max(band, int(round(buffer_mult * k)))
+        band = min(len(s), band)
         ranked = s.sort_values(ascending=False)
         band_set = set(ranked.index[:band])
         keep = [n for n in held if n in band_set]

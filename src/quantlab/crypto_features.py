@@ -154,14 +154,26 @@ def assemble_design_matrix(
     rank_features: bool = True,
     sample_freq: str = "W",
     min_names: int = 20,
+    require_target: bool = True,
+    extra_features: dict[str, pd.DataFrame] | None = None,
 ) -> pd.DataFrame:
     """Long-format design matrix: rows = (date, pair), columns = features + y.
 
     Weekly sampling keeps the 7d target non-overlapping (CPCV purging still
     handles the longer horizons). Dates with fewer than ``min_names`` valid
     rows are dropped — a thin cross-section cannot be ranked meaningfully.
+
+    ``require_target=False`` keeps rows whose forward label is not yet
+    realized (the last ``horizon`` days) — needed for live scoring; training
+    must keep the default ``True``.
+
+    ``extra_features`` (e.g. :func:`phase4_features` output) are stacked and
+    rank-transformed exactly like the base features; their NaNs do not drop
+    rows (incremental-value tests need identical row sets).
     """
-    feats = fp["features"]
+    feats = dict(fp["features"])
+    if extra_features:
+        feats.update(extra_features)
     days = fp["days"]
     if sample_freq == "W":
         from .cross_sectional import _rebalance_dates
@@ -179,11 +191,71 @@ def assemble_design_matrix(
 
     df = pd.concat(blocks + [y, fwd], axis=1)
     df.index.names = ["date", "pair"]
-    df = df.dropna(subset=["y", "mom_28", "size"])
+    subset = ["y", "mom_28", "size"] if require_target else ["mom_28", "size"]
+    df = df.dropna(subset=subset)
 
     counts = df.groupby("date").size()
     keep = counts.index[counts >= min_names]
     return df[df.index.get_level_values("date").isin(keep)]
+
+
+# ---------------------------------------------------------------------------
+# Phase-4 features: perp funding carry + on-chain TVL trend (roadmap Teil 3)
+# ---------------------------------------------------------------------------
+
+def phase4_features(panels: dict) -> dict[str, pd.DataFrame]:
+    """Funding-carry and TVL-trend panels, aligned to the price panels.
+
+    funding_7    7d sum of daily perp funding — the crypto-specific carry
+                 (longs pay shorts when positive => crowded longs, negative
+                 expected return; Cakici 2024 / roadmap "Funding-Carry").
+    funding_z    7d funding vs its trailing 90d distribution (crowding
+                 *change* rather than level).
+    tvl_chg_28   28d log change of the coin's own chain TVL (adoption trend,
+                 Liu & Tsyvinski network factors) — only for coins that ARE
+                 an L1/L2 gas token; NaN elsewhere (LightGBM handles NaN).
+
+    PIT: funding events of UTC day t post at 00/08/16h — known at close t.
+    TVL is lagged one day (DefiLlama may restate the running day).
+    Coins without a Binance perp have NaN funding before perp listing — the
+    perp launch date is itself historical information, no leak.
+    """
+    from .crypto_xsection import get_chain_map, get_chain_tvl, get_funding_panel
+
+    memb = panels["membership_daily"]
+    days = memb.index
+    cols = list(memb.columns)
+    parents = [c.split("~")[0] for c in cols]
+
+    fund_daily = get_funding_panel(sorted(set(parents)), progress=False)
+    fund = fund_daily.reindex(columns=parents)
+    fund.columns = cols
+    fund = fund.reindex(days)
+
+    feats: dict[str, pd.DataFrame] = {}
+    f7 = fund.rolling(7, min_periods=5).sum()
+    feats["funding_7"] = f7
+    mu = f7.rolling(90, min_periods=45).mean()
+    sd = f7.rolling(90, min_periods=45).std()
+    feats["funding_z"] = (f7 - mu) / sd
+
+    chain_map = get_chain_map()
+    tvl_cols = {}
+    for col, parent in zip(cols, parents):
+        base = parent[:-4]  # strip USDT
+        chain = chain_map.get(base)
+        if not chain:
+            continue
+        try:
+            s = get_chain_tvl(chain)
+        except Exception:
+            continue
+        tvl_cols[col] = s
+    tvl = pd.DataFrame(tvl_cols).reindex(days).shift(1)
+    tvl = tvl.reindex(columns=cols)
+    feats["tvl_chg_28"] = np.log(tvl.where(tvl > 0)).diff(28)
+
+    return {name: p.where(memb) for name, p in feats.items()}
 
 
 # ---------------------------------------------------------------------------

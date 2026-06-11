@@ -30,9 +30,12 @@ registrierten IC→PnL-Hebeln (Turnover/Konzentration/Liquidität) behebbar.
 
 | Horizont | Ridge IC | bestes LGBM | LGBM IC | Split-Siege |
 |---|---|---|---|---|
-| 7d | +0.095 | LGBM0 (15 Blätter, lr 0.05, 100 Bäume) | **+0.103** | **68%** |
-| 14d | +0.113 | LGBM0 | **+0.122** | **75%** |
-| 28d | +0.137 | LGBM0 | **+0.151** | **82%** |
+| 7d | +0.095 | LGBM0 (15 Blätter, lr 0.05, 100 Bäume) | **+0.104** | **71%** |
+| 14d | +0.113 | LGBM0 | **+0.123** | **79%** |
+| 28d | +0.137 | LGBM0 | **+0.151** | **89%** |
+
+*(Stand nach dem 0060-Peg-Guard-Rerun — Stablecoins RLUSD/„U" entfernt;
+Gate A wurde dadurch leicht STÄRKER, finale Zelle unverändert.)*
 
 Erstmals im Katalog belegbare Nichtlinearität (0057: 25–46% Split-Siege =
 Fail). Bemerkenswert: **die KLEINSTE Konfiguration gewinnt durchgängig**;
@@ -50,20 +53,20 @@ der LGBM-Vorsprung (+0.78) überlebt die Portfolio-Übersetzung.
 
 | Variante (h=28, long-only) | netto Sharpe | vs Markt | Turnover |
 |---|---|---|---|
-| **ME, Dezil, Buffer 2×, Liq ≥ $5M (final)** | **+0.97** | **+0.78** | 6×/J |
-| W, Dezil, Buffer 2×, Liq ≥ $5M | +0.89 | +0.71 | 10×/J |
-| ME, Dezil, kein Buffer, Liq ≥ $5M | +0.94 | +0.70 | 9×/J |
-| … 0058-Baseline (W, Quintil, ohne alles) | +0.58 | −0.56 | 22×/J |
+| **ME, Dezil, Buffer 2×, Liq ≥ $5M (final)** | **+0.98** | **+0.81** | 6×/J |
+| ME, Dezil, kein Buffer, Liq ≥ $5M | +0.96 | +0.76 | 9×/J |
+| W, Dezil, Buffer 2×, Liq ≥ $5M | +0.88 | +0.69 | 10×/J |
+| … 0058-Baseline (W, Quintil, ohne alles) | +0.58 | −0.55 | 22×/J |
 
 ### Volle Batterie auf der finalen Variante
 
 | Test | Ergebnis | Urteil |
 |---|---|---|
-| PBO (CSCV, 59 Konfigs) | **0.003** | pass — Konfig-Ranking extrem stabil |
-| Label-Retrain-Permutation (200) | **p < 0.005**, Null-Mittel −0.30 | pass* |
-| Bootstrap-KI Hedge-Sharpe | **[−0.12, +1.16]** | **berührt 0 → fail** |
-| DSR (n_trials=62) | **0.32** | **fail** (<0.5) |
-| Regime vs Markt | 2020 +1.3 / 21 +1.7 / 22 +2.0 / **23 −3.2** / 24 +0.2 / 25 +1.3 / 26 +1.5 | gemischt |
+| PBO (CSCV, 59 Konfigs) | **0.007** | pass — Konfig-Ranking extrem stabil |
+| Label-Retrain-Permutation (200) | **p < 0.005**, Null-Mittel −0.32 | pass* |
+| Bootstrap-KI Hedge-Sharpe | **[−0.07, +1.20]** | **berührt 0 → fail** |
+| DSR (n_trials=62) | **0.36** | **fail** (<0.5) |
+| Regime vs Markt | Bull 20-21 **+1.59** / Bear 22 **+1.70** / 2023+ **+0.03** | gemischt |
 
 \* Permutations-Vorbehalt (0057-Lehre): auch die Label-Retrain-Null zahlt
 volle Kosten (Mittel −0.30) — p sagt „besser als kostenzahlende

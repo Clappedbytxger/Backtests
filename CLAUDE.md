@@ -61,6 +61,38 @@ Every strategy must survive cost, look-ahead and significance scrutiny.
 
 ## Lessons Learned
 
+- **2026-06-12 (0060/0061, Walk-Forward + Konzentrations-Fix + Phase 4 —
+  drei Lehren, eine davon teuer-fast):** **Lehre 1 (Stablecoin-Falle, im
+  LIVE-Buch gefangen, nicht im Backtest):** Das Live-Signal der eingefrorenen
+  Regel hielt 95% in RLUSD („Ripple USD") + „U" („United Stables") — zwei
+  Stablecoins, die 2025/26 neu in die CMC-Top-150 kamen und in der
+  Namens-Exclusion fehlten; **inverse-Vol-Gewichtung lässt ein
+  Quasi-Null-Vol-Asset das Buch schlucken** (verstecktes Cash, schmeichelt
+  in Chop-Phasen). Fix: Namensliste IMMER nur als zweite Schicht hinter
+  einem strukturellen Guard (Mitglied nur bei trailing 60d-Vol ≥ 10% p.a.,
+  PIT-safe; `tests/test_crypto_pegged_guard.py`). Effekt ehrlich beziffert:
+  WF-12er-Buch +0.78→+0.64 vs Markt. **Statische Ausschlusslisten veralten
+  — jeder Universums-Filter braucht ein datengetriebenes Gegenstück.**
+  **Lehre 2 (CPCV→Walk-Forward-Haircut quantifiziert):** identische Regel,
+  identische Daten: CPCV-Stitch +0.81 → echter monatl. Expanding-Walk-Forward
+  +0.38 (8er-Buch) — der Rest des Optimismus ist der Regel-Selektions-Kanal,
+  den nur Live cleant. ABER der LGBM-vs-Ridge-Abstand überlebt OOT (+0.38/
+  +0.64 vs Ridge −0.15 bei identischer Regel; Ridge verdient OOT NICHTS) —
+  Gate A war kein CPCV-Artefakt. Konzentrations-Fix min_k=12 (1 Trial):
+  2023 −2.3→−0.8, +0.64 vs Markt, t-p 0.14 = Richtung klar, Beweis offen →
+  **Live-Forward registriert 2026-06-11** (`scripts/crypto_live_signal.py`,
+  Kriterien in 0060-REPORT). **Lehre 3 (0061, zweistufiger Feature-Check
+  fängt Schein-Fortschritt):** Funding verbessert den IC konsistent (68%
+  Split-Siege) aber macht das konzentrierte Portfolio SCHLECHTER (Rang-Info
+  ≠ Portfolio-Wert — die 0058-Lektion als Feature-Variante); Funding+TVL
+  bestand das CPCV-Gate knapp (+0.05) und **drehte im Walk-Forward um**
+  (+0.42 vs +0.64, jedes Jahr ≤ Basis) → Phase 4 abgelehnt, Live-Regel
+  bleibt bei 11 Basis-Features. **Knappe CPCV-Verbesserungen sind Rauschen,
+  bis der WF-Check sie bestätigt — Feature-Adds brauchen beide Stufen.**
+  Daten-Infra-Gewinn: Binance-fapi-Funding inkl. DELISTETER Perps (294
+  Paare ab 2019-09) + DefiLlama-Chain-TVL inkl. toter Chains (102
+  Gas-Token) — beide survivorship-sicher, gecacht, wiederverwendbar.
+
 - **2026-06-11 (0059, Crypto-ML-Roadmap Phase 3 — ERSTES bestandenes
   Ridge-Gate des Katalogs, trotzdem kein validierter Edge):** LightGBM gegen
   die 0058-Messlatte unter identischen 28 CPCV-Splits. **Lehre 1: das

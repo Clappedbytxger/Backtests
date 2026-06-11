@@ -33,12 +33,12 @@
   },
   "benchmarks": {
     "market_cap_weighted": {
-      "total_return": 4.6077,
-      "cagr": 0.2159,
+      "total_return": 4.6049,
+      "cagr": 0.2158,
       "annual_volatility": 0.7078,
-      "sharpe": 0.6097,
-      "sortino": 0.7848,
-      "calmar": 0.2497,
+      "sharpe": 0.6096,
+      "sortino": 0.7847,
+      "calmar": 0.2496,
       "max_drawdown": -0.8646,
       "max_drawdown_duration_days": 1123,
       "n_periods": 3219,
@@ -50,20 +50,20 @@
       }
     },
     "equal_weight": {
-      "total_return": -0.3865,
-      "cagr": -0.0539,
-      "annual_volatility": 0.8787,
-      "sharpe": 0.3679,
-      "sortino": 0.4704,
-      "calmar": -0.0573,
-      "max_drawdown": -0.9409,
+      "total_return": -0.3933,
+      "cagr": -0.0551,
+      "annual_volatility": 0.879,
+      "sharpe": 0.3667,
+      "sortino": 0.4689,
+      "calmar": -0.0585,
+      "max_drawdown": -0.9416,
       "max_drawdown_duration_days": 1859,
       "n_periods": 3219,
       "regimes": {
         "2018-2019": -0.609,
         "bull_2020_21": 1.885,
         "bear_2022": -1.508,
-        "2023_plus": 0.084
+        "2023_plus": 0.08
       }
     },
     "btc": {
@@ -87,45 +87,45 @@
   "ridge": {
     "h7": {
       "ic": {
-        "ic_mean": 0.09476174057973036,
-        "ic_t": 8.165329935654698,
+        "ic_mean": 0.09455694455662857,
+        "ic_t": 8.156088269044677,
         "n_dates": 381
       },
       "portfolios": {
         "long_only": {
-          "sharpe_net": 0.454,
-          "sharpe_gross": 0.641,
-          "cagr_net": 0.0656,
-          "max_dd": -0.9038,
-          "ann_vol": 0.7104,
-          "turnover_oneside_per_year": 31.6,
+          "sharpe_net": 0.433,
+          "sharpe_gross": 0.612,
+          "cagr_net": 0.0488,
+          "max_dd": -0.9083,
+          "ann_vol": 0.7141,
+          "turnover_oneside_per_year": 29.6,
           "regimes_net": {
-            "2018-2019": -0.169,
-            "bull_2020_21": 1.827,
-            "bear_2022": -1.677,
-            "2023_plus": 0.188
+            "2018-2019": -0.09,
+            "bull_2020_21": 1.829,
+            "bear_2022": -1.671,
+            "2023_plus": 0.104
           },
           "n_days_active": 2667,
-          "sharpe_net_vs_market": -0.679,
+          "sharpe_net_vs_market": -0.742,
           "regimes_vs_market": {
-            "2018-2019": -2.153,
-            "bull_2020_21": 0.627,
-            "bear_2022": -1.332,
-            "2023_plus": -1.094
+            "2018-2019": -2.002,
+            "bull_2020_21": 0.63,
+            "bear_2022": -1.311,
+            "2023_plus": -1.364
           }
         },
         "long_short": {
-          "sharpe_net": -0.509,
-          "sharpe_gross": 0.14,
-          "cagr_net": -0.3124,
-          "max_dd": -0.958,
-          "ann_vol": 0.4945,
-          "turnover_oneside_per_year": 77.7,
+          "sharpe_net": -0.547,
+          "sharpe_gross": 0.099,
+          "cagr_net": -0.3202,
+          "max_dd": -0.9548,
+          "ann_vol": 0.4875,
+          "turnover_oneside_per_year": 75.5,
           "regimes_net": {
-            "2018-2019": -0.533,
-            "bull_2020_21": -1.182,
-            "bear_2022": 0.789,
-            "2023_plus": -0.33
+            "2018-2019": -0.336,
+            "bull_2020_21": -1.19,
+            "bear_2022": 0.71,
+            "2023_plus": -0.44
           },
           "n_days_active": 2667
         }
@@ -133,45 +133,45 @@
     },
     "h14": {
       "ic": {
-        "ic_mean": 0.11270106165548097,
-        "ic_t": 9.440732828794802,
+        "ic_mean": 0.1124603979344223,
+        "ic_t": 9.418376819430279,
         "n_dates": 380
       },
       "portfolios": {
         "long_only": {
-          "sharpe_net": 0.527,
-          "sharpe_gross": 0.68,
-          "cagr_net": 0.1235,
-          "max_dd": -0.8679,
-          "ann_vol": 0.7043,
-          "turnover_oneside_per_year": 25.9,
+          "sharpe_net": 0.537,
+          "sharpe_gross": 0.691,
+          "cagr_net": 0.1308,
+          "max_dd": -0.869,
+          "ann_vol": 0.7071,
+          "turnover_oneside_per_year": 25.7,
           "regimes_net": {
-            "2018-2019": -0.333,
-            "bull_2020_21": 1.958,
-            "bear_2022": -1.552,
-            "2023_plus": 0.24
+            "2018-2019": -0.349,
+            "bull_2020_21": 1.97,
+            "bear_2022": -1.567,
+            "2023_plus": 0.268
           },
           "n_days_active": 2660,
-          "sharpe_net_vs_market": -0.614,
+          "sharpe_net_vs_market": -0.601,
           "regimes_vs_market": {
-            "2018-2019": -2.601,
-            "bull_2020_21": 0.955,
-            "bear_2022": -0.811,
-            "2023_plus": -1.205
+            "2018-2019": -2.656,
+            "bull_2020_21": 0.984,
+            "bear_2022": -0.864,
+            "2023_plus": -1.221
           }
         },
         "long_short": {
-          "sharpe_net": -0.487,
-          "sharpe_gross": 0.083,
-          "cagr_net": -0.3044,
-          "max_dd": -0.9471,
-          "ann_vol": 0.494,
-          "turnover_oneside_per_year": 67.8,
+          "sharpe_net": -0.472,
+          "sharpe_gross": 0.108,
+          "cagr_net": -0.2944,
+          "max_dd": -0.947,
+          "ann_vol": 0.4869,
+          "turnover_oneside_per_year": 67.5,
           "regimes_net": {
-            "2018-2019": -0.856,
-            "bull_2020_21": -1.094,
-            "bear_2022": 0.979,
-            "2023_plus": -0.323
+            "2018-2019": -0.876,
+            "bull_2020_21": -1.05,
+            "bear_2022": 0.936,
+            "2023_plus": -0.302
           },
           "n_days_active": 2660
         }
@@ -179,45 +179,45 @@
     },
     "h28": {
       "ic": {
-        "ic_mean": 0.1364651705777635,
-        "ic_t": 11.672303543091623,
+        "ic_mean": 0.13649351112726932,
+        "ic_t": 11.686051732623339,
         "n_dates": 378
       },
       "portfolios": {
         "long_only": {
-          "sharpe_net": 0.559,
-          "sharpe_gross": 0.689,
-          "cagr_net": 0.1494,
-          "max_dd": -0.8524,
-          "ann_vol": 0.703,
-          "turnover_oneside_per_year": 22.4,
+          "sharpe_net": 0.576,
+          "sharpe_gross": 0.704,
+          "cagr_net": 0.1627,
+          "max_dd": -0.8543,
+          "ann_vol": 0.7061,
+          "turnover_oneside_per_year": 21.8,
           "regimes_net": {
             "2018-2019": -0.148,
-            "bull_2020_21": 1.941,
-            "bear_2022": -1.578,
-            "2023_plus": 0.3
+            "bull_2020_21": 1.943,
+            "bear_2022": -1.579,
+            "2023_plus": 0.346
           },
           "n_days_active": 2646,
-          "sharpe_net_vs_market": -0.584,
+          "sharpe_net_vs_market": -0.551,
           "regimes_vs_market": {
             "2018-2019": -2.379,
-            "bull_2020_21": 0.913,
-            "bear_2022": -0.901,
-            "2023_plus": -1.16
+            "bull_2020_21": 0.919,
+            "bear_2022": -0.903,
+            "2023_plus": -1.133
           }
         },
         "long_short": {
-          "sharpe_net": -0.078,
-          "sharpe_gross": 0.385,
-          "cagr_net": -0.1547,
-          "max_dd": -0.8576,
-          "ann_vol": 0.5066,
-          "turnover_oneside_per_year": 56.4,
+          "sharpe_net": -0.034,
+          "sharpe_gross": 0.432,
+          "cagr_net": -0.1327,
+          "max_dd": -0.8523,
+          "ann_vol": 0.5002,
+          "turnover_oneside_per_year": 55.5,
           "regimes_net": {
             "2018-2019": -0.275,
-            "bull_2020_21": -0.518,
-            "bear_2022": 0.949,
-            "2023_plus": 0.046
+            "bull_2020_21": -0.509,
+            "bear_2022": 0.914,
+            "2023_plus": 0.156
           },
           "n_days_active": 2646
         }

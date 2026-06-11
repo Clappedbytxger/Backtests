@@ -1,0 +1,105 @@
+{
+  "config": {
+    "frozen_lgbm": {
+      "num_leaves": 15,
+      "learning_rate": 0.05,
+      "n_estimators": 100
+    },
+    "frozen_lever": {
+      "rebalance": "ME",
+      "quantile": 0.1,
+      "buffer_mult": 2.0,
+      "liq_floor": 5000000.0
+    },
+    "first_fit": "2020-12-31",
+    "refit": "ME expanding",
+    "train_label_lag_days": 28
+  },
+  "ic_oot": {
+    "lgbm_mean": 0.1384,
+    "ridge_mean": 0.13,
+    "lgbm_win_frac_weekly": 0.561,
+    "n_weeks": 280,
+    "lgbm_by_year": {
+      "2021": 0.069,
+      "2022": 0.148,
+      "2023": 0.103,
+      "2024": 0.147,
+      "2025": 0.231,
+      "2026": 0.125
+    }
+  },
+  "lgbm_frozen": {
+    "active": "2021-02-01..2026-06-10",
+    "sharpe_net": 0.515,
+    "cagr_net": 0.1274,
+    "max_dd": -0.7223,
+    "sharpe_vs_market": 0.38,
+    "bootstrap_ci": [
+      -0.503,
+      0.901
+    ],
+    "t_test_p": 0.3794,
+    "psr_single_test": 0.8126,
+    "turnover_oneside_per_year": 7.8,
+    "book_size_median": 8.0,
+    "book_size_min": 4,
+    "hedged_sharpe_by_year": {
+      "2021": 1.6,
+      "2022": 1.28,
+      "2023": -2.29,
+      "2024": -0.86,
+      "2025": 0.98,
+      "2026": 1.51
+    },
+    "dsr_conservative_62trials": 0.0677
+  },
+  "ridge_same_rule": {
+    "active": "2021-02-01..2026-06-10",
+    "sharpe_net": 0.321,
+    "cagr_net": -0.0059,
+    "max_dd": -0.8027,
+    "sharpe_vs_market": -0.149,
+    "bootstrap_ci": [
+      -0.89,
+      0.505
+    ],
+    "t_test_p": 0.7293,
+    "psr_single_test": 0.3652,
+    "turnover_oneside_per_year": 8.2,
+    "book_size_median": 8.0,
+    "book_size_min": 4,
+    "hedged_sharpe_by_year": {
+      "2021": 0.12,
+      "2022": 1.52,
+      "2023": -1.3,
+      "2024": -1.18,
+      "2025": -0.46,
+      "2026": 1.39
+    }
+  },
+  "lgbm_min_book_12": {
+    "active": "2021-02-01..2026-06-10",
+    "sharpe_net": 0.594,
+    "cagr_net": 0.1837,
+    "max_dd": -0.7328,
+    "sharpe_vs_market": 0.64,
+    "bootstrap_ci": [
+      -0.237,
+      1.109
+    ],
+    "t_test_p": 0.1385,
+    "psr_single_test": 0.9356,
+    "turnover_oneside_per_year": 7.5,
+    "book_size_median": 12.0,
+    "book_size_min": 12,
+    "hedged_sharpe_by_year": {
+      "2021": 1.94,
+      "2022": 1.81,
+      "2023": -0.76,
+      "2024": -0.27,
+      "2025": 0.06,
+      "2026": 0.12
+    }
+  }
+}

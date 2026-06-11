@@ -109,6 +109,7 @@ def test_membership_uses_only_past_snapshots(universe, panels):
     rng = np.random.default_rng(42)
     sample = rng.choice(len(md.index[400:]), size=25, replace=False)
     parents = [c.split("~")[0] for c in md.columns]
+    vol60 = panels["ret"].rolling(60, min_periods=30).std() * np.sqrt(365)
     for i in sample:
         t = md.index[400:][i]
         snaps = memb_w.index[memb_w.index + pd.Timedelta(days=1) <= t]
@@ -117,6 +118,7 @@ def test_membership_uses_only_past_snapshots(universe, panels):
         expected = memb_w.loc[snaps[-1]].reindex(parents, fill_value=False)
         expected.index = md.columns
         expected = expected & close.loc[t].notna()
+        expected &= ~(vol60.loc[t] < 0.10).fillna(False)  # pegged-asset guard
         pd.testing.assert_series_equal(md.loc[t], expected, check_names=False)
 
 

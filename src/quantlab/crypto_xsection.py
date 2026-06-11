@@ -78,6 +78,7 @@ EXCLUDED_SYMBOLS = {
     "FDUSD", "USDD", "GUSD", "HUSD", "SUSD", "USDN", "FRAX", "LUSD", "USDE",
     "PYUSD", "USD1", "USDS", "USDF", "EURS", "EURT", "VAI", "RSV", "USDK",
     "SAI", "MUSD", "CUSD", "DGD", "DGX", "USDX", "OUSD", "USDJ", "MIM",
+    "RLUSD", "U",  # Ripple USD, "United Stables" — top-150 since 2025/26
     # gold / FX pegs
     "XAUT", "PAXG", "DGTX",
     # wrapped / staked duplicates of other listed assets
@@ -413,6 +414,13 @@ def get_price_panels(
         memb_w.reindex(close.index, method="ffill").fillna(False)
         & close.notna()
     )
+    # Pegged-asset guard: a "crypto" with trailing annualized vol < 10% is a
+    # stablecoin/peg that slipped past the name-based exclusion (RLUSD and
+    # "United Stables" reached the top 150 in 2025/26 before being named).
+    # Inverse-vol weighting would let such an asset swallow the book.
+    # Trailing window => PIT-safe.
+    vol60 = ret.rolling(60, min_periods=30).std() * np.sqrt(365)
+    memb &= ~(vol60 < 0.10).fillna(False)
     mcap = (
         mcap_w.reindex(close.index, method="ffill")
         .where(memb)
@@ -435,3 +443,121 @@ def get_universe_at(universe: dict, date: str | pd.Timestamp) -> list[str]:
         return []
     row = memb.loc[snaps[-1]]
     return sorted(row.index[row])
+
+
+# ---------------------------------------------------------------------------
+# 4. Phase-4 sources: perp funding (Binance USDS-M) and DefiLlama chain TVL
+# ---------------------------------------------------------------------------
+
+(CACHE_DIR / "funding").mkdir(exist_ok=True)
+(CACHE_DIR / "tvl").mkdir(exist_ok=True)
+
+_BINANCE_FUNDING = (
+    "https://fapi.binance.com/fapi/v1/fundingRate?symbol={symbol}"
+    "&startTime={start}&limit=1000"
+)
+_LLAMA_CHAINS = "https://api.llama.fi/v2/chains"
+_LLAMA_TVL = "https://api.llama.fi/v2/historicalChainTvl/{chain}"
+
+# Binance USDS-M perps launched 2019-09.
+FUNDING_EPOCH = "2019-09-01"
+
+
+def get_binance_funding(symbol: str, force_refresh: bool = False) -> pd.Series:
+    """Full 8h-funding history for one perp (verified: works for DELISTED
+    perps too — SRM, ANC, FTT, old LUNA, XEM). Empty result cached so
+    never-listed perps are not re-queried."""
+    from urllib.parse import quote
+
+    path = CACHE_DIR / "funding" / f"{symbol}.parquet"
+    if path.exists() and not force_refresh:
+        return pd.read_parquet(path)["fundingRate"]
+
+    cursor = int(pd.Timestamp(FUNDING_EPOCH, tz="UTC").timestamp() * 1000)
+    rows: list[dict] = []
+    while True:
+        batch = json.loads(
+            _fetch(_BINANCE_FUNDING.format(symbol=quote(symbol), start=cursor))
+        )
+        if not isinstance(batch, list) or not batch:
+            break
+        rows.extend(batch)
+        nxt = batch[-1]["fundingTime"] + 1
+        if nxt <= cursor or len(batch) < 1000:
+            break
+        cursor = nxt
+        time.sleep(0.1)
+
+    if rows:
+        df = pd.DataFrame(rows)
+        idx = pd.to_datetime(df["fundingTime"], unit="ms", utc=True).dt.tz_localize(None)
+        s = pd.Series(
+            pd.to_numeric(df["fundingRate"], errors="coerce").values,
+            index=pd.DatetimeIndex(idx, name="Date"), name="fundingRate",
+        ).dropna()
+        s = s[~s.index.duplicated(keep="last")].sort_index()
+    else:
+        s = pd.Series(
+            [], dtype=float, name="fundingRate",
+            index=pd.DatetimeIndex([], name="Date"),
+        )
+    s.to_frame().to_parquet(path)
+    return s
+
+
+def get_funding_panel(pairs: list[str], progress: bool = True) -> pd.DataFrame:
+    """Daily funding panel: sum of the UTC day's 8h funding rates per pair.
+
+    A funding event at 00/08/16 UTC of day t is known by the close of day t
+    — decision-time safe without a shift.
+    """
+    cols = {}
+    for i, p in enumerate(pairs):
+        cached = (CACHE_DIR / "funding" / f"{p}.parquet").exists()
+        s = get_binance_funding(p)
+        if len(s):
+            cols[p] = s.groupby(s.index.normalize()).sum()
+        if not cached and progress and i % 25 == 0:
+            print(f"  funding {p} ({i + 1}/{len(pairs)})")
+    return pd.DataFrame(cols).sort_index()
+
+
+def get_chain_map(force_refresh: bool = False) -> dict[str, str]:
+    """Token symbol -> DefiLlama chain name (e.g. 'SOL' -> 'Solana').
+
+    When two chains share a symbol the higher-TVL one wins. Cached JSON.
+    """
+    path = CACHE_DIR / "tvl" / "chain_map.json"
+    if path.exists() and not force_refresh:
+        return json.loads(path.read_text())
+    chains = json.loads(_fetch(_LLAMA_CHAINS))
+    chains = sorted(chains, key=lambda c: c.get("tvl") or 0.0)
+    mapping = {}
+    for c in chains:  # ascending TVL: bigger chains overwrite
+        sym = (c.get("tokenSymbol") or "").upper()
+        if sym:
+            mapping[sym] = c["name"]
+    path.write_text(json.dumps(mapping))
+    return mapping
+
+
+def get_chain_tvl(chain: str, force_refresh: bool = False) -> pd.Series:
+    """Daily total TVL of one chain (DefiLlama keeps dead chains — Terra
+    Classic has full history). Cached Parquet."""
+    from urllib.parse import quote
+
+    safe = re.sub(r"[^A-Za-z0-9_-]", "_", chain)
+    path = CACHE_DIR / "tvl" / f"{safe}.parquet"
+    if path.exists() and not force_refresh:
+        return pd.read_parquet(path)["tvl"]
+    rows = json.loads(_fetch(_LLAMA_TVL.format(chain=quote(chain))))
+    s = pd.Series(
+        [r["tvl"] for r in rows],
+        index=pd.DatetimeIndex(
+            pd.to_datetime([r["date"] for r in rows], unit="s"), name="Date"
+        ),
+        name="tvl",
+    ).sort_index()
+    s = s[~s.index.duplicated(keep="last")]
+    s.to_frame().to_parquet(path)
+    return s

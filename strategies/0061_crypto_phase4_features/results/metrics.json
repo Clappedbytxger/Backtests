@@ -1,0 +1,40 @@
+{
+  "config": {
+    "frozen_lgbm": {
+      "num_leaves": 15,
+      "learning_rate": 0.05,
+      "n_estimators": 100
+    },
+    "lever": {
+      "rebalance": "ME",
+      "quantile": 0.1,
+      "buffer_mult": 2.0,
+      "liq_floor": 5000000.0
+    },
+    "min_k": 12,
+    "n_new_trials": 2
+  },
+  "base": {
+    "ic_stitched": 0.1505,
+    "split_ic_mean": 0.1452,
+    "win_frac_vs_base": null,
+    "sharpe_net": 0.809,
+    "sharpe_vs_market": 0.454
+  },
+  "funding": {
+    "ic_stitched": 0.1526,
+    "split_ic_mean": 0.1467,
+    "win_frac_vs_base": 0.679,
+    "sharpe_net": 0.775,
+    "sharpe_vs_market": 0.362,
+    "gate_pass": false
+  },
+  "funding_tvl": {
+    "ic_stitched": 0.1529,
+    "split_ic_mean": 0.1469,
+    "win_frac_vs_base": 0.571,
+    "sharpe_net": 0.828,
+    "sharpe_vs_market": 0.503,
+    "gate_pass": true
+  }
+}
