@@ -61,6 +61,37 @@ Every strategy must survive cost, look-ahead and significance scrutiny.
 
 ## Lessons Learned
 
+- **2026-06-11 (0058, Crypto-ML-Roadmap Phasen 0-2 — Survivorship-freies
+  Universum gebaut, Ridge-Messlatte steht):** Neue Infra `crypto_xsection` +
+  `crypto_features` + `tests/test_crypto_universe.py` (8/8 grün).
+  **Daten-Durchbruch: CMCs Web-API (`api.coinmarketcap.com/data-api/v3/...
+  /listings/historical?date=`) liefert die wöchentlichen historischen
+  Top-200-Snapshots gratis** (462 Wochen 2017-2026, PIT-Marktkap-Ränge inkl.
+  aller toten Coins), und **Binance `/api/v3/klines` liefert auch DELISTETE
+  Paare voll** (BCC/VEN/SRM/ANC verifiziert; data.binance.vision-S3 listet
+  alle je existierenden Symbole) → 105/370 Panel-Spalten (28%) sind heute tot
+  = echtes Graveyard. **Lehre 1 (Daten-Falle, vor dem ersten Lauf gefangen):
+  Delist-Relist unter GLEICHEM Ticker** — Binance delistete LUNAUSDT (Terra,
+  →0) am 13.05.2022 und vergab dasselbe Symbol ab 31.05.2022 an Luna 2.0;
+  `pct_change`/Momentum über die Lücke hätte ein Millionen-Prozent-Artefakt
+  gebucht (Verwandter der Roll-Gap-Lehre 0048). Fix: interne Lücken >4 Tage
+  splitten die Serie in unabhängige Segment-Spalten (`LUNAUSDT~2`). Außerdem:
+  CMC-Symbol→Binance-Ticker braucht Alias-Kandidaten (BCH↔BCC 2018, VET↔VEN);
+  alle Kandidaten werden Mitglied, die Bars-Schnittmenge wählt das damals
+  handelbare Paar. 1 Symbol ist non-ASCII (`币安人生USDT`) → URLs quoten.
+  **Lehre 2 (Kern-Befund): hoher IC ≠ Portfolio-PnL.** Ridge-OOS-IC unter 28
+  purged CPCV-Splits stark und OHNE Decay (h28 +0.137, t=11.7, JEDES Jahr
+  2019-2026 positiv — Gegenteil der toten Commodity-XSection 0057), aber das
+  naive inverse-Vol-Top-Quintil monetarisiert ihn nicht: Long-only netto 0.56
+  < Markt 0.61 < BTC 0.76 (Hedge vs Markt -0.47..-0.68); L/S brutto +0.39 →
+  netto -0.08 (Turnover 56-78×/J × gestaffelte 12-100bps/Seite). Viel IC
+  sitzt im Short-Leg (vorhersagbar blutende Small Caps) — retail kaum
+  handelbar. Die Lücke IC→PnL (Rebalance-Frequenz, Leg-Konzentration,
+  Buffer-Ränge) ist DIE Phase-3-Frage; jeder Hebel zählt als Trial.
+  Equal-Weight-Universum hat CAGR -5.4% (der mittlere Top-150-Coin VERLIERT)
+  — Long-only-Crypto-Claims immer gegen cap-weighted Markt UND den eigenen
+  Pool benchmarken, sonst verkauft man Beta-Differenzen als Alpha.
+
 - **2026-06-11 (0057, ML-Commodity-Roadmap Phasen 0-5 komplett — sauberes Null
   + drei Methodik-Lehren):** Komplette ML-Pipeline gebaut (`cot_data` CFTC-COT-
   PIT-Loader, `commodity_features` 14 Feature-Panels, `cpcv` CPCV+PBO,

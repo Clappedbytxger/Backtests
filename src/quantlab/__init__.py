@@ -5,9 +5,9 @@ Public API re-exports the most-used functions so notebooks can simply do
 """
 
 from . import (
-    commodity_features, costs, cot_data, cpcv, cross_sectional, data, features,
-    fundamental_data, futures_curve, ic, metrics, ml_portfolio, overlay,
-    plotting, roll, seasonal, significance,
+    commodity_features, costs, cot_data, cpcv, cross_sectional, crypto_features,
+    crypto_xsection, data, features, fundamental_data, futures_curve, ic,
+    metrics, ml_portfolio, overlay, plotting, roll, seasonal, significance,
 )
 from .backtest import run_backtest
 from .cross_sectional import (
@@ -54,7 +54,8 @@ from .significance import (
 
 __all__ = [
     # modules
-    "commodity_features", "cot_data", "cpcv", "data", "metrics", "costs",
+    "commodity_features", "cot_data", "cpcv", "crypto_features",
+    "crypto_xsection", "data", "metrics", "costs",
     "cross_sectional", "features", "fundamental_data", "futures_curve", "ic",
     "ml_portfolio", "overlay", "plotting", "roll", "seasonal", "significance",
     # backtest engine
