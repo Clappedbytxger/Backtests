@@ -1,0 +1,25 @@
+{
+  "strategy": "0042_sugar_sb_fundamental",
+  "status": "IC_SCREEN_FAILED \u2014 no backtest run",
+  "wasde_loaded": false,
+  "ic_screen": {
+    "H-SB-01 (Niederschlag-Anomalie)": {
+      "5": {
+        "ic": 0.014130786982455552,
+        "p_value": 0.858,
+        "n_obs": 158
+      },
+      "22": {
+        "ic": 0.002117565985684223,
+        "p_value": 0.978,
+        "n_obs": 158
+      },
+      "66": {
+        "ic": -0.07322786110540373,
+        "p_value": 0.346,
+        "n_obs": 156
+      }
+    }
+  },
+  "verdict": "REJECTED \u2014 IC \u2248 0 at all horizons for H-SB-01"
+}

@@ -1,0 +1,82 @@
+{
+  "strategy": "0046_copper_china_ip",
+  "hypothesis": "H-HG-01",
+  "china_series": "CHNPRINTO01IXPYM",
+  "china_has_vintages": false,
+  "series_ends": "2023-11 (discontinued)",
+  "lag_months": 2,
+  "hold_days": 66,
+  "split_year": 2013,
+  "ic_screen": {
+    "22": {
+      "ic": 0.068078911902525,
+      "p_value": 0.251,
+      "n_obs": 264
+    },
+    "66": {
+      "ic": 0.12048455614539404,
+      "p_value": 0.046,
+      "n_obs": 264
+    }
+  },
+  "primary_lag2": {
+    "sharpe": 0.3939449194660249,
+    "cagr": 0.0828282572128447,
+    "max_drawdown": -0.5261089376283961,
+    "n_trades": 19,
+    "win_rate": 0.3684210526315789,
+    "expectancy_pct": 18.64461577093736,
+    "exposure": 0.6471861471861472,
+    "sharpe_is": 0.6429671639486909,
+    "sharpe_oos": 0.06938596939092145,
+    "bh_sharpe": 0.34916408776093466,
+    "perm_p": 0.09945027486256872,
+    "boot_ci": [
+      0.02435788167959203,
+      0.7721030887952753
+    ],
+    "t_p": 0.012981162746694253,
+    "dsr_psr": 0.0
+  },
+  "robust_lag3": {
+    "sharpe": 0.36120745469470944,
+    "cagr": 0.07589545916264018,
+    "max_drawdown": -0.5084452783877229,
+    "n_trades": 19,
+    "win_rate": 0.42105263157894735,
+    "expectancy_pct": 16.15238219804479,
+    "exposure": 0.6485776128633272,
+    "sharpe_is": 0.5299988426955415,
+    "sharpe_oos": 0.1516004227461641,
+    "bh_sharpe": 0.34916408776093466,
+    "perm_p": 0.17191404297851073,
+    "boot_ci": [
+      -0.006916624971159959,
+      0.7444815086820223
+    ],
+    "t_p": 0.020676693947695928,
+    "dsr_psr": 0.0
+  },
+  "crosscheck_indpro": {
+    "sharpe": 0.21047386279594318,
+    "cagr": 0.042525832870946356,
+    "max_drawdown": -0.5806867845563661,
+    "n_trades": 18,
+    "win_rate": 0.5555555555555556,
+    "expectancy_pct": 11.017392734638106,
+    "exposure": 0.7595856524427953,
+    "sharpe_is": 0.38627501798269137,
+    "sharpe_oos": 0.018820307348236174,
+    "bh_sharpe": 0.34916408776093466,
+    "perm_p": 0.7856071964017991,
+    "boot_ci": [
+      -0.17207937301207463,
+      0.5932615974025772
+    ],
+    "t_p": 0.13108852916747205,
+    "dsr_psr": 0.0
+  },
+  "cost_model": "IBKR_METALS_LIQUID (~4 bps RT)",
+  "n_registered": 14,
+  "n_local_tests": 2
+}

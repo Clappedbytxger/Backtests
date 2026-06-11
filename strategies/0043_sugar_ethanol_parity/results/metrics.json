@@ -1,0 +1,69 @@
+{
+  "strategy": "0043_sugar_ethanol_parity",
+  "hypothesis": "H-SB-02 (Ethanol-Parit\u00e4t, Energie-Proxy)",
+  "status": "IC_SCREEN_FAILED",
+  "data_note": "EIA ethanol geo-blocked \u2192 gasoline/crude proxy (yfinance)",
+  "primary_feature": "RBOB/sugar parity ratio z-score (252d)",
+  "sample_start": "2007-01-01",
+  "split_year": 2017,
+  "hold_days": 66,
+  "parity_thresh": 1.0,
+  "ratio_window": 252,
+  "cost_model": "IBKR_SOFTS (4 bps/side)",
+  "n_registered": 14,
+  "n_local_tests": 3,
+  "ic_screen": {
+    "H-SB-02 RBOB/Zucker": {
+      "5": {
+        "ic": -0.03909654057648729,
+        "p_value": 0.562,
+        "n_obs": 232
+      },
+      "22": {
+        "ic": 0.014680800815519873,
+        "p_value": 0.826,
+        "n_obs": 232
+      },
+      "66": {
+        "ic": 0.039863497049751076,
+        "p_value": 0.53,
+        "n_obs": 230
+      }
+    },
+    "Crude/Zucker (Cross)": {
+      "5": {
+        "ic": -0.04629446326945216,
+        "p_value": 0.498,
+        "n_obs": 232
+      },
+      "22": {
+        "ic": 0.02228091296486946,
+        "p_value": 0.694,
+        "n_obs": 232
+      },
+      "66": {
+        "ic": 0.020293471480105234,
+        "p_value": 0.742,
+        "n_obs": 230
+      }
+    },
+    "RBOB/Gold (Placebo)": {
+      "5": {
+        "ic": 0.004125591738437675,
+        "p_value": 0.956,
+        "n_obs": 232
+      },
+      "22": {
+        "ic": -0.1682391901424016,
+        "p_value": 0.012,
+        "n_obs": 232
+      },
+      "66": {
+        "ic": -0.27429251970736684,
+        "p_value": 0.0,
+        "n_obs": 230
+      }
+    }
+  },
+  "backtests": {}
+}

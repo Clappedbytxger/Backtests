@@ -1,0 +1,242 @@
+Dokument für Claude
+Ziel
+
+Für jeden Future sollen alternative Datenquellen identifiziert werden, die kostenlos verfügbar sind und potenziell Informationsvorteile liefern. Der Fokus liegt auf Rohstoffen und Nischenfutures, die weniger effizient sind als große Aktienindex- oder FX-Märkte.
+
+1. Zucker (SB)
+Wichtige externe Daten
+Wetter Brasilien
+Wetter Indien
+Niederschlag Zuckeranbaugebiete
+Ethanolpreise
+USDA Sugar Reports
+Exportzahlen Brasilien
+Hafenaktivität Brasilien
+Kostenlose Quellen
+NOAA Wetterdaten
+Open-Meteo API
+USDA WASDE Reports
+USDA PSD Datenbank
+EIA Ethanol Daten
+
+Die USDA-WASDE-Berichte enthalten monatliche Schätzungen zu Angebot und Nachfrage sowie Daten für Zucker. Historische Datensätze stehen kostenlos zur Verfügung.
+
+2. Kakao (CC)
+Wichtige externe Daten
+Niederschläge Elfenbeinküste
+Niederschläge Ghana
+Temperaturabweichungen
+Exportmengen Ghana
+Hafenaktivität Abidjan
+Ernteberichte
+Kostenlose Quellen
+NOAA
+Open-Meteo
+USDA PSD
+FAO
+
+Wetterdaten können kostenlos über NOAA oder Open-Meteo bezogen werden.
+
+3. Kaffee (KC)
+Wichtige externe Daten
+Frostwarnungen Brasilien
+Niederschläge Brasilien
+Temperatur Brasilien
+USDA Coffee Reports
+Exportzahlen Brasilien
+Kostenlose Quellen
+NOAA
+Open-Meteo
+USDA
+ICO (International Coffee Organization)
+4. Baumwolle (CT)
+Daten
+Wetter Texas
+Wetter Indien
+USDA Cotton Reports
+Anbauflächen
+Exportdaten
+Quellen
+USDA NASS
+USDA WASDE
+NOAA
+
+Die NASS-Datenbank bietet umfangreiche historische Agrardaten kostenlos an.
+
+5. Orangensaft (OJ)
+Daten
+Frost Florida
+Hurricanes
+Niederschläge Florida
+USDA Citrus Reports
+Quellen
+NOAA
+Open-Meteo
+USDA
+6. Live Cattle (LE)
+Daten
+Feed-Kosten
+Maispreise
+Wetter Texas
+USDA Cattle Reports
+Quellen
+USDA NASS
+USDA WASDE
+NOAA
+7. Feeder Cattle (GF)
+Daten
+Viehbestände
+Futterpreise
+Niederschlag Weideflächen
+Quellen
+USDA
+NOAA
+8. Lean Hogs (HE)
+Daten
+Schweinebestände
+Maispreise
+Sojabohnenpreise
+USDA Hog Reports
+Quellen
+USDA NASS
+USDA PSD
+9. Hafer (ZO)
+Daten
+Wetter Kanada
+USDA Reports
+Ernteschätzungen
+Quellen
+USDA
+NOAA
+10. Reis (ZR)
+Daten
+Monsun Indien
+Niederschläge Südostasien
+USDA Rice Reports
+Quellen
+NOAA
+USDA PSD
+11. Holz (Lumber)
+Daten
+Baubeginne USA
+Waldbrände Kanada
+Holzproduktion
+Quellen
+FRED
+NOAA
+US Census
+12. Milch Klasse III
+Daten
+Milchproduktion
+Futterkosten
+USDA Dairy Reports
+Quellen
+USDA
+NASS
+13. Butter
+Daten
+Milchproduktion
+Lagerbestände
+Quellen
+USDA
+14. Käse
+Daten
+Produktionszahlen
+Lagerbestände
+Quellen
+USDA
+15. Raps (Canola)
+Daten
+Wetter Kanada
+Exportdaten
+USDA Oilseed Reports
+Quellen
+NOAA
+USDA
+16. Palmöl
+Daten
+Wetter Malaysia
+Wetter Indonesien
+Exportdaten
+Quellen
+NOAA
+FAO
+17. Gummi
+Daten
+Wetter Thailand
+Wetter Indonesien
+Exportdaten
+Quellen
+NOAA
+FAOSTAT
+18. Kupfer
+Daten
+Stromverbrauch China
+Industrieproduktion China
+Lagerbestände
+Quellen
+EIA
+World Bank
+FRED
+19. Platin
+Daten
+Stromversorgung Südafrika
+Minenproduktion
+Quellen
+World Bank
+USGS
+20. Palladium
+Daten
+Autoabsatz
+Minenproduktion Russland
+Minenproduktion Südafrika
+Quellen
+USGS
+World Bank
+Universelle kostenlose Datenquellen für alle Futures
+Wetter
+NOAA
+
+Historische Wetterdaten, Niederschlag, Temperatur, Wind und Klimadaten kostenlos per API.
+
+Open-Meteo
+
+Kostenlose historische Wetterdaten bis 1940 sowie Forecasts über eine API.
+
+Agrardaten
+USDA WASDE
+
+Monatliche Angebots- und Nachfrageprognosen für Agrarrohstoffe. Historische Daten als CSV verfügbar.
+
+USDA PSD
+
+Produktions-, Angebots- und Verbrauchsdaten zahlreicher Agrarrohstoffe weltweit.
+
+USDA NASS
+
+Historische Ernte-, Flächen-, Produktions- und Bestandsdaten.
+
+Energie
+EIA
+
+Kostenlose API für Öl-, Gas-, Strom- und Ethanol-Daten.
+
+Anweisung für Claude
+
+Für jeden der 20 Futures:
+
+Sammle alle verfügbaren kostenlosen Datenquellen.
+Lade historische Daten automatisch herunter.
+Erzeuge Features:
+Wetteranomalien
+Niederschlagsabweichungen
+Temperaturabweichungen
+USDA-Revisionsüberraschungen
+Exportwachstum
+Lagerbestandsänderungen
+Energiepreisänderungen
+Teste Vorhersagekraft für:
+1 Woche
+1 Monat
+3 Monate
+Bewerte jede Datenquelle nach Information Coefficient (IC), Sharpe-Beitrag und Stabilität über verschiedene Zeiträume.

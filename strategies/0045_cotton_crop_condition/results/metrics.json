@@ -1,0 +1,59 @@
+{
+  "strategy": "0045_cotton_crop_condition",
+  "hypothesis": "H-CT-01 (NASS crop-condition \u0394)",
+  "region": "Texas (FIPS 48)",
+  "delta_thresh_pp": -5.0,
+  "hold_days": 22,
+  "n_weeks": 585,
+  "n_events": 41,
+  "continuous_ic": {
+    "5": {
+      "ic": -0.0009618883301976028,
+      "p_value": 0.978,
+      "n_obs": 585
+    },
+    "10": {
+      "ic": -0.0512321434977706,
+      "p_value": 0.24,
+      "n_obs": 585
+    },
+    "22": {
+      "ic": -0.03663211271008876,
+      "p_value": 0.419,
+      "n_obs": 585
+    }
+  },
+  "event_study": {
+    "5": {
+      "mean": -0.006941233257111536,
+      "median": -0.004716534538981798,
+      "win_rate": 0.43902439024390244,
+      "n": 41
+    },
+    "22": {
+      "mean": -0.004290253225820261,
+      "median": 0.0009741134800862472,
+      "win_rate": 0.5121951219512195,
+      "n": 41
+    }
+  },
+  "net_backtest": {
+    "sharpe": -0.22913187067784244,
+    "cagr": -0.014924782413711313,
+    "max_drawdown": -0.5144444376956911,
+    "n_trades": 28,
+    "win_rate": 0.5,
+    "expectancy_pct": -0.9171001999524133,
+    "median_trade_pct": 0.18410661888288665,
+    "perm_p": 0.7171414292853573,
+    "t_p": 0.7432742433363421,
+    "boot_ci": [
+      -0.5812877971458958,
+      0.16790229496585837
+    ],
+    "dsr_psr": 0.0
+  },
+  "cost_model": "IBKR_SOFTS (4 bps/side)",
+  "n_registered": 14,
+  "n_local_tests": 3
+}

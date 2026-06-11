@@ -122,3 +122,58 @@ MNQ_INTRADAY = CostModel(
     slippage_bps=1.0,
     regulatory_bps=0.5,
 )
+
+# ── Commodity futures cost presets (Alt-Data Fundamentals framework) ─────────
+#
+# These cover the 20-market universe in fundamentals/tradeability.md.
+# All bps figures are per-side; round-trip = 2×.
+#
+# Methodology: commission (~1 bps for liquid softs at IBKR, folded into
+# regulatory_bps) + effective half-spread including market-impact for daily
+# end-of-day entries on continuous front-month contracts.
+
+# Liquid US-traded softs and agricultural futures:
+#   SB (Sugar #11, ~$24k notional):  spread 1-2 ticks, ~5 bps RT net commission
+#   KC (Coffee, ~$75k notional):     spread 1-2 ticks at market → ~4 bps RT
+#   CC (Cocoa, ~$80k notional):      similar to KC
+#   CT (Cotton, ~$40k notional):     spread 1 tick at market → ~4 bps RT
+#   LE/GF/HE (Live/Feeder/Hogs):     ~4-6 bps RT
+# Conservative 8 bps RT (4 bps/side) to ensure gross edge clears costs.
+IBKR_SOFTS = CostModel(
+    commission_per_share=0.0,
+    min_commission=0.0,
+    slippage_bps=3.5,   # half-spread + market impact, padded for daily entries
+    regulatory_bps=0.5, # IBKR commission + exchange fees folded in
+)
+
+# Liquid base and precious metals:
+#   HG (Copper, ~$112k notional): very liquid, tight spread → ~4 bps RT
+IBKR_METALS_LIQUID = CostModel(
+    commission_per_share=0.0,
+    min_commission=0.0,
+    slippage_bps=1.5,
+    regulatory_bps=0.3,
+)
+
+# Platinum-group metals (less liquid than gold/copper):
+#   PL (Platinum, ~$50k notional): wider spread than HG → ~6 bps RT
+#   PA (Palladium, ~$100k notional): similar
+IBKR_METALS_PGM = CostModel(
+    commission_per_share=0.0,
+    min_commission=0.0,
+    slippage_bps=2.5,
+    regulatory_bps=0.5,
+)
+
+# Thin agricultural futures (OJ, ZO/Oats, ZR/Rough Rice, Dairy):
+#   OJ (~$22k notional):  spread 5-15 ticks → 35-80 bps RT; 40 bps RT used
+#   ZO/ZR: similar or worse
+#   Dairy (Class III Milk, Butter, Cheese): prohibitively wide → flag in tradeability.md
+# Conservative floor of 40 bps RT (20 bps/side). Actual may be 2-3× worse.
+# A fundamental edge must be VERY strong (>40 bps/trade net) to survive here.
+IBKR_SOFTS_THIN = CostModel(
+    commission_per_share=0.0,
+    min_commission=0.0,
+    slippage_bps=18.0,  # very wide bid-ask + low electronic liquidity
+    regulatory_bps=0.5,
+)
