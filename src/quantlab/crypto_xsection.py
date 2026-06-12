@@ -360,6 +360,7 @@ def get_price_panels(
     """
     pairs = list(universe["membership"].columns)
     closes, dvols, parent = {}, {}, {}
+    opens, highs, lows = {}, {}, {}
     for i, p in enumerate(pairs):
         cached = (CACHE_DIR / "binance" / f"{p}.parquet").exists()
         df = get_binance_daily(p)
@@ -373,6 +374,9 @@ def get_price_panels(
                 name = p if k == 0 else f"{p}~{k + 1}"
                 closes[name] = sub["Close"]
                 dvols[name] = sub["QuoteVolume"]
+                opens[name] = sub["Open"]
+                highs[name] = sub["High"]
+                lows[name] = sub["Low"]
                 parent[name] = p
         if not cached:
             if progress and i % 25 == 0:
@@ -425,12 +429,19 @@ def get_price_panels(
         mcap_w.reindex(close.index, method="ffill")
         .where(memb)
     )
+    # OHLC panels for chart-image models (JKX), aligned/masked to `close`.
+    ohlc = {}
+    for field, store in [("open", opens), ("high", highs), ("low", lows)]:
+        panel = pd.DataFrame(store).reindex(close.index)
+        ohlc[field] = panel.ffill(limit=3).where(close.notna())
+
     return {
         "close": close,
         "ret": ret,
         "dollar_volume": dvol.where(close.notna()),
         "membership_daily": memb,
         "mcap_daily": mcap,
+        **ohlc,
     }
 
 

@@ -61,6 +61,26 @@ Every strategy must survive cost, look-ahead and significance scrutiny.
 
 ## Lessons Learned
 
+- **2026-06-12 (0062, Phase 5 / CNN-on-Charts — Track B sauberes Null,
+  Crypto-Roadmap 0-5 KOMPLETT):** JKX-2023-CNN (20d-OHLC-Bilder, 3px/Tag,
+  per Bild skaliert — Skalierungs-Invarianz per Unit-Test bewiesen) auf
+  exakt den 35.428 Track-A-Zeilen unter identischen 28 CPCV-Splits:
+  **CNN gewinnt 0/28 Splits** (Stitched-IC +0.012 vs LGBM +0.151), fixe
+  Architektur/Seed, bewusst KEINE Architektur-Iteration gegen ein
+  0/28-Ergebnis (wäre Trial-Mining). **Lehre 1: „unkorreliert" ist KEIN
+  Ensemble-Argument ohne eigenes Signal** — Rank-Korrelation 0.044 sah
+  nach Diversifikation aus, aber das Ensemble verwässerte nur (IC
+  0.151→0.109, vs Markt +0.45→+0.04, 0/28 Splits): erst Signal nachweisen,
+  DANN über Korrelation reden. **Lehre 2: Deep-Learning-Paper brauchen die
+  Datenskala des Papers** — JKX trainieren auf Millionen täglicher
+  US-Aktien-Bilder; ~25k wöchentliche Crypto-Bilder/Split reichen für
+  „Modell findet Muster selbst" nicht, und Crypto-Einzelcharts tragen
+  v.a. den gemeinsamen Marktmove, der im Querschnitt nichts rankt.
+  Infra wiederverwendbar: `quantlab/price_images.py` (+ 4 Guards inkl.
+  Look-ahead-Test), OHLC-Panels in `get_price_panels`, torch-CPU im venv.
+  **Programm-Stand: Roadmap 0-5 fertig; einziger offener Faden = der
+  registrierte Live-Forward der Track-A-Regel (0060).**
+
 - **2026-06-12 (0060/0061, Walk-Forward + Konzentrations-Fix + Phase 4 —
   drei Lehren, eine davon teuer-fast):** **Lehre 1 (Stablecoin-Falle, im
   LIVE-Buch gefangen, nicht im Backtest):** Das Live-Signal der eingefrorenen
