@@ -57,6 +57,9 @@ Every strategy must survive cost, look-ahead and significance scrutiny.
 - `devig.py` — Quoten → faire Wahrscheinlichkeiten (multiplicative/Shin/power;
   Shin am besten kalibriert, Tests in `tests/test_devig.py`)
 - `clv.py` — Closing Line Value je Wette + Bootstrap-KI auf den Median
+- `odds_live.py` — The Odds API-Client (Quota-Tracking, Key `.oddsapi.key`) +
+  eingefrorene Live-Alert-Logik (`find_value_bets`, `fair_close_prob`);
+  täglicher Paper-Tick: `scripts/football_live_paper.py` (0065)
 
 ## Environment
 
