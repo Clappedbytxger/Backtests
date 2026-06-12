@@ -66,6 +66,27 @@ Every strategy must survive cost, look-ahead and significance scrutiny.
 
 ## Lessons Learned
 
+- **2026-06-12 (0064, Football Phase 2 — Cross-Liga-OOS PASS, ROI-Gate als
+  Kriterium beerdigt):** Eingefrorene 0063-Regel (shin@2%) ohne Re-Fit auf 11
+  nie berührte Ligen: **Median-CLV +1,44%, KI [+0,97%,+1,90%] ohne 0, 11/11
+  Ligen + 7/7 Saisons positiv** (OOS > IS — Nischen-Ligen ineffizienter);
+  Plateau über alle 12 Schwellen; Edge sitzt im Quote-Bucket [2,5;4) (77%
+  Draws = Soft-Book-Draw-Bias), NICHT in Longshots. **Lehre 1 (Gate-Design):
+  ein ROI-Bootstrap-KI-Gate ist bei Wett-Strategien strukturell unerreichbar**
+  — wahrer Erwartungswert je Wette = mittlerer CLV (+1,09%), Streuung
+  1,98/Wette → KI-Ausschluss bräuchte ~126k Wetten (verfügbar 1.849). Vor dem
+  Registrieren eines Gates die benötigte Stichprobe gegen die verfügbare
+  rechnen — sonst registriert man einen garantierten FAIL. CLV ist die
+  korrekte Beweis-Metrik (per-Wette, sofort, hoch-N). **Lehre 2 (Ökonomie):
+  EV gegen die Opening-Linie überschätzt den Edge massiv** — +4,2% mean EV
+  (vs Open) schmilzt an der Schlusslinie auf +1,1%; nach 1% Slippage ~+0,2%,
+  nach 5,3% Steuer tot (Stress-ROI −3%) → Steuer-Absorption ist
+  Existenzbedingung, und die Roadmap-Annahme „2-4% Edge" hält am
+  Freitag-Snapshot nicht. Flow-Zerfall real: 5,9→1,6 Wetten/Woche bis 25/26.
+  Offen: nur Phase 3 (Live-Polling-Paper-CLV, Gate vorab: Median ≥+1% bei
+  ≥150 Alerts/4-6 Wochen) kann zeigen, ob Intraday-Divergenzen mehr tragen
+  als der Snapshot.
+
 - **2026-06-12 (0063, Football-Value-Betting Phase 0+1 — Selbstreferenz-Bias
   in der CLV-Messung gefangen):** Neues Programm (FOOTBALL-VALUE-BETTING-
   ROADMAP.md): de-viggte Pinnacle-Quoten als Orakel, Bet365-Quoten darüber =
