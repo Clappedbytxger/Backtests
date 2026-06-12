@@ -53,7 +53,10 @@ BETS_CSV = STATE / "paper_bets.csv"
 SNAPS_CSV = STATE / "pinnacle_snapshots.csv"
 QUOTA_JSON = STATE / "quota.json"
 
-LOOKAHEAD_H = 48  # nur Events innerhalb dieses Fensters scannen/wetten
+# Lookahead je Tier: validiert = 48h (registriert, 0065-REPORT); Extension =
+# 24h (Credit-Budget-Schutz bei 32 Ligen — kürzerer Vorlauf ist für die
+# CLV-Messung konservativ, nicht schmeichelnd).
+LOOKAHEAD_H = {"validated": 48, "extension": 24}
 
 # tier "validated" = Ligen aus den Backtest-Panels 0063/0064 (Gate-relevant);
 # tier "extension" = Sommer-Ligen, separat berichtet (zusätzlicher Cross-OOS,
@@ -78,13 +81,23 @@ LEAGUES: dict[str, tuple[str, str]] = {
     "soccer_turkey_super_league": ("T1", "validated"),
     "soccer_greece_super_league": ("G1", "validated"),
     "soccer_spl": ("SC0", "validated"),
-    # Sommer-Ligen (Saison Apr-Nov): überbrücken die EU-Sommerpause
+    # Extension-Tier (NICHT Gate-relevant): Sommer-Ligen überbrücken die
+    # EU-Pause; die 0066-geprüften Extra-Ligen (Orakel sane, Bias-Rate >=
+    # Benchmark, gepoolte Sanity +) liefern zusätzlichen Live-Cross-OOS.
     "soccer_sweden_allsvenskan": ("SWE", "extension"),
     "soccer_norway_eliteserien": ("NOR", "extension"),
-    "soccer_finland_veikkausliiga": ("FIN", "extension"),
+    "soccer_finland_veikkausliiga": ("FIN", "extension"),  # 0066: Bias-Rate niedrig
     "soccer_usa_mls": ("MLS", "extension"),
     "soccer_brazil_campeonato": ("BRA", "extension"),
     "soccer_japan_j_league": ("JPN", "extension"),
+    "soccer_austria_bundesliga": ("AUT", "extension"),  # ab hier: 0066-Zugänge
+    "soccer_denmark_superliga": ("DNK", "extension"),
+    "soccer_switzerland_superleague": ("SWZ", "extension"),
+    "soccer_poland_ekstraklasa": ("POL", "extension"),
+    "soccer_argentina_primera_division": ("ARG", "extension"),
+    "soccer_mexico_ligamx": ("MEX", "extension"),
+    "soccer_china_superleague": ("CHN", "extension"),
+    "soccer_league_of_ireland": ("IRL", "extension"),
 }
 
 BET_COLUMNS = [
@@ -109,10 +122,11 @@ def scan(client: OddsApiClient, bets: pd.DataFrame, snaps: pd.DataFrame,
          min_credits: int = 25) -> tuple[pd.DataFrame, pd.DataFrame]:
     """Ligen mit nahen Spielen pollen, Snapshots + neue Paper-Wetten loggen."""
     ts = now_utc()
-    horizon = ts + timedelta(hours=LOOKAHEAD_H)
     new_bets, new_snaps = [], []
 
     for sport_key, (div, tier) in LEAGUES.items():
+        lookahead = LOOKAHEAD_H[tier]
+        horizon = ts + timedelta(hours=lookahead)
         # Kostenloser Vorfilter: lohnt der 1-Credit-/odds-Call?
         try:
             events = client.get_events(sport_key)
@@ -173,7 +187,7 @@ def scan(client: OddsApiClient, bets: pd.DataFrame, snaps: pd.DataFrame,
                 bets = pd.concat([bets, pd.DataFrame([new_bets[-1]])],
                                  ignore_index=True)
         flag = f", {n_alerts} ALERT(S)" if n_alerts else ""
-        print(f"  {div} ({tier}): {len(upcoming)} Spiele <{LOOKAHEAD_H}h, "
+        print(f"  {div} ({tier}): {len(upcoming)} Spiele <{lookahead}h, "
               f"{len(odds_events)} mit Quoten{flag}")
 
     if new_snaps:

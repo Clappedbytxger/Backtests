@@ -68,6 +68,37 @@ def get_season(
     return df
 
 
+def get_extra_league(
+    country: str,
+    use_cache: bool = True,
+    force_refresh: bool = False,
+) -> pd.DataFrame:
+    """Extra-Liga-Datei laden, z. B. ``get_extra_league("AUT")``.
+
+    football-data's ``/new/{COUNTRY}.csv``-Format: EINE Datei je Land über
+    alle Saisons (z. B. AUT/DNK/SWZ/POL/ARG/MEX). **Enthält NUR
+    Schlussquoten** (``PSCH/PSCD/PSCA`` Pinnacle, ``B365CH/...`` Bet365,
+    Max/Avg/Betfair-Exchange) — keine Collection-Quoten, daher kein
+    CLV-Backtest im 0063-Sinn möglich, nur Orakel-/Bias-Checks.
+    """
+    path = CACHE_DIR / f"extra_{country}.parquet"
+    if use_cache and not force_refresh and path.exists():
+        return pd.read_parquet(path)
+
+    url = f"https://www.football-data.co.uk/new/{country}.csv"
+    resp = requests.get(url, timeout=30)
+    resp.raise_for_status()
+    df = pd.read_csv(io.BytesIO(resp.content), encoding="latin-1", on_bad_lines="skip")
+    df.columns = [c.replace("﻿", "").strip() for c in df.columns]
+    df = df.dropna(subset=["Date", "Res"]).copy()
+    df["Date"] = pd.to_datetime(df["Date"], dayfirst=True, format="mixed")
+    df["Country"] = country
+
+    if use_cache:
+        df.to_parquet(path)
+    return df
+
+
 def get_matches(
     divisions: list[str],
     seasons: list[str],

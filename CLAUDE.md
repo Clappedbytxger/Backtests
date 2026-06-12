@@ -69,6 +69,23 @@ Every strategy must survive cost, look-ahead and significance scrutiny.
 
 ## Lessons Learned
 
+- **2026-06-12 (0066, Extra-Ligen-Eignungstest — dieselbe Gate-n-Falle
+  ZWEIMAL in einem Programm):** football-data-Extra-Dateien (`/new/{LAND}.csv`)
+  haben NUR Schlussquoten (kein 0064-Replikat), B365-Close erst ab Saison
+  2025/26, AvgC voll seit 2012, Pinnacle-Close fehlt jüngst in ARG/USA —
+  **Spaltenexistenz ≠ Coverage, immer non-null je Saison prüfen** (0025-
+  Verwandte). Methodisch: Gate „n≥50 B365-Close-Value-Wetten" war mit
+  maximal ~41 verfügbaren unerreichbar (Lauf 1), und das Amendment auf das
+  ~9× seltenere AvgC-Maß behielt die 50 bei (Lauf 2) → 0/14 PASS trotz klar
+  positiver Strukturbefunde (Orakel 14/14 sane, Bias-Rate 13/14 ≥ Benchmark,
+  Sanity-ROI +12%). **Die 0064-Lehre (erreichbares n VOR der Schwellen-
+  Registrierung gegen die Datenquelle rechnen) gilt für JEDE Schwelle, auch
+  nach Amendments — ein geändertes Maß braucht eine neu gerechnete Schwelle.**
+  Disziplin gehalten: kein dritter Gate-Umbau (= Gate-Shopping); Entscheid
+  transparent auf Strukturbasis — 8 Ligen in den NICHT-Gate-relevanten
+  Extension-Tier (der nie backtest-pflichtig war), 0065-Gate unangetastet,
+  Budget-Schutz via Tier-Lookahead 24h/48h.
+
 - **2026-06-12 (0064, Football Phase 2 — Cross-Liga-OOS PASS, ROI-Gate als
   Kriterium beerdigt):** Eingefrorene 0063-Regel (shin@2%) ohne Re-Fit auf 11
   nie berührte Ligen: **Median-CLV +1,44%, KI [+0,97%,+1,90%] ohne 0, 11/11
