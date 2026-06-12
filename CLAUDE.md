@@ -52,6 +52,11 @@ Every strategy must survive cost, look-ahead and significance scrutiny.
   PBO via CSCV
 - `ml_portfolio.py` — Prediction-Panel → Quintil-L/S, inverse-Vol-Legs,
   Turnover-Kosten
+- `football_data.py` — football-data.co.uk-Loader (Parquet-Cache; PS*/PSC* =
+  Pinnacle Collection/Closing, B365* = Bet365; Closing ab Saison 2019/20)
+- `devig.py` — Quoten → faire Wahrscheinlichkeiten (multiplicative/Shin/power;
+  Shin am besten kalibriert, Tests in `tests/test_devig.py`)
+- `clv.py` — Closing Line Value je Wette + Bootstrap-KI auf den Median
 
 ## Environment
 
@@ -60,6 +65,26 @@ Every strategy must survive cost, look-ahead and significance scrutiny.
   use it for this project; always use the project `.venv`.
 
 ## Lessons Learned
+
+- **2026-06-12 (0063, Football-Value-Betting Phase 0+1 — Selbstreferenz-Bias
+  in der CLV-Messung gefangen):** Neues Programm (FOOTBALL-VALUE-BETTING-
+  ROADMAP.md): de-viggte Pinnacle-Quoten als Orakel, Bet365-Quoten darüber =
+  +EV, Beweis-Metrik = CLV gegen die de-viggte Pinnacle-Schlusslinie.
+  **Kern-Lehre: Selektions- und Mess-Maßstab müssen entkoppelt sein** — wird
+  der CLV jeder De-Vig-Methode gegen ihre EIGENE Schlusslinie gemessen,
+  bestätigt sich die Methode selbst: multiplicative (inflationiert Longshot-
+  Probs) wählte Longshots und zeigte Median-CLV +2,7% mit KI ohne 0; gegen
+  die bestkalibrierte Shin-Schlusslinie gemessen wurde daraus **−0,7%**
+  (Verwandter der „richtige Permutations-Null"-Lehre 0052/0057). Standard
+  jetzt: CLV IMMER an der Shin-Close messen, egal welche Methode selektiert.
+  Zweite Lehre: das +EV-Wettbuch ist longshot-lastig (Median-Quote 4,75,
+  Top-5-Gewinner = 95% des PnL) → ROI-KIs nutzlos breit, **nur der CLV ist
+  beweisfähig** — exakt der Grund, warum die Roadmap CLV als Primärmetrik
+  registriert. Stand: Phase 0 PASS (Margen plausibel, Shin > power > mult per
+  Brier, 15/15 Tests), Phase-1-Gate shin@3% FAIL (KI mit 0), Lead shin@2%
+  (Median-CLV +1,01%, KI [+0,2%,+2,2%], 5/7 Ligen, von Zweitligen getragen);
+  Vorbehalt Flow-Zerfall 90→20 Wetten/Saison bis 25/26. Entscheid mit Robin:
+  2%-Headline registrieren + Phase 2 vs direkt Phase 3 (Live-Paper-CLV).
 
 - **2026-06-12 (0062, Phase 5 / CNN-on-Charts — Track B sauberes Null,
   Crypto-Roadmap 0-5 KOMPLETT):** JKX-2023-CNN (20d-OHLC-Bilder, 3px/Tag,
