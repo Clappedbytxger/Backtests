@@ -192,9 +192,14 @@ def close_bets(bets: pd.DataFrame, snaps: pd.DataFrame) -> pd.DataFrame:
         if s.empty:
             continue
         s["snapshot_at"] = pd.to_datetime(s["snapshot_at"], utc=True)
-        s = s[s["snapshot_at"] <= kickoff].sort_values("snapshot_at")
+        # Nur Snapshots NACH der Wette zählen als Schlusslinien-Proxy: der
+        # Entry-Snapshot selbst würde CLV = EV setzen (mechanisch >= 2%,
+        # geschmeichelt) — lieber kein CLV als ein verfälschter.
+        placed = pd.Timestamp(bet["placed_at"])
+        s = s[(s["snapshot_at"] <= kickoff)
+              & (s["snapshot_at"] > placed)].sort_values("snapshot_at")
         if s.empty:
-            bets.loc[idx, "status"] = "no_close"  # kein Pre-Kickoff-Snapshot
+            bets.loc[idx, "status"] = "no_close"  # kein Post-Bet-Snapshot
             continue
         last = s.iloc[-1]
         close = np.array([last["pin_h"], last["pin_d"], last["pin_a"]])

@@ -70,6 +70,11 @@ für Ligen mit Spielen < 48h; Quota-Guard stoppt den Scan unter 25 Credits.
    (Lineup-News der letzten Stunde fehlen). Das macht den gemessenen CLV
    tendenziell RAUSCHIGER, nicht systematisch geschmeichelt — die Staleness
    wird je Wette geloggt und im Report als Median ausgewiesen.
+   **Integritäts-Guard (2026-06-12):** als Schlusslinien-Proxy zählen nur
+   Snapshots NACH dem Wett-Zeitpunkt; läuft der PC zwischen Wette und
+   Anpfiff nie (Entry-Snapshot = einziger Snapshot), wäre CLV = EV
+   (mechanisch ≥ 2 %, geschmeichelt) → solche Wetten werden `no_close`
+   (kein CLV, separat gezählt) statt verfälscht gemessen.
 2. **Bet365 via Aggregator ≠ Bet365-Anzeige:** kleine Quoten-Differenzen und
    Verzögerungen möglich; dafür ist das 1 %-Slippage-Äquivalent im Gate.
 3. **Juni/Juli = EU-Sommerpause:** validierte Ligen liefern erst ab August
