@@ -1,0 +1,100 @@
+# Live trading calendar — one entry per live/live-forward strategy.
+# Consumed by live/run_daily.py via live/engine.py. Trigger semantics are
+# documented in engine.py and mirror the backtest T+1 convention exactly.
+#
+# status: confirmed = Tier-1-Edge (einsatzreif) | testing = Lead im
+# Live-Forward (Signale werden erzeugt + geloggt, Kapital-Entscheid bei Robin).
+
+# ---------------------------------------------------------------- Tier 1
+- id: benzin_kw9
+  name: Benzin KW9 (0006, Driving-Season-Restocking)
+  status: confirmed
+  instrument: RB=F
+  direction: long
+  trigger: {type: isoweek, week: 9, hold_days: 5}
+  expectancy: "+11.2%/Trade, Win 95%, n=22 (0036-Leg, netto)"
+  size_hint: "RB ist Full-Size (~$90k Notional) — fuer kleines Konto ggf. UGA-ETF als Proxy; Size manuell."
+  notes: "Staerkster Einzel-Edge des Katalogs (Sharpe 0.86, p=0.000, DSR 1.00)."
+
+- id: mastrind_kw21
+  name: Mastrind KW21 (0009, Grillsaison)
+  status: confirmed
+  instrument: GF=F
+  direction: long
+  trigger: {type: isoweek, week: 21, hold_days: 5}
+  expectancy: "+4.1%/Trade, Win 91%, n=22 (0036-Leg, netto)"
+  size_hint: "GF Feeder Cattle ~$300k Notional — fuer kleines Konto kaum darstellbar; ggf. auslassen."
+  notes: "Confirmed, 10/11 Jahre positiv. Fragilster der drei Tier-1 (Bootstrap-KI beruehrt 0)."
+
+- id: platin_jahreswechsel
+  name: Platin Jahreswechsel (0021)
+  status: confirmed
+  instrument: PL=F
+  direction: long
+  trigger: {type: date_window, start_md: [12, 18], end_md: [1, 10]}
+  expectancy: "+4.5%/Trade, Win 88%, n=25 (0036-Leg, netto)"
+  size_hint: "PL ~$50k Notional; physische Alternative PPLT (roll-frei, cross-bestaetigt)."
+  notes: "Bestbegruendeter Edge (cross-instrument PPLT + cross-asset Palladium bestaetigt)."
+
+# ------------------------------------------------- Tier 3 (Overlay-Beine)
+- id: baumwolle_jahresend
+  name: Baumwolle Jahresend (0035)
+  status: testing
+  instrument: CT=F
+  direction: long
+  trigger: {type: date_window, start_md: [11, 21], end_md: [12, 29]}
+  expectancy: "+5.1%/Trade, Win 79%, n=24 (0036-Leg, netto)"
+  size_hint: "CT ~$35k Notional."
+  notes: "Live-Forward 2026 registriert (kein Faser-Schwester-Future fuer Cross-OOS)."
+
+- id: mais_dezember
+  name: Mais Dezember (0030/0032)
+  status: testing
+  instrument: ZC=F
+  direction: long
+  trigger: {type: date_window, start_md: [12, 8], end_md: [12, 18]}
+  expectancy: "+2.7%/Trade, Win 86%, n=21 (0036-Leg, netto)"
+  size_hint: "ZC ~$22k Notional. KLEIN sizen: 78% des Edges sitzen auf 6 WASDE-Tagen (Event-Bet)."
+  notes: "Vermutlich nur im Kalenderspread voll real (siehe Idee A)."
+
+# ------------------------------------------------- Tier 2 (Leads, testing)
+- id: turn_of_month
+  name: Turn-of-the-Month (0050)
+  status: testing
+  instrument: MES (oder SPY)
+  direction: long
+  trigger: {type: month_turn, days_after_start: 3}
+  expectancy: "Sharpe aktiv ~0.9, TOM-Tag ~+4-7 bps, DSR 0.916"
+  size_hint: "1 MES (~$30k Notional) fuers Forward-Tracking; Overlay-Bein, kein Standalone."
+  notes: "Live-Forward ab Juli 2026 registriert. Post-Publikations-Decay: Praemie ~halbiert."
+
+- id: pre_fomc
+  name: Pre-FOMC Overnight (0052)
+  status: testing
+  instrument: MES (oder SPY)
+  direction: long
+  trigger: {type: fomc}
+  expectancy: "+16 bps/Nacht (5x normale Nacht), Win 68%, p=0.003, DSR 0.995, kein Decay"
+  size_hint: "1 MES; nur die Nacht in die Ankuendigung halten (Verkauf MOO, VOR 14:00 ET)."
+  notes: "FOMC-Termine in engine.py, gegen federalreserve.gov verifiziert 2026-06-13."
+
+- id: vix_carry
+  name: VIX-Carry Sleeve (0056)
+  status: testing
+  instrument: VIXY
+  direction: short
+  trigger: {type: daily_gate, module: vix_signal}
+  expectancy: "Sharpe 0.55, CAGR 6.6%, MaxDD -11% (linear 0.149-gesized), p=0.012"
+  size_hint: "Sleeve-Faktor 0.149 (worst-day -5%-Sizing). Tail bleibt: kein Cap fuer kuenftig schlimmere Gaps."
+  notes: "Gate: VIX3M/VIX > 1.03 -> short, sonst flat. Alert nur bei Gate-Flip."
+
+- id: crypto_rebalance
+  name: Crypto-ML Monatsbuch (0059/0060)
+  status: testing
+  instrument: Binance Spot (Top-150-Universum)
+  direction: long
+  trigger: {type: monthly_task}
+  task: ".venv/Scripts/python.exe scripts/crypto_live_signal.py --refresh ausfuehren (Sandbox off), Zielbuch gegen Bestand abgleichen."
+  expectancy: "WF vs Markt +0.64 (min_k=12); Live-Forward registriert 2026-06-11, 24 Monate"
+  size_hint: "Paper/Minimal-Kapital — Lead, kein validierter Edge (Bootstrap-KI beruehrt 0)."
+  notes: "Regel eingefroren (LGBM0 h28, ME, Dezil, Buffer 2x, Liq>=5M, min_k=12). Nicht anfassen, nur tracken."

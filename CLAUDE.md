@@ -61,6 +61,16 @@ Every strategy must survive cost, look-ahead and significance scrutiny.
   eingefrorene Live-Alert-Logik (`find_value_bets`, `fair_close_prob`);
   täglicher Paper-Tick: `scripts/football_live_paper.py` (0065)
 
+## Live-System (`live/`)
+
+Signalerzeugung + Alert + Forward-Ledger für alle live-nahen Strategien
+(siehe `live/README.md`). `calendar.yaml` definiert die Trigger, `engine.py`
+übersetzt sie backtest-treu (T+1-Konvention) in Order-Tickets, `run_daily.py`
+läuft täglich 08:00 via Task-Scheduler („Backtests Trading Desk"),
+Telegram-Key optional in `.telegram.key`. FOMC-Termine in `engine.py`
+jährlich pflegen (Test erzwingt 8/Jahr). Fills via
+`live/ledger.py fill <ticket>` loggen; Ausführung bleibt human-in-the-loop.
+
 ## Environment
 
 - venv at `.venv` (Python 3.13). Run: `.\.venv\Scripts\python.exe ...`.
