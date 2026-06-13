@@ -11,7 +11,7 @@ human-in-the-loop** — das System platziert nie Orders.
 | `calendar.yaml` | Eine Definition je Strategie: Trigger, Instrument, Backtest-Erwartung, Size-Hinweis. |
 | `engine.py` | Trigger-Logik (ISO-Woche, Datumsfenster, Turn-of-Month, FOMC, Monats-Task, Daily-Gate) + US-Börsenkalender + verifizierte FOMC-Termine. Spiegelt exakt die Backtest-T+1-Konvention. |
 | `run_daily.py` | Orchestrator: prüft fällige Trigger, läuft Gates, schreibt Order-Ticket-Report nach `outbox/`, loggt Signale, alertet via `notify.py`. |
-| `notify.py` | Telegram-Alert (Credentials in gitignored `.telegram.key`: `{"token": ..., "chat_id": ...}`); ohne Key nur Konsole/Outbox. |
+| `notify.py` | Alert via WhatsApp (CallMeBot, gratis) und/oder Telegram; ohne Key nur Konsole/Outbox. Credentials gitignored: `.callmebot.key` `{"phone": "+49...", "apikey": "..."}`, `.telegram.key` `{"token": ..., "chat_id": ...}`. |
 | `ledger.py` | Live-Forward-Log: `state/signals.csv` (was das System sagte) vs `state/fills.csv` (was gefüllt wurde) + Live-vs-Backtest-Report. |
 | `signals/` | Standalone-Skripte je Strategie (Ticket auf Abruf) + `vix_signal.py` (täglicher Gate-Check 0056, Alert nur bei Flip). |
 
@@ -43,6 +43,22 @@ Nach jedem realen Fill (Ticket-ID steht im Report):
 .\.venv\Scripts\python.exe live\ledger.py fill pre_fomc-20260616 --side exit  --price 6110
 .\.venv\Scripts\python.exe live\ledger.py report        # Live vs Backtest
 ```
+
+## Benachrichtigung einrichten (beide gratis, optional)
+
+**WhatsApp (CallMeBot):** +34 644 81 58 78 in die Kontakte speichern, der Nummer
+per WhatsApp `I allow callmebot to send me messages` schicken, den geantworteten
+`apikey` notieren. Dann `D:\Backtests\.callmebot.key` anlegen:
+`{"phone": "+49DEINENUMMER", "apikey": "1234567"}`. (Nur Privatnutzung, rate-limitiert.)
+
+**Telegram:** Bot via @BotFather (Token), Chat-ID via @userinfobot. Dann
+`D:\Backtests\.telegram.key`: `{"token": "...", "chat_id": "..."}`.
+
+Beide Dateien sind per `*.key`-Regel gitignored. `run_daily.py` sendet über
+jeden konfigurierten Kanal (mind. einer reicht). Für die **Cloud-Routine**
+dieselben Werte im Routine-Prompt eintragen (claude.ai/code/routines).
+
+Test: `.\.venv\Scripts\python.exe live\notify.py "Test"`
 
 ## Abgedeckte Strategien
 
