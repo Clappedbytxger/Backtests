@@ -17,8 +17,18 @@ human-in-the-loop** — das System platziert nie Orders.
 
 ## Tägliche Nutzung
 
-Läuft automatisch: Task-Scheduler-Task **„Backtests Trading Desk"** (täglich
-08:00, Log: `logs/trading_desk.log`). Manuell:
+Läuft automatisch auf ZWEI Wegen (redundant by design):
+
+1. **Lokal:** Task-Scheduler-Task **„Backtests Trading Desk"** (täglich 08:00,
+   Log: `logs/trading_desk.log`) — inkl. VIX-Gate (braucht Netz) und
+   Telegram-Alert, sobald `.telegram.key` existiert. Braucht eingeschalteten PC.
+2. **Cloud (PC kann aus sein):** Claude-Routine **„Trading Desk Daily"**
+   (täglich 05:30 UTC ≈ 07:30 Berlin Sommer; claude.ai/code/routines) — checkt
+   das GitHub-Repo aus, läuft `run_daily.py` und liefert den Report in der
+   Claude-App; sendet zusätzlich Telegram, sobald Token+Chat-ID in der
+   Routine-Konfiguration eingetragen sind.
+
+Manuell:
 
 ```powershell
 .\.venv\Scripts\python.exe live\run_daily.py            # Heute + 4-Tage-Vorschau
