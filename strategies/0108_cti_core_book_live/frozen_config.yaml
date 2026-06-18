@@ -1,0 +1,98 @@
+# CTI CORE-Buch — eingefrorene Live-Config (maschinenlesbar fuer die Signal-Engine).
+# Freeze: 2026-06-19. Regeln unveraenderlich; nur `sizing.target_account_vol` ist tunbar.
+# Konvention: Signal nach Tagesschluss berechnet (nur Daten bis Close[t]); Ausfuehrung T+1.
+
+meta:
+  name: cti_core_book
+  freeze_date: 2026-06-19
+  source: strategies/0106_prop_challenge_batch9/book_integration.py
+  in_sample_sharpe: 1.214
+  execution: end_of_day            # T+1, no intraday
+  signal_data: yfinance_daily_close
+  forward_broker: ibkr_paper
+
+sizing:
+  target_account_vol: 0.06         # ONLY tunable knob (annualized)
+
+book:
+  weighting: inverse_vol           # w_i = (1/vol_i) / sum(1/vol_j), vol_i = std_i*sqrt(252)
+  start_rule: all_sleeves_live     # align from date where all 4 streams are live; missing day = 0
+
+sleeves:
+
+  i0092_monthend_fx:
+    type: month_end_flow
+    pairs:                         # ticker: sign (long foreign vs USD)
+      EURUSD=X: +1
+      USDJPY=X: -1
+      AUDUSD=X: +1
+      USDCHF=X: -1
+    signal:
+      ref_foreign: EFA             # MSCI ex-US
+      ref_us: ^GSPC
+      rule: sign(EFA_monthret - SPX_monthret)   # of the just-completed month, at LBD close
+    entry: last_business_day_close
+    exit: first_business_day_next_month_close
+    quarter_end_size_mult: 2.0     # Mar/Jun/Sep/Dec
+    base_size_mult: 1.0
+    cost_spread_bps: 1.6
+    stream_norm_vol: 0.10
+
+  i0076_index_rsi2:
+    type: rsi2_mean_reversion
+    direction: long_only
+    indices: [^GSPC, ^DJI, ^NDX, ^GDAXI]   # 1 position per index at a time
+    entry_all_of:
+      - "Close > SMA(Close,200)"
+      - "WilderRSI(Close,2) < 10"
+      - "Close > 0.90 * Close[t-5]"
+    entry_timing: at_close
+    exit_any_of:
+      - "WilderRSI(Close,2) > 65"
+      - "Close > SMA(Close,5)"
+    initial_stop: "Entry - 2.5*ATR(14)"     # intraday
+    time_stop_days: 10
+    cost_spread_rt_bps: 3.0
+    cost_swap_per_night_bps: 2.0
+    stream_provenance: strategies/0103_prop_challenge_batch5/results/streams/i0076_rsi2_ungated.parquet
+    todo_verify_provenance: true
+
+  i0100_carry_riskgated:
+    type: gated_carry_basket
+    direction: long_only
+    pairs: [AUDJPY=X, NZDJPY=X, AUDCHF=X, CADJPY=X, EURJPY=X]
+    basket: equal_weight_long_ccy_returns
+    gate_on: ^VIX
+    gate_rule: "(VIX < SMA(VIX,50)) and (VIX < 25) and (VIX/VIX[t-5] < 1.3)"
+    gate_shift: 1
+    flat_when_gate_off: true
+    carry_accrual_per_year: 0.013   # real measured net long swap
+    cost_spread_bps_on_turnover: 2.2
+    stream_norm_vol: 0.10
+
+  i0099_crypto_gated:
+    type: gated_crypto_tsmom
+    base: i0080_crypto_tsmom
+    gate_on: BTC-USD
+    trend_mult: {above_sma200: 1.0, below: 0.4}
+    vol_ratio: "std(ret,20)/std(ret,100)"
+    vol_mult: {if_ratio_gt_1_5: 0.5, else: 1.0}
+    gate_shift: 1
+    stream: "i0080 * trend_mult * vol_mult"
+
+  i0080_crypto_tsmom:               # base sleeve sized by i0099
+    type: tsmom
+    direction: long_only
+    coins:
+      BTC-USD: {start: 2015-01-01}
+      ETH-USD: {start: 2017-01-01}
+    weighting: equal_weight_coins
+    signal_per_coin: "long if Close>SMA(Close,100) and (Close - Close[t-90])>0 else flat"
+    position_weight: "0.10 / (std(pct_change,20)*sqrt(252))"
+    signal_shift: 1
+    cost_spread_per_side_bps: 10.0
+    cost_swap_per_night_bps: 8.0
+
+forward_test_gate:
+  metric: live_combined_sharpe
+  threshold: 0.9                    # >= 0.9 over the forward window -> proceed to CTI real money
