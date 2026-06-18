@@ -38,16 +38,19 @@ Kombi-Sharpe 1,21, in-sample) · **Status:** eingefroren für Forward-Test auf I
 
 | | |
 |---|---|
-| Indizes (1 Position/Index gleichzeitig) | US500 `^GSPC` · US30 `^DJI` · NAS100 `^NDX` · GER40 `^GDAXI` |
-| Entry (am Close, ALLE Bedingungen) | `Close > SMA200` **und** `RSI(2) < 10` (Wilder) **und** `Close > 0,90·Close[t−5]` |
-| Exit (am Close) | `RSI(2) > 65` **oder** `Close > SMA5` |
-| Initial-Stop | `Entry − 2,5·ATR(14)` (intraday) |
-| Zeit-Stop | 10 Handelstage |
-| Kosten | 3 bps RT + 2 bps/Nacht Swap |
+| Indizes (je Index eigenes In/Out, Buch = Mittel der 4) | US500 `^GSPC` · US30 `^DJI` · NAS100 `^NDX` · GER40 `^GDAXI` |
+| Entry (am Close, BEIDE Bedingungen) | `Close > SMA200` **und** `RSI(2) < 10` (Wilder) |
+| Exit (am Close) | `Close > SMA5` |
+| Stop / Zeit-Stop / Crash-Filter | **KEINE** (bewusst — die einfache Connors-Form) |
+| Position je Index | 0/1 (long-only), `held = pos.shift(1)` (Entscheidung Close t → Halten t+1) |
+| Tages-Netto je Index | `held·ret − turn·(3bps/2) − held·2bps_swap`, `turn = |Δheld|` |
+| Buch-Stream | `mean` der 4 Index-Netto-Streams, ab 2000-01-01 |
 
-**Stream-Provenienz:** Buch nutzt `0103/results/streams/i0076_rsi2_ungated.parquet`;
-Referenz-Implementierung `0102/e2_index_rsi2.py`. **Vor Engine-Bau verifizieren, dass der
-Stream bit-genau diese Regeln erzeugt** (Provenienz-Check).
+**Stream-Provenienz (VERIFIZIERT 2026-06-19):** `i0076_rsi2_ungated.parquet` wird erzeugt
+von **`0103/e4_vix_gate.py` → `rsi2_stream()` → `book`** (das UNgated-Mittel; die VIX-
+gegatete Version `i0083` ist NICHT im CORE). **Korrektur:** die frühere Referenz auf
+`0102/e2_index_rsi2.py` (mit ATR-Stop/Zeitstop/RSI>65-Exit/Crash-Filter) war FALSCH —
+das ist eine andere, aufwändigere Variante, die NICHT den Buch-Stream erzeugt.
 
 ## Sleeve 3 — I0100 Risk-gegateter FX-Carry-Korb (long-only)
 

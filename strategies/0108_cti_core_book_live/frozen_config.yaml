@@ -39,23 +39,22 @@ sleeves:
     stream_norm_vol: 0.10
 
   i0076_index_rsi2:
-    type: rsi2_mean_reversion
+    type: rsi2_mean_reversion          # simple Connors form (NO stop/time-stop/crash-filter)
     direction: long_only
-    indices: [^GSPC, ^DJI, ^NDX, ^GDAXI]   # 1 position per index at a time
+    indices: [^GSPC, ^DJI, ^NDX, ^GDAXI]   # per-index in/out; sleeve = mean of the 4
     entry_all_of:
       - "Close > SMA(Close,200)"
       - "WilderRSI(Close,2) < 10"
-      - "Close > 0.90 * Close[t-5]"
-    entry_timing: at_close
-    exit_any_of:
-      - "WilderRSI(Close,2) > 65"
+    exit:
       - "Close > SMA(Close,5)"
-    initial_stop: "Entry - 2.5*ATR(14)"     # intraday
-    time_stop_days: 10
+    entry_timing: at_close
+    position: "0/1 per index, held = pos.shift(1)"
+    daily_net_per_index: "held*ret - |d held|*(3bps/2) - held*2bps_swap"
+    book: mean_of_4_index_streams
     cost_spread_rt_bps: 3.0
     cost_swap_per_night_bps: 2.0
-    stream_provenance: strategies/0103_prop_challenge_batch5/results/streams/i0076_rsi2_ungated.parquet
-    todo_verify_provenance: true
+    stream_provenance: strategies/0103_prop_challenge_batch5/e4_vix_gate.py::rsi2_stream (book, ungated)
+    provenance_verified: 2026-06-19      # corrected from the wrong e2_index_rsi2 reference
 
   i0100_carry_riskgated:
     type: gated_carry_basket
