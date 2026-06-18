@@ -1,0 +1,212 @@
+{
+  "EURUSD=X": {
+    "kind": "forex",
+    "status": "ok",
+    "ibkr": {
+      "conId": 12087792,
+      "symbol": "EUR",
+      "secType": "CASH",
+      "exchange": "IDEALPRO",
+      "currency": "USD",
+      "longName": "European Monetary Union Euro",
+      "minSize": 0.01,
+      "sizeIncrement": 0.01
+    }
+  },
+  "USDJPY=X": {
+    "kind": "forex",
+    "status": "ok",
+    "ibkr": {
+      "conId": 15016059,
+      "symbol": "USD",
+      "secType": "CASH",
+      "exchange": "IDEALPRO",
+      "currency": "JPY",
+      "longName": "United States dollar",
+      "minSize": 1.0,
+      "sizeIncrement": 1.0
+    }
+  },
+  "AUDUSD=X": {
+    "kind": "forex",
+    "status": "ok",
+    "ibkr": {
+      "conId": 14433401,
+      "symbol": "AUD",
+      "secType": "CASH",
+      "exchange": "IDEALPRO",
+      "currency": "USD",
+      "longName": "Australian dollar",
+      "minSize": 0.01,
+      "sizeIncrement": 0.01
+    }
+  },
+  "USDCHF=X": {
+    "kind": "forex",
+    "status": "ok",
+    "ibkr": {
+      "conId": 12087820,
+      "symbol": "USD",
+      "secType": "CASH",
+      "exchange": "IDEALPRO",
+      "currency": "CHF",
+      "longName": "United States dollar",
+      "minSize": 0.01,
+      "sizeIncrement": 0.01
+    }
+  },
+  "AUDJPY=X": {
+    "kind": "forex",
+    "status": "ok",
+    "ibkr": {
+      "conId": 15016133,
+      "symbol": "AUD",
+      "secType": "CASH",
+      "exchange": "IDEALPRO",
+      "currency": "JPY",
+      "longName": "Australian dollar",
+      "minSize": 1.0,
+      "sizeIncrement": 1.0
+    }
+  },
+  "NZDJPY=X": {
+    "kind": "forex",
+    "status": "ok",
+    "ibkr": {
+      "conId": 39453444,
+      "symbol": "NZD",
+      "secType": "CASH",
+      "exchange": "IDEALPRO",
+      "currency": "JPY",
+      "longName": "New Zealand dollar",
+      "minSize": 1.0,
+      "sizeIncrement": 1.0
+    }
+  },
+  "AUDCHF=X": {
+    "kind": "forex",
+    "status": "ok",
+    "ibkr": {
+      "conId": 15016125,
+      "symbol": "AUD",
+      "secType": "CASH",
+      "exchange": "IDEALPRO",
+      "currency": "CHF",
+      "longName": "Australian dollar",
+      "minSize": 0.01,
+      "sizeIncrement": 0.01
+    }
+  },
+  "CADJPY=X": {
+    "kind": "forex",
+    "status": "ok",
+    "ibkr": {
+      "conId": 15016241,
+      "symbol": "CAD",
+      "secType": "CASH",
+      "exchange": "IDEALPRO",
+      "currency": "JPY",
+      "longName": "Canadian dollar",
+      "minSize": 1.0,
+      "sizeIncrement": 1.0
+    }
+  },
+  "EURJPY=X": {
+    "kind": "forex",
+    "status": "ok",
+    "ibkr": {
+      "conId": 14321016,
+      "symbol": "EUR",
+      "secType": "CASH",
+      "exchange": "IDEALPRO",
+      "currency": "JPY",
+      "longName": "European Monetary Union Euro",
+      "minSize": 1.0,
+      "sizeIncrement": 1.0
+    }
+  },
+  "^GSPC": {
+    "kind": "cfd",
+    "status": "ok",
+    "ibkr": {
+      "conId": 111767871,
+      "symbol": "IBUS500",
+      "secType": "CFD",
+      "exchange": "SMART",
+      "currency": "USD",
+      "longName": "US 500",
+      "minSize": 1.0,
+      "sizeIncrement": 1.0
+    }
+  },
+  "^DJI": {
+    "kind": "cfd",
+    "status": "ok",
+    "ibkr": {
+      "conId": 111767879,
+      "symbol": "IBUS30",
+      "secType": "CFD",
+      "exchange": "SMART",
+      "currency": "USD",
+      "longName": "US 30",
+      "minSize": 1.0,
+      "sizeIncrement": 1.0
+    }
+  },
+  "^NDX": {
+    "kind": "cfd",
+    "status": "ok",
+    "ibkr": {
+      "conId": 111767885,
+      "symbol": "IBUST100",
+      "secType": "CFD",
+      "exchange": "SMART",
+      "currency": "USD",
+      "longName": "US Tech 100",
+      "minSize": 1.0,
+      "sizeIncrement": 1.0
+    }
+  },
+  "^GDAXI": {
+    "kind": "cfd",
+    "status": "ok",
+    "ibkr": {
+      "conId": 111987422,
+      "symbol": "IBDE40",
+      "secType": "CFD",
+      "exchange": "SMART",
+      "currency": "EUR",
+      "longName": "Germany 40",
+      "minSize": 1.0,
+      "sizeIncrement": 1.0
+    }
+  },
+  "BTC-USD": {
+    "kind": "crypto",
+    "status": "ok",
+    "ibkr": {
+      "conId": 479624278,
+      "symbol": "BTC",
+      "secType": "CRYPTO",
+      "exchange": "PAXOS",
+      "currency": "USD",
+      "longName": "Bitcoin cryptocurrency",
+      "minSize": 1e-08,
+      "sizeIncrement": 1e-08
+    }
+  },
+  "ETH-USD": {
+    "kind": "crypto",
+    "status": "ok",
+    "ibkr": {
+      "conId": 495759171,
+      "symbol": "ETH",
+      "secType": "CRYPTO",
+      "exchange": "PAXOS",
+      "currency": "USD",
+      "longName": "Ethereum cryptocurrency",
+      "minSize": 1e-08,
+      "sizeIncrement": 1e-08
+    }
+  }
+}
