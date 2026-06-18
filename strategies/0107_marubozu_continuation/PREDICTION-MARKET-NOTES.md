@@ -46,7 +46,49 @@ ein quantlab-Edge. Empfehlung, falls vertieft: mit Live-Quotes den **Coupon-Carr
 Makro-Kontrakten durchrechnen (Coupon p.a. vs. 2¢-Gebühr + Spread + Haltedauer) — das ist der
 einzige Winkel, der ohne Informations-Edge und ohne HFT-Infrastruktur trägt.
 
-**Quellen:** [ForecastEx About](https://forecastex.com/about) ·
+---
+
+## Coupon-Carry DURCHGERECHNET (`forecastex_coupon_carry.py`, 2026-06-18)
+
+**Verifizierte Inputs:** Coupon **3,12% APY** auf den täglichen Schlusskurs-**Marktwert** jeder
+Position (Yes+No-Paar = MV ~$1,00, unabhängig vom Ausgang); Gebühr **$0,01/Kontrakt PRO SEITE bei
+Ausführung = $0,02/Paar Entry**, Settlement **gratis**; aktueller risikofreier Zins **3,66%**
+(^IRX 13-Wo-T-Bill, Stand jetzt).
+
+**Netto/Paar (T Jahre, Entry-Summe S):** `net = 0,0312·T − 0,02 − (S − 1,00)`; Kapital ~$1,02.
+
+**Ergebnis — der Carry ist als Dauerstrategie NEGATIV-EV:**
+| Szenario | ann. Rendite | vs Cash 3,66% |
+|----------|-------------|---------------|
+| Par ($1,00), 6 Mon | **−0,86%** | verliert |
+| Par ($1,00), 1 Jahr | +1,10% | verliert |
+| 1¢ sub-par, 6 Mon | +1,11% | verliert |
+| 2¢ sub-par, 3 Mon | +3,12% | verliert (knapp) |
+| **3¢ sub-par, 3 Mon (selten/illiquide)** | **+7,19%** | **schlägt Cash** |
+
+**Kern-Befund:** Der **Coupon (3,12%) liegt UNTER dem risikofreien Zins (3,66%)** → schon bei Par
+und OHNE Gebühr verdient man weniger als T-Bills; die $0,02-Gebühr (2% auf $1-Nominal) macht es
+strikt schlechter. Break-even-Haltedauer bei Par = **234 Tage** (nur um nicht absolut zu verlieren),
+gegen Cash gewinnt es bei Par **nie**. IBKR zahlt den Coupon bewusst unter dem Marktzins (wie auf
+Cash-Salden) → der delta-neutrale Carry ist ein **unter-marktlicher synthetischer Deposit minus
+Gebühr**, kein Edge.
+
+**Der EINZIGE positive-EV-Winkel = Sub-Par-Arbitrage:** Yes+No nur kaufen, wenn die Buch-Summe
+**≥ ~2,1¢ unter $1,00** liegt (3-Mon-Schwelle); dann lockt man (1,00 − S − 0,02)-Konvergenz +
+Coupon. Bei 3¢ sub-par/3 Mon = +7,2% p.a. ABER: (a) selten (Flaggschiff-Kontrakte sitzen effizient
+bei ~$1,00), (b) kapazitäts-/liquiditätslimitiert (<$50k-Bücher → Slippage frisst es), (c) manueller
+Opportunismus, kein systematischer Carry. = exakt die bekannte Prediction-Market-Konvergenz-Arb,
+nur kapazitäts-klein.
+
+**Fazit:** Der ForecastEx-Coupon-Carry ist **als ruhige Carry-Strategie tot** (Coupon < risikofrei
++ 2%-Gebühr). Sinnvoll nur als **opportunistischer Sub-Par-Konvergenz-Arb** (≥2-3¢ unter Par) auf
+den liquidesten Makro-Kontrakten — Mini-Kapazität, manuell. Wenn das Zinsumfeld FÄLLT und der
+Coupon über den dann-niedrigen Cash-Satz steigt (z. B. Nullzins-Welt), würde der Par-Carry wieder
+attraktiv — heute nicht.
+
+**Quellen:** [Incentive-Coupon-Details (IBKR)](https://www.ibkrguides.com/reportingreference/reportguide/incentive_coupon_accrual.htm) ·
+[ForecastEx FAQ (Gebühr)](https://forecastex.com/faq) ·
+[ForecastEx About](https://forecastex.com/about) ·
 [IBKR Prediction Markets](https://forecasttrader.interactivebrokers.com/en/home.php) ·
 [IBKR Events-Pricing](https://www.interactivebrokers.com/en/pricing/commissions-events.php) ·
 [ForecastEx Review (tech-insider)](https://tech-insider.org/prediction-markets/platforms/forecastex-review/) ·

@@ -1,0 +1,48 @@
+{
+  "coupon": 0.0312,
+  "fee_pair": 0.02,
+  "rf": 0.0366,
+  "breakeven_yr_at_par": 0.641,
+  "scenarios": [
+    {
+      "label": "efficient par, 6mo",
+      "S": 1.0,
+      "T": 0.5,
+      "net": -0.0044,
+      "ann_return": -0.0086,
+      "beats_cash": false
+    },
+    {
+      "label": "efficient par, 1yr",
+      "S": 1.0,
+      "T": 1.0,
+      "net": 0.0112,
+      "ann_return": 0.011,
+      "beats_cash": false
+    },
+    {
+      "label": "1c sub-par, 6mo",
+      "S": 0.99,
+      "T": 0.5,
+      "net": 0.0056,
+      "ann_return": 0.0111,
+      "beats_cash": false
+    },
+    {
+      "label": "2c sub-par, 3mo",
+      "S": 0.98,
+      "T": 0.25,
+      "net": 0.0078,
+      "ann_return": 0.0312,
+      "beats_cash": false
+    },
+    {
+      "label": "3c sub-par, 3mo (rare/illiquid)",
+      "S": 0.97,
+      "T": 0.25,
+      "net": 0.0178,
+      "ann_return": 0.0719,
+      "beats_cash": true
+    }
+  ]
+}
