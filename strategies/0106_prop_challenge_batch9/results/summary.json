@@ -35,5 +35,25 @@
       "active_sharpe": -0.41, "stress_total_pct": -11.8, "hedge_corr_to_i0076": -0.08,
       "note": "loses in stress (gold liquidated WITH equities 2008/2020); hedge corr ~0"}
   },
-  "data": "all free (yfinance + cached i0080/i0076 streams), no Databento purchase"
+  "data": "all free (yfinance + cached i0080/i0076 streams), no Databento purchase",
+  "book_integration": {
+    "core_sleeves": ["I0092 monthend-FX", "I0076 index-RSI2", "I0100 carry-gated", "I0099 crypto-gated"],
+    "cross_correlations": "all ~0 (max |0.06|) = genuine decorrelation",
+    "combo_sharpe": 1.21, "naive_sqrtK_ceiling": 1.25, "equity_beta_weight": 0.20,
+    "two_step_mc": {"vol_6pct": {"pass_both": 0.34, "bust": 0.01},
+                    "vol_8pct": {"pass_both": 0.53, "bust": 0.05, "worst_day_pct": -3.95},
+                    "vol_10pct": {"pass_both": 0.64, "bust": 0.10}},
+    "sweet_spot": "8% vol (bust 5%, worst-day < 5% limit)",
+    "extended_with_diversifiers": {"combo_sharpe": 1.27, "equity_beta_weight": 0.32, "note": "over 30% cap (I0091 is equity-beta) -> core preferred"},
+    "target": "roadmap 1.05-1.3 -> HIT (1.21)",
+    "caveat": "sleeve streams in-sample; live haircut expected (SMC-0070 1.52->0.43); 4-6wk paper phase-0 is the gate; decorrelation (~0 corr) is the robust part"
+  },
+  "cti_swap_research": {
+    "source": "Switch Markets 2025-06 (representative MT5; CTI cut swaps ~50%)",
+    "long_swaps_points": {"AUDJPY": 10.29, "AUDCHF": 6.29, "EURJPY": 4.78, "NZDJPY": 3.49, "CADJPY": 3.13},
+    "all_pairs_earn_positive_long_swap": true,
+    "basket_net_swap_pct_yr": 1.3,
+    "key_finding": "I0100 edge = gated TIMING (Sharpe 1.06 at carry=0), swap is ADDITIVE not the driver -> CTI swap-table is NOT the kill-gate (unlike I0090). Realistic +1.3% swap -> gated Sharpe 1.18 (IS/OOS +1.03/+1.36).",
+    "construction_note": "long-only basket is swap-correct (all 5 pay negative short-swap; L/S short-leg would be swap-unfavorable)"
+  }
 }

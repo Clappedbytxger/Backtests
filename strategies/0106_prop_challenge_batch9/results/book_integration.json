@@ -1,0 +1,24 @@
+{
+  "core_sharpe": 1.214,
+  "mc": [
+    {
+      "target_vol_pct": 6.0,
+      "p_pass_both": 0.34,
+      "p_bust": 0.014,
+      "worst_day_pct": -2.96
+    },
+    {
+      "target_vol_pct": 8.0,
+      "p_pass_both": 0.526,
+      "p_bust": 0.051,
+      "worst_day_pct": -3.95
+    },
+    {
+      "target_vol_pct": 10.0,
+      "p_pass_both": 0.635,
+      "p_bust": 0.101,
+      "worst_day_pct": -4.93
+    }
+  ],
+  "extended_sharpe": 1.269
+}

@@ -104,6 +104,51 @@ konsistente Bestätigung von I0075 auf den 4 Majors**, aber der signifikante Tes
   (perm 0,98); gegen den validierten Eltern-Lead (I0075-Richtung) prüfen, NICHT blind flippen-und-fitten.
 
 **Buch-Implikation:** Batch 9 liefert dem CTI-2-Step-Buch **1 neuen dekorrelierten Carry-Sleeve
-(I0100, down-gesized auf Worst-Day <5%)** + **1 Krypto-Risk-Overlay (I0099)** + die **Fix-Window-
-Bestätigung von I0075 (I0092)**. Nächster Schritt: Kombi-Sharpe + Korrelationsmatrix mit I0100/I0099
-neu messen (Ziel 1,05–1,3) und I0100s reale CTI-Swap-Tabelle + Forward-Test.
+(I0100)** + **1 Krypto-Risk-Overlay (I0099)** + die **Fix-Window-Bestätigung von I0075 (I0092)**.
+
+---
+
+## Buch-Integration (`book_integration.py`) — Ziel 1,05–1,3 ERREICHT
+
+CORE-Buch aus den 4 bestätigten Lead-/Overlay-Streams (I0092 Monatsend-FX + I0076 Index-RSI2 +
+I0100 Carry-gegatet + I0099 Krypto-gegatet), inverse-Vol-gewichtet (= Equal-Risk bei ~0 Korr):
+
+- **Korrelationsmatrix: alle Kreuz-Korrelationen ~0** (max |0,06|) → **echte Dekorrelation, nicht
+  IS-angenommen** (die √K-Diversifikation greift fast ideal).
+- **Kombi-Sharpe = +1,21** (naive √K-Decke 1,25) — **trifft das Roadmap-Ziel 1,05–1,3**.
+- **Equity-Beta-Gewicht = 20%** (Ziel ≤30% ✓; nur I0076 ist Equity-Beta, die anderen 3 sind FX-
+  Flow/Carry/Krypto = nicht-Equity).
+- **2-Step-MC (täglicher Pfad, 10% statisch + 5% daily):** @6% Vol P(pass beide) 0,34/Bust 0,01;
+  **@8% Vol P(pass) 0,53/Bust 0,05** (Worst-Day −3,95% < 5%-Limit); @10% P(pass) 0,64/Bust 0,10.
+- **Sweet-Spot = 8% Vol** (Bust 5%, Worst-Day unter Limit) — exakt der CTI-2STEP-ROADMAP-Korridor,
+  jetzt mit Sharpe 1,21 statt der 0,88 der zwei Alt-Leads (schneller + sicherer).
+- **Extended-Buch (+I0091 Gap-Reversal +I0095 Commodity-FX):** Kombi-Sharpe 1,27, ABER Equity-Beta
+  steigt auf 32% (>30%, weil I0091 Equity-Beta ist) → **CORE bleibt die Wahl** (sauberere Beta-Disziplin).
+
+**Vorbehalt:** die Sleeve-Streams sind IN-SAMPLE (v. a. I0100); der Live-Haircut (SMC-0070
+1,52→0,43) gilt — die 4–6-Wochen-Paper-Phase-0 (ROADMAP-Entscheidung 5) bleibt das Gate. Die
+**Dekorrelation (~0 Korr)** ist aber der strukturell robuste Teil des Ergebnisses.
+
+## CTI-Swap-Recherche für I0100 (reale Daten, kein modellierter Sweep mehr)
+
+Reale Retail-MT5-Long-Swaps (Switch Markets 2025-06, repräsentativ für CTIs Feed; CTI hat Swaps
+~50% gesenkt → eher günstiger): **ALLE 5 Carry-Paare verdienen POSITIVEN Long-Swap** —
+AUDJPY +10,29 · AUDCHF +6,29 · EURJPY +4,78 · NZDJPY +3,49 · CADJPY +3,13 Punkte (Long earns).
+Umgerechnet ~+0,7 bis +2,7%/Jahr je Paar, **Korb-Schnitt ~+1,3%/Jahr aktuell** (historisch höher
+2005-08 bei AUD/NZD ~7%, ~0 in 2020-21).
+
+**Entscheidender Befund (Reframe vs I0090):** Anders als bei I0090 (wo der Carry der EINZIGE
+mögliche Edge war und die Swap-Tabelle das Kill-Gate) liefert I0100 bereits bei **carry=0 Sharpe
+1,06** aus dem gegateten Timing → **der Swap ist ADDITIV, nicht der Treiber**. Mit dem realen
++1,3%-Swap: **gated Sharpe 1,18** (IS/OOS +1,03/+1,36). → **Die CTI-Swap-Tabelle ist für I0100
+KEIN Kill-Gate** (im Gegensatz zu I0090); der reale positive Swap hebt den Edge nur um ~+0,1 Sharpe.
+Zusatz: die L/S-Short-Seite wäre swap-ungünstig (alle 5 Paare zahlen negativen Short-Swap, z. B.
+AUDJPY short −12,92) → die **Long-only-Korb-Konstruktion (umgesetzt) ist swap-korrekt**, ein
+L/S-Short-Bottom wäre es nicht.
+
+**Quellen:** [Switch Markets Swap Rates](https://www.switchmarkets.com/trading-conditions/swap-rates),
+[CTI Swap-Fee-Senkung](https://forexpropreviews.com/city-traders-imperium-swap-fees-new-adjustments/),
+[AAA Trading Swaps](https://www.aaatrading.net/learn-trading-guide/swap-rates/).
+
+**Nächster Schritt:** 4–6-Wochen-Paper-Forward des CORE-Buchs (I0092/I0076/I0100/I0099) im `live/`-
+System, reale Kombi-Sharpe + Korrelationen messen (Gate ≥~0,9), dann der $2.500-2-Step @8% Vol.

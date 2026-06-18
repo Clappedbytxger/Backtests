@@ -10,6 +10,12 @@ from _common import ann_sharpe, cagr_mdd, load_close, save_stream, scale_to_vol,
 # long-carry pairs: long high-yield vs low-yield (JPY/CHF funding). long-ccy return sign.
 PAIRS = {"AUDJPY=X": +1, "NZDJPY=X": +1, "AUDCHF=X": +1, "CADJPY=X": +1, "EURJPY=X": +1}
 VIX = load_close("^VIX"); SPREAD = 2.2 / 1e4
+# REAL retail-MT5 long swaps (Switch Markets, 2025-06; CTI feed is similar, swaps cut ~50%):
+# ALL 5 pairs EARN positive long swap -> the long-carry direction is net-positive after markup.
+# long-swap points: AUDJPY +10.29, AUDCHF +6.29, EURJPY +4.78, NZDJPY +3.49, CADJPY +3.13
+# -> basket net swap ~ +1.3 %/yr currently (higher 2005-08 when AUD/NZD ~7%, ~0 in 2020-21).
+# KEY: the gated TIMING already gives Sharpe 1.06 at carry=0 -> the swap is ADDITIVE, NOT the
+# driver (unlike I0090). So the CTI swap-table is NOT the kill-gate for I0100. carry=0.013 = realistic.
 
 
 def run(carry_yr=0.02, verbose=True):
@@ -43,6 +49,7 @@ def run(carry_yr=0.02, verbose=True):
 
 
 if __name__ == "__main__":
-    for cy in [0.0, 0.02, 0.04]:
+    for cy in [0.0, 0.013, 0.02, 0.04]:   # 0.013 = realistic basket net swap (real MT5 data)
         d = run(cy)
-    save_stream("i0100_carry_riskgated", scale_to_vol(run(0.02, verbose=False)))
+    # save the stream at the REALISTIC measured net swap (+1.3%/yr), not the optimistic +2%
+    save_stream("i0100_carry_riskgated", scale_to_vol(run(0.013, verbose=False)))
