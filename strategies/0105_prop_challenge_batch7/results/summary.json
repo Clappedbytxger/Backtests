@@ -1,0 +1,41 @@
+{
+  "batch": 7,
+  "date": "2026-06-18",
+  "source": "ideas/prop-challenge-batch7.md (#s40 multi-LLM review)",
+  "ideas": {
+    "I0089": {
+      "title": "AUDNZD-Kointegrations-Mean-Reversion",
+      "verdict": "rejected (daily); M30 data-blocked",
+      "explore": "corr(-z, fwd_return) ~ 0 across lookback 20-90 x horizon 1-20; conditional fwd returns same-signed = drift not reversion",
+      "gated": {"trades": 25, "win": 0.20, "meanR_bps": -28.1, "perm_p": 0.973, "daily_sharpe": -0.41},
+      "ungated": {"trades": 290, "meanR_bps": -16.1, "perm_p": 0.997},
+      "reason": "daily z-score MR shows no reversion edge; ADF-gated also negative; original M30 frequency not testable on free data (<=60d)."
+    },
+    "I0090": {
+      "title": "FX-Carry + Momentum-Filter (re-test I0020)",
+      "verdict": "rejected",
+      "spot_only_basket_sharpe": -0.14,
+      "carry_sweep": {"0.0": 0.0049, "0.015": -0.05, "0.03": 0.03},
+      "maxdd": -0.325,
+      "reason": "spot trend-timing negative; optimistic +3%/yr net carry only lifts to break-even (~0); carry-unwind MaxDD -32%; confirms I0020/0048/0083."
+    },
+    "I0091": {
+      "title": "Overnight-Gap-Reversal Index (conditioned)",
+      "verdict": "weak diversifier / overlay candidate (NOT standalone lead)",
+      "net_meanR_bps": [18.5, 14.5, 15.8],
+      "win": [0.533, 0.522, 0.532],
+      "perm_p": [0.010, 0.043, 0.035],
+      "dsr_n9": 0.958,
+      "is_oos_meanR_bps": [15.7, 16.8],
+      "top5_pnl_share": 0.18,
+      "exit_types": {"close": 970, "tp": 149, "sl": 42},
+      "corr_to_living": {"i0083_rsi2_gated": 0.29, "i0076_rsi2_ungated": 0.33},
+      "crash_year_pnl_pct": {"2002": 56.6, "2008": 57.8, "2020": 51.4, "2022": -19.2, "2023": -9.2},
+      "reason": "real signal (perm 0.01-0.04, DSR 0.96, IS/OOS stable, no fat-tail) BUT crash-bounce-concentrated, recent decay 2021-24, equity-beta-adjacent (only +0.29/0.33 corr to living RSI2-MR); win 53% << >65% RRR<1 needs; survives only on close-exits."
+    }
+  },
+  "leads": [],
+  "diversifier_candidates": ["I0091"],
+  "rejected": ["I0089", "I0090"],
+  "corroboration_no_new_id": {"I0082": "Gold/Silver ratio (ChatGPT S6)", "I0085": "EURUSD/GBPUSD coint (DeepSeek S6)"}
+}

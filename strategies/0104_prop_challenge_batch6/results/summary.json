@@ -1,0 +1,34 @@
+{
+  "batch": 6,
+  "date": "2026-06-18",
+  "source": "ideas/prop-challenge-batch6.md (#s37-#s39)",
+  "ideas": {
+    "I0086": {
+      "title": "Krypto-On-Chain-Regime-Gate (MVRV-Z)",
+      "verdict": "deferred (data-blocker)",
+      "reason": "PIT on-chain (Realized-Cap revision) not freely available; overlay only; no live crypto sleeve to gate (I0080/I0088 dead). No pseudo-test on look-ahead-contaminated free data."
+    },
+    "I0087": {
+      "title": "Index-Rebalance-FX-Flow (MSCI effective day)",
+      "verdict": "deferred (data-blocker)",
+      "stage1": "announced MSCI weight changes not free PIT -> blocked",
+      "stage2_proxy": {
+        "quarterly_trigger": "null: meanR ~0, perm_p 0.51-0.86, CI spans 0",
+        "monthly_variant": "marginal: hold2 meanR +8.4bps perm_p 0.028 but CI touches 0; = generic FX risk-on momentum, not MSCI flow"
+      },
+      "note": "Stage-2 null is NOT an edge-reject (repro-treue)."
+    },
+    "I0088": {
+      "title": "Krypto-Cross-Sectional-Momentum (5 CTI coins)",
+      "verdict": "rejected",
+      "ts_momentum": {"gross_sharpe": 0.55, "net_sharpe": 0.25, "is_oos": [0.54, -0.17], "perm_p": 0.129, "maxdd": -0.814},
+      "longonly": {"net_sharpe": 0.17, "is_oos": [0.39, -0.14], "maxdd": -0.871},
+      "neutral": {"gross_sharpe": 0.17, "net_sharpe": -0.80, "perm_p": 0.223, "maxdd": -0.941},
+      "ew_buyhold_sharpe": 0.39,
+      "reason": "crypto CFD cost wall (20bps+8bps/night financing) binding; CS worse than TS (contra #s35); IS/OOS collapse bull->bear; beats neither EW B&H net; 5 coins too thin."
+    }
+  },
+  "leads": [],
+  "deferred": ["I0086", "I0087"],
+  "rejected": ["I0088"]
+}

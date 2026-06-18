@@ -177,3 +177,56 @@ IBKR_SOFTS_THIN = CostModel(
     slippage_bps=18.0,  # very wide bid-ask + low electronic liquidity
     regulatory_bps=0.5,
 )
+
+# ── CTI / retail CFD cost presets (prop-challenge framework, batch 3) ─────────
+#
+# City Traders Imperium (and most prop firms) execute on an MT4/MT5 CFD feed.
+# There is NO separate commission on the standard CFD plan — the cost is the
+# dealer's bid/ask SPREAD MARK-UP, paid in full on every entry AND exit. This is
+# the framework's binding "Step-0 cost gate": these intraday ideas (I0067-I0074)
+# are re-tests of the liquid-index intraday-direction reject (0012-0015/0038-0041/
+# 0049), so the spread must be modelled honestly or the equity curve is fiction.
+#
+# Spreads below are typical retail/prop MT5 quotes converted to bps of notional
+# at representative 2024-26 price levels, then PADDED ~30-50% because prop feeds
+# widen vs. an ECN and slip at the open/news. All are per-side; round-trip = 2x.
+#
+#   US500 (S&P CFD ~5000):  ~0.5 pt spread = 1.0 bps -> pad to 1.5 bps/side
+#   US30  (Dow CFD ~40000): ~2.0 pt spread = 0.5 bps -> pad to 1.0 bps/side
+#   NAS100(Nasdaq ~18000):  ~1.0 pt spread = 0.55 bps -> pad to 1.5 bps/side
+# A blended 1.5 bps/side (3 bps round-trip) is used for index CFDs — on purpose
+# the SAME wall as MES_INTRADAY, so a CFD edge faces no easier bar than futures.
+CFD_INDEX = CostModel(
+    commission_per_share=0.0,
+    min_commission=0.0,
+    slippage_bps=1.5,    # half-spread mark-up + open/impact, padded
+    regulatory_bps=0.0,  # no separate commission on the standard CFD plan
+)
+
+# Spot-gold CFD (XAUUSD ~2000-3000): ~0.20-0.30 spread = 1.0-1.3 bps/side.
+# Gold CFD spreads widen more than index in fast tape -> pad to 2.0 bps/side.
+CFD_GOLD = CostModel(
+    commission_per_share=0.0,
+    min_commission=0.0,
+    slippage_bps=2.0,
+    regulatory_bps=0.0,
+)
+
+# FX majors CFD (EURUSD/GBPUSD): ~0.3-0.8 pip spread = 0.3-0.7 bps/side.
+# The cheapest CFD class. Padded to 0.8 bps/side for prop-feed widening.
+CFD_FX = CostModel(
+    commission_per_share=0.0,
+    min_commission=0.0,
+    slippage_bps=0.8,
+    regulatory_bps=0.0,
+)
+
+# Crypto CFD (BTCUSD/ETHUSD): the HARDEST cost wall (0012-0015). Retail/prop
+# crypto-CFD spreads run ~15-40 bps round-trip; modelled at 10 bps/side (20 bps
+# RT) as an optimistic floor — actual is often worse.
+CFD_CRYPTO = CostModel(
+    commission_per_share=0.0,
+    min_commission=0.0,
+    slippage_bps=10.0,
+    regulatory_bps=0.0,
+)

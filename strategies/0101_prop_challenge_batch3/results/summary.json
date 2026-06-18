@@ -1,0 +1,19 @@
+{
+  "batch": "0101_prop_challenge_batch3",
+  "date": "2026-06-15",
+  "ideas": "I0067-I0074",
+  "verdict": "8/8 rejected",
+  "cost_models_added": ["CFD_INDEX 3bps RT", "CFD_GOLD 4bps RT", "CFD_FX 1.6bps RT", "CFD_CRYPTO 20bps RT"],
+  "results": {
+    "I0067_or_breakout": {"verdict": "rejected", "gross_best_bps": 2.53, "cost_rt_bps": 3.0, "note": "NQ hi-OR-volume best gross < cost; reproduces 0039; 2.81 Sharpe is cross-sectional"},
+    "I0068_noise_area": {"verdict": "rejected", "gross_daily_sharpe": {"ES": -0.68, "NQ": 0.21}, "note": "faithful low-turnover (1.5 trades/day); signal empty; VIX>40 no rescue; claimed 1.33 not reproduced"},
+    "I0069_vwap_mr": {"verdict": "rejected", "gross_bps": {"ES": -0.75, "NQ": -1.14}, "note": "gross negative: extensions continue not revert (0013); sign not flipped (0047)"},
+    "I0070_gap_fade": {"verdict": "rejected", "gross_bps": {"ES_thr0.5pct": -4.29, "NQ_thr0.5pct": -1.55}, "note": "gross negative, worse with gap size: gaps continue not fill (0038)"},
+    "I0071_session_breakout": {"verdict": "rejected", "gross_per_trade_sharpe": 0.02, "note": "6B (FX) gross 0.5-0.8bps < 1.6bps RT; GC net -3bps"},
+    "I0072_ict_judas": {"verdict": "rejected", "net_sharpe_best": 0.07, "note": "NQ London KZ best; scattered null; confirms 0069 indices=beta"},
+    "I0073_crypto_trend": {"verdict": "rejected", "gross_daily_sharpe": 0.6, "net_survivors": "long-biased < BH 0.70", "note": "20bps crypto CFD wall kills L/S; Monday-Asia gate empty (0012-0015/0015)"},
+    "I0074_post_fomc": {"verdict": "rejected", "n": 109, "continuation_gross_bps_60m": 2.76, "cost_rt_bps": 3.0, "note": "fade loses (spike continues); continuation sub-cost, noise; NFP/CPI data-blocked"}
+  },
+  "data_sources": "cached only (ES/NQ 1m 2010-26, GC/6B 1m 2016-26, GBPUSD M15, BTC 1h); no Databento purchase",
+  "meta_lesson": "published intraday Sharpe lives in cross-sectional diversification (I0067) or a specific instrument-period (I0068), not single-instrument timing; CFD spread is the binding Step-0 gate"
+}

@@ -17,6 +17,16 @@ Every strategy must survive cost, look-ahead and significance scrutiny.
 5. Write `REPORT.md`, save plots + `metrics.json` + `trades.csv` to `results/`.
 6. Append a row to `CATALOG.md`.
 
+## Ideen-Backlog (Quant-Research-Handoff)
+
+Neue, noch ungetestete Hypothesen kommen aus dem Schwester-Workspace
+**`D:\Backtest Ideas`**. Bevor du eine neue Strategie aufgreifst: **`IDEAS-HANDOFF.md`
+lesen** — es erklärt nicht-technisch, wo welche Idee steht, wie du sie auswählst
+(Index `HYPOTHESES.md` → voller Steckbrief in `ideas\<kat>.md` → Quelle in
+`SOURCES.md`) und welche Vorbehalte je Idee gelten. **Wichtig:** Eine Ablehnung in
+`CATALOG.md`/Lessons ist NICHT endgültig — bei Verdacht auf Implementierungs-Bug erst
+die Originalregel reproduzieren, nicht blind verwerfen (siehe `IDEAS-HANDOFF.md` §4).
+
 ## Hard rules (non-negotiable)
 
 - **No look-ahead.** Signals are decision-time; the engine shifts them. Never
@@ -78,6 +88,211 @@ jährlich pflegen (Test erzwingt 8/Jahr). Fills via
   use it for this project; always use the project `.venv`.
 
 ## Lessons Learned
+
+- **2026-06-15 (0101, Prop-Challenge Batch 3 — I0067-I0074, ALLE 8 abgelehnt; die
+  Intraday-Richtungs-Kostenwand reproduziert sich gegen Peer-Evidenz):** Dritter
+  `D:\Backtest Ideas`-Handoff-Batch (`ideas/prop-challenge.md`): acht publizierte/
+  praktiker-Intraday-Edges für die City-Traders-Imperium-1-Step-Challenge, je auf
+  EINEM CTI-CFD (Index/Gold/FX/BTC) statt dem Quell-Universum. **Endstand 8/8 Reject
+  — der robusteste Reject des Katalogs (Intraday-RICHTUNG eines Einzelmarktes netto
+  kostenwand-tot, 5× bestätigt 0012-0015/0038-0041/0049) hält gegen jede neue
+  Peer-Evidenz und jeden Umgehungs-Winkel.** Neue wiederverwendbare Infra: CFD-
+  Kostenmodelle als **Schritt-0-Gate** (`quantlab.costs` CFD_INDEX 3bps / CFD_GOLD 4
+  / CFD_FX 1,6 / CFD_CRYPTO 20bps RT — bewusst dieselbe Wand wie MES_INTRADAY, eine
+  CFD-Idee bekommt keinen leichteren Maßstab als der Future) + `_common.py`-Intraday-
+  Harness (RTH/Session-Split, gross-zuerst-Summarizer). **Kern-Lehre (die wichtigste
+  des Batches): ein hoher publizierter Sharpe bei einer Intraday-Strategie sitzt fast
+  immer in der QUERSCHNITT-DIVERSIFIKATION oder einer spezifischen Instrument-Periode,
+  NICHT im Einzel-Instrument-Timing — vor der Reproduktion prüfen, WORAUF der Paper-
+  Sharpe beruht.** Belege: **I0067** (Zarattini OR-Breakout, behauptet **Sharpe 2,81**)
+  reproduziert exakt 0039 (brutto ≈0, NQ best +2,5bps < 3-bps-Wand) — die 2,81 stammt
+  aus einem **7000-Aktien-„Stocks-in-Play"-Portfolio** (viele simultane Breakouts +
+  Relative-Volumen-Selektion auf News-Aktien), das auf ein Index-/Gold-Instrument
+  nicht übersetzbar ist. **I0068** (Zarattini Noise-Area, SPY **Sharpe 1,33**) ist die
+  stärkste Einzel-Instrument-Evidenz — daher faithful + §4-Re-Test reproduziert:
+  **erster Lauf über-tradete** (12-30 Wechsel/Tag durch per-Bar-VWAP-Flatten), nach
+  Korrektur auf die paper-treue Niederfrequenz (~1,5 Trades/Tag) ist das **Brutto**-
+  Signal leer (ES −0,68 / NQ +0,21 Tages-Sharpe = nicht mal über zwei Indizes robust,
+  weit von 1,33), VIX>40 rettet nicht → bestätigt 0040 (Intraday-Autokorr ≈0).
+  **Methodik-Lehre (Wiederholung 0069-Klasse): bei einer Momentum-/MR-Reproduktion
+  zuerst den TURNOVER gegen das Paper kalibrieren — ein über-tradendes Build mischt
+  Signal mit Kosten und kann ein vorhandenes Brutto-Signal verstecken ODER ein
+  fehlendes vortäuschen; die Brutto-Niederfrequenz-Version ist der ehrliche Read.**
+  **I0069/I0070** (VWAP-MR + Gap-Fade): brutto **negativ** — Index-Intraday-Extensions
+  und -Gaps **kontinuieren**, reverten nicht (0013/0038); das Vorzeichen NICHT geflippt
+  (0047: das gespiegelte Momentum-Signal ist exakt I0067/I0068). **I0071** Session-
+  Breakout (Asien→London): brutto ≈0 (per-Trade-Sharpe 0,02), selbst enge FX-Spreads
+  netto negativ. **I0072** ICT Judas-Sweep→BOS (Killzone, **0069-SMC-Engine wiederbenutzt**,
+  asymm. 8/4-Pivot): streuendes Null (best NQ-London netto-Sharpe 0,07) = bestätigt
+  0069 (Indizes = Beta, nur BTC war dort marginal). **I0073** BTC-Trend: brutto-Trend
+  real (Tages-Sharpe 0,6) aber die **20-bps-Krypto-CFD-Spreadwand** (härteste, 0012-
+  0015) frisst den L/S-Edge; netto-Überlebende sind **long-biased ≈ Beta-Bruchteil <
+  B&H 0,70**, Montag-Asien-Gate leer (0015-Beta-Maskerade). **I0074** Post-FOMC: Fade
+  verliert (Spike kontinuiert), Continuation +2,76bps < Wand, n=109 = Rauschen; NFP/CPI
+  bleiben daten-blockiert (keine freie PIT-Konsens-Surprise). Daten: alle aus dem
+  vorhandenen Cache (ES/NQ 1-Min 2010-26, GC/6B 1-Min 2016-26, GBPUSD M15, BTC 1h) —
+  **kein Databento-Neukauf nötig.** Strategischer Stand bestätigt (Memory
+  `funded_account_direction`): die Intraday-Richtungs-Schiene ist für ein Retail-/Prop-
+  CFD-Konto tot; der CTI-taugliche Pfad bleibt der niederfrequente Flow/Swing
+  (Mean-Reversion-Daily-Bar RSI-2 o. ä.), nicht die Intraday-Edges dieses Batches.
+
+- **2026-06-15 (Handoff-Batch HOCH-PRIO komplett, 0075-0083 + I0016=0068 — 2 Leads,
+  Rest abgelehnt; Rates-Flow trägt, Faktoren/Spreads zerfallen):** Alle 14 Hoch-Prio-
+  Ideen des neuen `D:\Backtest Ideas`-Handoffs getestet. **Bilanz: 2 Leads, beide
+  niederfrequente Rates-Flow-Beine, die sich ergänzen** — **0075 (I0010 EOM-Treasury,
+  LONG Duration am Monatsende, perm p=0,02)** + **0078 (I0009 Auction-Concession, SHORT
+  Duration vor 30y-Auktionen, perm p=0,000, IS/OOS-stabil)**. Beide Overlay-Beine,
+  unkorreliert/gegenläufig, Zwillinge von 0050. Rest abgelehnt mit je eigenem Mechanismus:
+  **(a) Drift-Falle (0076 I0008 FOMC-Even-Week):** Diagnostik spektakulär (92% des Gewinns
+  in geraden Wochen) aber Permutation p=0,38 — der breite Even-Week-Effekt ist nur die
+  Aktien-Risikoprämie aus 53% Marktzeit; 0052 (enges Overnight-Fenster, richtige Null)
+  besteht, die breite Verallgemeinerung nicht. **(b) Kein Mehrwert über Bestand (0077 I0028
+  TOM-conditioned):** Quartalsende-TOM stärker (#s10-Flow bestätigt) aber nur grenzwertig
+  (perm p=0,054); konditionierte Varianten heben Sharpe nur durch KONZENTRATION (Kapital
+  brach) → 0050 bleibt unverändert, optional 2×-Sizing an Quartalsenden. **(c) Faktor
+  insignifikant außerhalb Einzelaktien (0079 I0024 Country-BAB + 0082 I0025 Crypto-Low-Vol):**
+  beide Long-Low-Vol/Beta ≈ Equal-Weight-Universum (keine Prämie), L/S insignifikant —
+  bestätigt 0047/0048 + 0058-Kern-Lehre (hoher IC ≠ Portfolio-PnL); echtes BAB bräuchte
+  breites Einzelaktien-Universum (Survivorship-Blocker I0011/I0035). **(d) Roll-Artefakt
+  (0080 I0044 Getreide-Sommer-Short):** Mais-Short headline +5,6%/p=0,001, aber 41% auf
+  Roll-Tagen, nach Ausschluss +0,74% (NG-Muster 0028/0029); generalisiert nicht (nur Mais).
+  **(e) Calendar-Spread-Gruppe komplett null (0081 I0001-I0007, $32 Databento):** Mais
+  Jul/Dez (Flaggschiff) perm p=0,644, NG falsch-gerichtet, RBOB/Crush/Crack null. **Spreads
+  beheben das Roll-Problem korrekt — aber die saubere Reihe hat keinen Saison-Edge mehr**
+  (Rohstoff-Prämien zerfallen, 0047/0048/0067). **Crack-Lehre 0029 erneut: roll-NAIVE
+  Inter-Commodity-Fronts gaben p=0,006 (Roll-Artefakt), matched-expiry-roll-sauber → p=0,18.**
+  **(f) Echt-aber-schwach (0083 I0020 FX-Carry):** perm p=0,043, Vol-Filter hebt Sharpe
+  0,19→0,31, aber Monats-KI mit 0, OOS-Zerfall, Skew −0,72 = echte Risikoprämie mit
+  Crash-Risiko, kein Standalone (besser als toter 0048, aber kein Lead). **META-LEHRE des
+  Batches: die einzige tragende Klasse im Handoff ist — wie schon im Bestand — der
+  niederfrequente, institutionell-erzwungene FLOW (Monatsend-/Auktions-Rebalancing), NICHT
+  cross-sektionale Faktoren (zerfallen), Saison-Spreads (arbitriert) oder breite Kalender-
+  Drifts (Beta-Falle).** Neue wiederverwendbare Infra: `quantlab.futures_chain` (roll-saubere
+  Einzelkontrakt-Spreads via instrument_id-Jahresauflösung), 8 Futures-Roots-Tagesketten
+  gecacht, TreasuryDirect-Auktionskalender-Loader, FRED-OECD-G10-Zins-Loader. Databento-
+  Spend gesamt ~$34. I0016 nicht neu gebaut (= 0068).
+
+- **2026-06-15 (0075, End-of-Month Treasury / Idee I0010 — erster Test des NEUEN
+  Handoffs `D:\Backtest Ideas`; Bond-Zwilling von 0050, Lead):** Erste umgesetzte
+  Hypothese aus dem neuen Research-Workspace (Pfad Index `HYPOTHESES.md` →
+  Steckbrief `ideas/event-driven.md` → Quellenbeleg `SOURCES.md` #s03/#s18 mit
+  vorab extrahierten exakten Fenstern/Magnituden → Umsetzung hier ist sauber
+  aufgegangen — der Handoff ist als Pipeline brauchbar). Hartley/Schwarz: Treasury-
+  Excess-Returns am Monatsende hoch (Index-Extension-/Window-Dressing-Flow am
+  Bloomberg-Agg-Rebalancing-Stichtag = institutioneller Zwangskauf von Duration).
+  Pre-registriert das kanonische **2-Tage-Fenster** (letzter + erster Handelstag) via
+  `turn_of_month_signal(before=2, after=0)` auf IEF/TLT/SHY + ZN=F. **Ergebnis =
+  testing/Lead, exakt die Klasse 0050/0052:** Permutation gegen Zufalls-Timing
+  gleicher Anzahl **p=0,020** (IEF) — der entscheidende Drift-Trap-Test, weil Bonds
+  40J-Bull UND 2022-Crash hatten, also long-Duration-an-Zufallstagen selbst ein
+  Regime-Bet ist; er zeigt, dass das **Monatsend-TIMING** trägt, nicht bloß Beta.
+  t-Test EOM-Tag p=0,0098, **Per-Tag-Mean-KI [+1,31,+8,53] bps ohne 0**, KEIN
+  IS→OOS-Decay (Brutto-Sharpe 0,49→0,57→0,63), DSR 0,783 (16 Trials). **Lehre 1
+  (das stärkste strukturelle Argument war NICHT das erwartete Placebo-Null, sondern
+  die monotone Skalierung):** Das Paper sagt „2y kaum" → SHY sollte null sein. SHY
+  ist NICHT statistisch null (perm p=0,004), aber EOM-Tag-Ø skaliert exakt monoton
+  mit der Laufzeit (**SHY +1,97 < IEF +4,85 < TLT +8,25 bps**). Eine monotone
+  Laufzeit-Skalierung ist STÄRKERE Evidenz als ein Null: ein generisches Kalender-/
+  Dividenden-Artefakt würde NICHT duration-proportional skalieren — der Effekt ist
+  ein kurven-weiter Duration-Nachfrageschock. **Bei einem Placebo, das „schwach
+  statt null" ausfällt, prüfen, ob die ABSTUFUNG der ökonomischen These folgt —
+  dann bestätigt sie, statt zu widerlegen.** **Lehre 2 (Dividenden-Artefakt am
+  reinen Future ausgeschlossen):** Bond-ETFs (IEF/TLT/SHY) sind dividenden-bereinigt
+  (auto_adjust), aber um ein Monats-Distributionsartefakt sicher auszuschließen, den
+  Effekt im **reinen Futures-Preis** gegenprüfen — ZN=F zeigt EOM +3,71 bps/p=0,008,
+  also real (Roll-Vorbehalt 0028/0029: Treasury-Futures rollen quartalsweise nahe
+  einigen Monatsenden → Future als Cross-Check, ETF als Headline). **Lehre 3
+  (RF-Hürde, 3. Bestätigung nach 0050/0056/0074):** die RF-adjustierte Voll-Sharpe
+  ist −0,66 (negativ!), weil `compute_metrics` 2%-RF von JEDEM Tag abzieht — auch den
+  ~90% Flat-Tagen eines Overlay-Beins. Bei nur 9,6% Investitionszeit ist die
+  Voll-Sharpe irreführend; die aktive-Tage-/Brutto-Sharpe + Per-Tag-Mean-KI sind die
+  richtigen Reads. **Engineering-Detail (Shift-Konvention):** die Engine shiftet das
+  Decision-Time-Signal um +1 Bar; um die gehaltenen Tage = {letzter Tag, erster Tag
+  Folgemonat} zu treffen, müssen die MARKIERTen Tage die letzten 2 Handelstage sein
+  (`before=2`). `before=1` allein hält nach dem Shift NUR den ersten Folgemonatstag
+  (nicht den dokumentierten letzten Tag) → im Gitter negativ; before≥2 Plateau alle
+  positiv. Verdikt: niederfrequentes Bond-Timing-Bein (12×/J, 2-Tage-Hold), kein
+  Standalone (~0,5% CAGR), MaxDD −7,4% vs B&H −23,9% (umgeht 2022). Verwandt 0050;
+  Ausbau-Pfad I0013 (Aktie↔Bond-Rebalancing-Paar).
+
+- **2026-06-14 (0074, Weinstein Stage-2-Breakout auf Einzelaktien — „Skill" und
+  „schlägt B&H" sind ZWEI Tests; der survivorship-robuste ist die Permutation):**
+  Faithfuler Bau von Weinsteins Stage-Analysis-Breakout (30-Tage-MA-Durchstoß aus
+  Stage-1-Range mit ≥3× getestetem Widerstand + Volumen + RS-Drehung neg→pos), 113
+  US-Aktien daily 2000-2026, Multi-Position-Portfolio (neue Infra `quantlab/weinstein`,
+  Stage-2-Detektor + geteilte-Equity-Event-Engine mit 4 Exits × Pyramiding, 6/6
+  Look-ahead-Tests). **Kern-Methoden-Lehre: bei einer long-only-AKTIEN-Strategie auf
+  einem yfinance-Universum (= NUR heutige Survivor) misst der naive „schlägt es Buy &
+  Hold?"-Vergleich Survivorship+Beta mit, NICHT Skill — denn das B&H selbst ist
+  inflationiert (EW-B&H der 113 Survivor OOS Sharpe 0,87, CAGR +17%).** Der saubere,
+  survivorship-ROBUSTE Test ist die **Random-Timing-Permutation**: gleiches
+  Universum, gleiche Trade-Zahl je Titel, gleiche Exit-Mechanik, nur die EINTRITTS-
+  Zeitpunkte gewürfelt. Die Null-Sharpe ist negativ (Zufalls-Entry wird von Stops +
+  Kosten + 2%-RF-Hürde zerhackt), die echte Strategie liegt klar darüber → das
+  Stage-2-**Timing trägt echtes Skill** (full p=0,003, OOS p=0,020, t-p=0,01, DSR
+  0,998, IS→OOS 0,21→0,42 KEIN Kollaps). **Trotzdem abgelehnt als Standalone:** sie
+  schlägt das EW-B&H desselben Universums weder auf Rendite (+4,3% vs +17%) noch
+  Sharpe (0,42 vs 0,87) — das Timing-Skill kompensiert den Verzicht auf die Aktien-
+  Risikoprämie in den Cash-Phasen nicht (verwandt 0050/0051: echtes Phänomen, nur
+  Overlay-tauglich). Ihr realer Mehrwert ist **Drawdown** (full −12% vs B&H −49%/
+  −55%, umgeht 2008/2020 = Weinsteins Bärenmarkt-These) → bestenfalls defensives Bein.
+  **Nebenlehren:** (a) niedrige Standalone-Rendite kam NICHT aus Cash-Drag (Ø 6
+  gleichzeitige Positionen, nur 9% flat), sondern kleiner Notional je Slot (weite
+  Support-Stops); hochgesized (Risk 2%/25 Pos) CAGR +7,8%/Sharpe 0,58, aber immer auf
+  derselben unterlegenen Effizienzlinie unter B&H. (b) Bei der Sharpe-Bewertung kleiner
+  Renditen wiegt die 2%-RF-Hürde schwer (Sharpe steigt beim Hochskalieren, weil die
+  Hürde relativ leichter wird — gleicher Effekt wie 0056). (c) Pyramiding hebt Return
+  nicht Sharpe, nur Drawdown (3. Bestätigung nach 0069/0070). 30-Tag (User) statt
+  Weinsteins 30-Wochen bewusst als Tagesadaption dokumentiert.
+
+- **2026-06-13 (0069, SMC Liquidity-Sweep + Break-of-Structure — BEINAHE-
+  Fehlurteil durch Primitiv-Bug, vom User-Druck zur Reproduktion gerettet):**
+  Reproduktion eines Revelio-Trading-Videos (TJR-SMC, +54%/J behauptet). Erstbau
+  (kausale Engine `quantlab/smc`, Look-ahead-/Trailing-Tests grün) ergab ein
+  „sauberes Null über 5 Assets, jedes netto < Buy & Hold" → ABGELEHNT. **Das war
+  FALSCH — ein Build-Bug.** Der User bestand darauf, erst seine Zahlen zu
+  reproduzieren, bevor der p-Test zählt. **Lehre 1 (DIE Kern-Lehre): eine faithful
+  Reproduktion braucht die EXAKTE Primitiv-Definition; vorher ist jeder p-
+  Test/Reject wertlos.** Mein Swing war ein SYMMETRISCHes N-Bar-Fraktal; die
+  Referenz nutzt ein **asymmetrisches Pivot `(back, forward)`** (Kandidaten 6/2,
+  8/4, 12/6, 12/4; Confirmation-Lag = `forward`, klein → schnelle Entries bei
+  signifikantem Swing). Der Fix drehte BTC von tot (Ø-R +0,10) auf **+0,32 R**,
+  NDX traf danach sein Video-Ziel exakt (+86% vs +73%). Zusätzlicher Bug: „trivialer
+  BOS" (Break einer Struktur, die schon UNTER dem Reclaim lag → Setup feuerte bei
+  fast jedem Reclaim, 11k statt 3,7k Trades) → `require_structure`-Fix (BOS muss
+  eine Struktur jenseits des Reclaim brechen). Auch der **Stop-buffer war ein
+  großer Trend-Hebel** (Gold +28%→+284% bei buf 0,1→0,5 ATR; breiterer Stop gibt
+  dem 1R-Trailing Raum). **Lehre 2 (der p-Test, jetzt valide): drift-kontrollierte
+  Permutation auf einem BOTH-DIRECTION-Asset ist der saubere Edge-vs-Beta-Test.**
+  Long-only-Indizes: Zufalls-Long-Null Sharpe 0,58-0,77 ÜBER der Strategie (0,37-
+  0,54), p=0,95-0,97 = **Beta** (robust über ALLE Builds, 0016/0017/0050). BTC
+  (both): Null −0,14 vs real +0,31, **p=0,053**, Bootstrap-Ø-R-KI [+0,03,+0,53]
+  ohne 0 = **echter marginaler Timing-Edge, NICHT Beta** — in der symmetrischen
+  Fehlversion unsichtbar. **Lehre 3 (BTC ist ein Lead MIT ZERFALL):** echter OOS-
+  Split IS 2017-21 Ø-R +0,45/p=0,063 → OOS 2022-26 +0,16/p=0,250/KI mit 0;
+  positiv JEDES Jahr, aber Magnitude 2018-20 (+0,57…+1,76) → 2024-26 (+0,02…+0,19)
+  = Crypto-Momentum reift/zerfällt (0058-0062-Familie); kosten-/funding-robust
+  (überlebt 3 bps/Tag Funding + 2× Kosten). **Prozess-Lehre: Quell-Zahlen UND
+  exakte Regeln des Originals beschaffen** — Vorvideo-Transkript via `yt-dlp
+  --write-auto-sub` (yt-dlp unter D:\AI\Python\Scripts), Video-Frames via ffmpeg-
+  Kontaktbögen + Read. Seine Zahlen sind explizit in-sample-optimiert/best-case/
+  zero-cost (sagt er selbst) → 1:1 nicht erreichbar, aber die Methodik schon.
+  **Lehre 4 (Databento Continuous: `.v.0` statt `.c.0` für Nicht-Aktien-Futures):**
+  GC.c.0 (Kalender-Front) lieferte nur ~45-108 Bars/Tag — Gold ist aktiv nur in
+  Feb/Apr/Jun/Aug/Okt/Dez, der Kalender-Front trifft die illiquiden Serienmonate.
+  `GC.v.0` (Volumen-Front) gibt ~1400 Bars/Tag = echtes 1-Min-Gold. Auch 6B
+  (GBP-Future) ist als `.v.0` dichter (Volumen wandert vor Expiry weg vom .c.0).
+  **Bei GC/6B/Metallen/FX-Futures IMMER `.v.0`; `.c.0` nur für ES/NQ (dort =
+  aktiver Front). Bar-Dichte vor dem Kauf monatsweise prüfen** (estimate_cost ist
+  gratis). Spend gesamt ~$25,6 ($13,25 GC + $12,38 6B). **Lehre 5 (Frequenz-
+  Kosten-Falle + Proxy-Disziplin):** Gold M5 (1,6-2,6k Trades) bleibt netto tot,
+  weil 3 bps RT bei kleinem R ~7% des R fressen (M5 = höchste Frequenz × Kostenwand,
+  0038-0041/0049); seins überlebt netto nur, weil IC-Markets-Gold ~½ meiner Kosten.
+  GBPUSD-Spot via Dukascopy für 10J wären ~87k stündliche Tick-Dateien =
+  unpraktisch → 6B-Future-Proxy (Spec Teil 3 erlaubt Futures-Proxies explizit),
+  transparent dokumentiert statt stundenlang an Dukascopy zu scheitern. ML-Meta-
+  Labeling nicht verfolgt: Indizes = Beta (ML repariert kein Beta), BTC ist das
+  einzige Lead und klingt OOS ab — kein tragfähiges Basis-Signal zum Meta-Labeln.
 
 - **2026-06-12 (0066, Extra-Ligen-Eignungstest — dieselbe Gate-n-Falle
   ZWEIMAL in einem Programm):** football-data-Extra-Dateien (`/new/{LAND}.csv`)
