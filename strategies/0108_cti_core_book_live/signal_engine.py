@@ -198,6 +198,22 @@ def sleeve_i0099():
 
 
 # ---------- book assembly + live targets ----------
+def build_book(target_vol=TARGET_ACCOUNT_VOL):
+    """Return the combined inverse-vol book as a daily-return series, scaled to target_vol.
+    Same assembly as compute_targets/main; used by the forward tracker (forward_track.py)."""
+    s092, _, _ = sleeve_i0092()
+    s076, _, _ = sleeve_i0076()
+    s100, _, _ = sleeve_i0100()
+    s099, _, _ = sleeve_i0099()
+    df = pd.DataFrame({"i0092": s092, "i0076": s076, "i0100": s100, "i0099": s099})
+    df = df.sort_index().fillna(0.0)
+    df = df.loc[df.index >= df.apply(lambda c: c.ne(0).idxmax()).max()]
+    invvol = 1.0 / (df.std() * ANN); w_sleeve = invvol / invvol.sum()
+    book = (df * w_sleeve).sum(axis=1)
+    K = target_vol / (book.std() * ANN)
+    return book * K
+
+
 def compute_targets(target_vol=TARGET_ACCOUNT_VOL):
     """Return (positions, context). positions: {engine_ticker: target weight as fraction
     of account equity, signed}. Same book math as main() but returns instead of printing."""

@@ -11,6 +11,7 @@ Vorstufe zum CTI-Funded-Account. Diese Notiz = Einstiegspunkt für die nächste 
 | `184741f` | **`signal_engine.py`**: reproduziert alle 4 Sleeves bit-genau + Buch-Sharpe 1,210; Provenienz-Fix I0076 |
 | `26d72a7` | **`ib_check.py` + `ib_instruments.py`**: IBKR-Paper-Verbindung + 15/15 Instrumente gemappt |
 | `abccce0` | **`ib_adapter.py`**: Dry-Run-Reconciliation (Engine → Order-Liste), Sizing verifiziert |
+| _(uncommitted)_ | **`ib_adapter.py` Order-PLACEMENT fertig**: marketable Limit, Margin-Preflight, Risiko-Caps, Fill-Ledger, `--arm`-Flag |
 
 ## Schlüssel-Fakten
 
@@ -34,22 +35,51 @@ Vorstufe zum CTI-Funded-Account. Diese Notiz = Einstiegspunkt für die nächste 
 .venv/Scripts/python.exe strategies/0108_cti_core_book_live/signal_engine.py
 # IBKR Paper-Check (TWS muss offen sein)
 .venv/Scripts/python.exe strategies/0108_cti_core_book_live/ib_check.py
-# Dry-Run-Reconciliation (Engine-Ziele → Order-Liste, sendet NICHTS)
+# Dry-Run-Reconciliation (Engine-Ziele → Order-Liste + synth. Sizing-Test, sendet NICHTS)
 .venv/Scripts/python.exe strategies/0108_cti_core_book_live/ib_adapter.py
+# SCHARF: platziert echte Paper-Orders (nur mit --arm; sonst immer dry-run)
+.venv/Scripts/python.exe strategies/0108_cti_core_book_live/ib_adapter.py --arm
 ```
 IBKR-Skripte brauchen `dangerouslyDisableSandbox` (localhost-Socket).
 
-## OFFEN — das machen wir als Nächstes (morgen)
+## Order-Placement — fertig (2026-06-19)
 
-1. **Order-PLACEMENT-Code** in `ib_adapter.py` (existiert noch NICHT; `DRY_RUN=True` hart an,
-   keine `placeOrder`-Calls). **Offene Entscheidung: Markt- vs. Limit-Order.** Empfehlung:
-   **Market-on-next-session** (sichere Fills, backtest-treu für die täglichen Close-Signale).
-   Dazu: Fill-Logging (Ledger), Per-Instrument-Risiko-Caps, Margin-Check (v. a. Monatsend-FX
-   erzeugt hohes Brutto).
-2. **Scharfschalten**: `DRY_RUN=False` + `connect(readonly=False)` — erst nach (1) + dein Go.
-3. **Hands-off-Betrieb**: VPS + Tages-Scheduler (kein PC/keine Tokens), wie besprochen.
-4. **Erste echte Signale** erwartbar: ~**30. Juni** (Monatsend-FX), oder Index-RSI-2-Dip,
-   oder wenn das Carry-Gate anspringt (VIX < SMA50 & < 25).
+`ib_adapter.py` platziert jetzt Orders. Design-Entscheidungen:
+
+- **Orderart = marketable LIMIT** (nicht Market). Grund: IBKRs Precaution **Error 354**
+  ("blind trading without market data") cancelt Market- UND Limit-Orders, solange das
+  Paper-Konto kein Marktdaten-Abo hat. Ein Limit hat einen definierten Preis → kein
+  Blind-Trading, plus es deckelt Slippage (0070-Befund: Adaptive/Limit ≈ ½-Spread schlägt
+  Taker). Preis = letzter yfinance-Close ± Puffer (FX 0,25 % · CFD 0,5 % · Krypto 1,5 %),
+  auf `minTick` gerundet. Krypto = IOC, FX/CFD = DAY.
+- **Scharfschalten = CLI-Flag `--arm`** (statt Datei editieren). `DRY_RUN=True` bleibt im
+  Git committet → ein scharfer Bot kann nie versehentlich eingecheckt werden; das „Go" ist
+  jeder Lauf bewusst.
+- **Sicherheits-Layer:** Paper-Konto-Assert (DU*), `readonly`-Socket außer bei `--arm`,
+  Risiko-Caps (`MAX_INSTRUMENT_WEIGHT` 60 % / `MAX_GROSS_WEIGHT` 600 %), Margin-Preflight
+  via `whatIfOrder` (Abbruch wenn Init-Margin > 90 % AvailableFunds), Dust-Filter (200 $),
+  Fill-Ledger `results/fills_ledger.csv`.
+- **Markt­daten:** Adapter ruft `reqMarketDataType(1)` + abonniert je Order `reqMktData`,
+  damit der Paper-Fill-Simulator einen Preis hat. **TWS-Precaution „Bypass Order Precautions
+  for API Orders" ist aktiviert** (sonst Error 354).
+- **Validiert (Paper, 2026-06-19) — END-TO-END FILL BESTÄTIGT:** Engine→Ziele, Sizing/
+  Konvertierung, Verbindung, Risiko-Caps, Margin-Preflight, placeOrder, **echter Fill +
+  Flatten auf EURUSD** (BUY 20k @ 1.14593 / SELL @ 1.14591, marketable Limit füllte am
+  Markt nahe Ask, nicht am Worst-Case-Limit = Slippage minimal), Ledger-Schreiben, Konto
+  wieder flat. `reqGlobalCancel` räumt hängende Orders.
+
+## OFFEN — als Nächstes
+
+1. **Marktdaten-Abo für CFDs + Krypto (WICHTIG):** Auf dem Paper-Konto liefern **FX**-Paare
+   bid/ask (füllen sauber), aber die **Index-CFDs** (IBUS500/30/100, IBDE40) und vermutlich
+   **Krypto** geben bid/ask = -1 → kein Abo → Orders bleiben `Submitted` ohne Fill. Damit
+   der I0076-Index-Sleeve (4 CFDs) + I0099-Krypto-Sleeve im Forward-Test füllen: im IBKR
+   Client-Portal die nötigen Marktdaten-Pakete abonnieren bzw. Live→Paper-Sharing aktivieren
+   (z. B. „US Securities Snapshot and Futures Value Bundle" + CFD-/Krypto-Daten).
+2. **Hands-off-Betrieb**: VPS + Tages-Scheduler (kein PC/keine Tokens), wie besprochen.
+   Täglich nach US-Close `ib_adapter.py --arm` laufen lassen.
+3. **Erste echte Signale** erwartbar: ~**30. Juni** (Monatsend-FX — füllt schon jetzt, da
+   FX-Daten da sind), oder Index-RSI-2-Dip / Carry-Gate (brauchen die CFD-Daten aus Punkt 1).
 
 ## Erfolgs-Gate (unverändert)
 
