@@ -8,3 +8,7 @@ seaborn>=0.13
 pyarrow>=14.0
 jupyter>=1.0
 pytest>=8.0
+
+# live execution (0108 CORE book): IBKR paper forward test + CTI MT5 leg
+ib_async>=1.0
+MetaTrader5>=5.0   # Windows only; needs a running MT5 terminal

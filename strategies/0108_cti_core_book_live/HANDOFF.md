@@ -81,6 +81,41 @@ IBKR-Skripte brauchen `dangerouslyDisableSandbox` (localhost-Socket).
 3. **Erste echte Signale** erwartbar: ~**30. Juni** (Monatsend-FX — füllt schon jetzt, da
    FX-Daten da sind), oder Index-RSI-2-Dip / Carry-Gate (brauchen die CFD-Daten aus Punkt 1).
 
+## Kostenloser Forward-Tracker (`forward_track.py`) — fertig (2026-06-19)
+
+Da das Buch reine End-of-Day-Strategie auf Tages-Closes ist, braucht der Forward-Test KEINE
+Broker-Fills: `forward_track.py` baut das eingefrorene Buch täglich aus yfinance neu und
+schneidet ab dem Freeze-Datum → echter Live-Kombi-Sharpe (Gate ≥ 0,9), ganz ohne Marktdaten-
+Abo. Schreibt `results/forward_nav.csv` (NAV) + `results/forward_targets_log.csv` (Audit-Log
+der täglich emittierten Ziele). **Täglich nach US-Close laufen lassen.** FX läuft parallel
+echt über `ib_adapter.py --arm`.
+
+## CTI-MT5-Adapter (`mt5_adapter.py`) — gebaut, Live-Test offen (2026-06-19)
+
+CTI läuft auf **MetaTrader 5**, nicht IBKR — der IBKR-Bot ist nur der Paper-Test, dieser
+Adapter ist die Echtgeld-/Challenge-Schiene. Gleiche Engine, gleiche Gewichte, andere Plumbing.
+`pip install MetaTrader5` (im venv erledigt). Design:
+
+- **Lot-Sizing statt Units:** `lots_for_target()` rechnet Gewicht→Lots broker-agnostisch aus
+  `symbol_info` (contract_size, currency_base/profit, volume_min/step). **Offline validiert**
+  via `--selftest` (6 Fälle FX/Index/Krypto + Rundung, alle PASS).
+- **Symbol-Auflösung:** broker-spezifische Namen (US500/SPX500, DE40/GER40, …) — `resolve_symbol`
+  probiert Kandidaten gegen die Terminal-Symbolliste. **VOR Live prüfen, ob die echten
+  CTI-Broker-Symbole in `MAPPING` getroffen werden.**
+- **Orderart = Market-Deal mit `deviation`-Slippage-Cap** (MT5-Äquivalent zum marketable Limit;
+  Filling-Mode IOC/FOK/RETURN automatisch erkannt).
+- **Trailing-DD-Notaus (CTI-Kernregel):** `dd_guard()` (trailing peak-to-equity ODER static),
+  Soft-Flatten bei 80 % des harten Limits (Puffer), State in `results/mt5_dd_state.json`.
+  `--monitor` = 60-Sek-Poll-Loop, flatten + halt bei Breach. **`MAX_DD_PCT`/`DD_MODE` auf den
+  EXAKTEN CTI-Plan setzen, bevor scharf!** (Default 6 % trailing = Annahme 1-Step.)
+- **Sicherheit:** `DRY_RUN=True` default (Git), `--arm` zum Scharfschalten, REAL-Konto wird
+  verweigert (`ALLOW_REAL=False`), Risiko-Caps, Dust-Filter, Fill-Ledger `mt5_fills_ledger.csv`.
+- **Befehle:** `--selftest` (offline) · ohne Flag = Dry-Run (Terminal offen) · `--arm` (scharf)
+  · `--monitor` (DD-Notaus-Loop).
+- **OFFEN für CTI-Live:** (a) CTI-MT5-Terminal öffnen + einloggen, (b) `MAPPING`-Symbole gegen
+  die echten Broker-Namen verifizieren, (c) `MAX_DD_PCT`/`DD_MODE` = CTI-Plan setzen, (d) erst
+  Dry-Run, dann `--arm`, (e) Monitor-Loop dauerhaft mitlaufen lassen.
+
 ## Erfolgs-Gate (unverändert)
 
 Live-Kombi-Sharpe ≥ ~0,9 über das Forward-Fenster (Haircut-Toleranz vs. 1,21 in-sample,
