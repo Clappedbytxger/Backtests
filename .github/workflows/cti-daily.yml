@@ -1,0 +1,57 @@
+name: CTI CORE book — daily forward tracker
+
+# Free, server-less forward test for the frozen 0108 CORE book. Runs the tracker
+# (pure Python + yfinance, no broker) on GitHub's runners each weekday after the US
+# close and pushes a Telegram summary. The tracker is stateless -- it rebuilds the
+# whole book from yfinance every run -- so nothing needs to be committed back.
+#
+# Setup (one-time): add two repo secrets under Settings -> Secrets and variables ->
+# Actions:  TELEGRAM_TOKEN (from @BotFather)  and  TELEGRAM_CHAT_ID (from @userinfobot).
+# Without them the run still works; it just skips the alert.
+# Manual run: Actions tab -> this workflow -> "Run workflow".
+
+on:
+  schedule:
+    - cron: "0 22 * * 1-5"   # 22:00 UTC, Mon-Fri (~1-2h after the US close, DST-safe)
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cti-daily
+  cancel-in-progress: false
+
+jobs:
+  track:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+
+      - name: Install dependencies (lean -- tracker path only)
+        run: pip install numpy pandas scipy matplotlib seaborn yfinance pyarrow requests ccxt
+
+      - name: Write Telegram key from secrets (if configured)
+        env:
+          TG_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          TG_CHAT: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          if [ -n "$TG_TOKEN" ] && [ -n "$TG_CHAT" ]; then
+            printf '{"token":"%s","chat_id":"%s"}' "$TG_TOKEN" "$TG_CHAT" > .telegram.key
+            echo "Telegram key written."
+          else
+            echo "No TELEGRAM_TOKEN/CHAT_ID secret -- tracker runs, alert skipped."
+          fi
+
+      - name: Run forward tracker
+        run: python strategies/0108_cti_core_book_live/run_cti_daily.py
+
+      - name: Clean up secret file
+        if: always()
+        run: rm -f .telegram.key
