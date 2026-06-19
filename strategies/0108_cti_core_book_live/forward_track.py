@@ -55,47 +55,59 @@ def log_targets(asof, ctx, pos):
                     ctx["crypto_gate"], round(gross, 4), active])
 
 
-def main():
+def compute():
+    """Rebuild the frozen book, score the forward window, write NAV + targets log.
+    Returns a stats dict (used by the daily runner for the alert summary)."""
     RESULTS.mkdir(exist_ok=True)
-    print("Rebuilding the frozen book from yfinance...")
     book = eng.build_book()
     book.index = pd.to_datetime(book.index)
-
     insample = book[book.index < FREEZE]
     fwd = book[book.index >= FREEZE]
 
-    print(f"\nIn-sample (...{FREEZE.date()}): {len(insample)}d | "
-          f"Sharpe {eng.ann_sharpe(insample):+.3f} (target ~1.21)")
-
-    print(f"\n===== FORWARD TEST (from {FREEZE.date()}) =====")
-    if len(fwd) < 2:
-        print(f"  {len(fwd)} forward day(s) so far -- nothing to score yet.")
-        print("  Re-run daily after the US close; the window fills as new sessions arrive.")
-    else:
-        sharpe = eng.ann_sharpe(fwd)
-        cum = float((1.0 + fwd).prod() - 1.0)
-        mdd = max_drawdown(fwd)
-        ann_ret = (1.0 + fwd).prod() ** (252.0 / len(fwd)) - 1.0
-        print(f"  days={len(fwd)}  Sharpe={sharpe:+.3f}  cumReturn={cum*100:+.2f}%  "
-              f"annReturn={ann_ret*100:+.2f}%  maxDD={mdd*100:+.2f}%")
-        status = "ON TRACK" if sharpe >= GATE_SHARPE else "below gate"
-        print(f"  gate (Sharpe >= {GATE_SHARPE}): {status}")
-        if len(fwd) < 40:
-            print("  NOTE: <40 forward days -- Sharpe is still very noisy, not yet decisive.")
-
-        # deterministic NAV table (regenerated each run from data)
+    stats = {"insample_days": int(len(insample)),
+             "insample_sharpe": eng.ann_sharpe(insample),
+             "fwd_days": int(len(fwd))}
+    if len(fwd) >= 2:
+        stats.update({
+            "fwd_sharpe": eng.ann_sharpe(fwd),
+            "fwd_cum": float((1.0 + fwd).prod() - 1.0),
+            "fwd_ann": float((1.0 + fwd).prod() ** (252.0 / len(fwd)) - 1.0),
+            "fwd_mdd": max_drawdown(fwd),
+            "gate_pass": eng.ann_sharpe(fwd) >= GATE_SHARPE,
+        })
         nav = pd.DataFrame({"date": fwd.index.date, "daily_ret": fwd.values})
         nav["cum_return"] = (1.0 + fwd).cumprod().values - 1.0
         nav.to_csv(NAV_CSV, index=False)
-        print(f"  -> {NAV_CSV}")
 
-    # today's targets (audit trail)
     pos, ctx = eng.compute_targets()
     log_targets(ctx["asof"], ctx, pos)
-    active = {k: round(v * 100, 2) for k, v in pos.items() if abs(v) > 1e-5}
+    stats["ctx"] = ctx
+    stats["active_targets"] = {k: round(v * 100, 2) for k, v in pos.items() if abs(v) > 1e-5}
+    return stats
+
+
+def main():
+    print("Rebuilding the frozen book from yfinance...")
+    s = compute()
+    print(f"\nIn-sample (...{FREEZE.date()}): {s['insample_days']}d | "
+          f"Sharpe {s['insample_sharpe']:+.3f} (target ~1.21)")
+    print(f"\n===== FORWARD TEST (from {FREEZE.date()}) =====")
+    if s["fwd_days"] < 2:
+        print(f"  {s['fwd_days']} forward day(s) so far -- nothing to score yet.")
+        print("  Re-run daily after the US close; the window fills as new sessions arrive.")
+    else:
+        print(f"  days={s['fwd_days']}  Sharpe={s['fwd_sharpe']:+.3f}  "
+              f"cumReturn={s['fwd_cum']*100:+.2f}%  annReturn={s['fwd_ann']*100:+.2f}%  "
+              f"maxDD={s['fwd_mdd']*100:+.2f}%")
+        print(f"  gate (Sharpe >= {GATE_SHARPE}): "
+              f"{'ON TRACK' if s['gate_pass'] else 'below gate'}")
+        if s["fwd_days"] < 40:
+            print("  NOTE: <40 forward days -- Sharpe is still very noisy, not yet decisive.")
+        print(f"  -> {NAV_CSV}")
+    ctx = s["ctx"]
     print(f"\nToday (as-of {ctx['asof']}): month_end={ctx['month_end']} carry_on={ctx['carry_on']} "
           f"(VIX {ctx['vix']:.1f}) crypto_gate={ctx['crypto_gate']:.1f}")
-    print(f"  active targets (% equity): {active if active else 'FLAT'}")
+    print(f"  active targets (% equity): {s['active_targets'] if s['active_targets'] else 'FLAT'}")
     print(f"  -> appended to {TARGETS_LOG}")
 
 

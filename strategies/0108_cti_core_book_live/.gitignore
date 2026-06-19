@@ -1,0 +1,7 @@
+# runtime artifacts produced by the live bot (not source)
+results/daily_logs/
+results/forward_nav.csv
+results/forward_targets_log.csv
+results/mt5_dd_state.json
+results/mt5_fills_ledger.csv
+__pycache__/
