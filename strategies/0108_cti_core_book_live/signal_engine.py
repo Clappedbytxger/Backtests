@@ -197,7 +197,32 @@ def sleeve_i0099():
     return stream, cur_w, {"gate_mult_tomorrow": mult_today}
 
 
-# ---------- book assembly + validation ----------
+# ---------- book assembly + live targets ----------
+def compute_targets(target_vol=TARGET_ACCOUNT_VOL):
+    """Return (positions, context). positions: {engine_ticker: target weight as fraction
+    of account equity, signed}. Same book math as main() but returns instead of printing."""
+    s092, w092, i92 = sleeve_i0092()
+    s076, w076, i76 = sleeve_i0076()
+    s100, w100, i100 = sleeve_i0100()
+    s099, w099, i99 = sleeve_i0099()
+    df = pd.DataFrame({"i0092": s092, "i0076": s076, "i0100": s100, "i0099": s099})
+    df = df.sort_index().fillna(0.0)
+    df = df.loc[df.index >= df.apply(lambda c: c.ne(0).idxmax()).max()]
+    invvol = 1.0 / (df.std() * ANN); w_sleeve = invvol / invvol.sum()
+    book = (df * w_sleeve).sum(axis=1)
+    K = target_vol / (book.std() * ANN)
+    pos = {}
+    for sl, wser in {"i0092": w092, "i0076": w076, "i0100": w100, "i0099": w099}.items():
+        for instr, wt in wser.items():
+            pos[instr] = pos.get(instr, 0.0) + w_sleeve[sl] * float(wt)
+    pos = {k: K * v for k, v in pos.items() if abs(K * v) > 1e-9}
+    ctx = {"month_end": i92["today_is_month_end"], "carry_on": i100["risk_on_tomorrow"],
+           "vix": i100["vix"], "crypto_gate": i99["gate_mult_tomorrow"],
+           "idx_in_pos": i76["in_position"], "book_sharpe": ann_sharpe(book),
+           "K": float(K), "asof": str(df.index[-1].date())}
+    return pos, ctx
+
+
 def validate(stream, saved_path, name):
     saved = pd.read_parquet(saved_path).iloc[:, 0]
     saved.index = pd.to_datetime(saved.index).tz_localize(None)
