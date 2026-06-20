@@ -54,6 +54,7 @@ def test_full_cycle_commits_on_isolated_branch(repo):
         "turn of month effect on equities",
         backend=MockBackend(responder=_responder),
         repo_root=repo, ideas_dir=repo, slug="tom-test",
+        harness=False,  # legacy free-form path: self-contained run.py (offline)
     )
     assert res["status"] == "ok"
     assert res["metrics"]["sharpe"] == 1.23
@@ -70,6 +71,38 @@ def test_full_cycle_commits_on_isolated_branch(repo):
     # the agent never touches main
     safe_git(repo, ["checkout", "main"])
     assert not sdir.exists()
+
+
+def test_build_run_py_wraps_signal_and_compiles():
+    """The harness wrapper injects the model's signal and yields valid, complete Python."""
+    from agent.loop import _build_run_py
+
+    signal = (
+        'INSTRUMENT = "SPY"\n'
+        "def generate_signal(prices):\n"
+        '    return (prices["Close"] > prices["Close"].rolling(50).mean()).astype(float)\n'
+    )
+    code = _build_run_py(signal)
+    # the fixed harness (cannot be hallucinated) is present...
+    assert "get_prices" in code and "permutation_test" in code and "deflated_sharpe_ratio" in code
+    assert "compute_metrics" in code and "trade_stats" in code and "equity.png" in code
+    # ...and the model's signal is injected
+    assert 'INSTRUMENT = "SPY"' in code and "def generate_signal" in code
+    compile(code, "<generated_run.py>", "exec")  # must be syntactically valid
+
+
+def test_permutation_test_can_return_null_distribution():
+    import numpy as np
+    import pandas as pd
+
+    from quantlab.significance import permutation_test
+
+    rng = np.random.default_rng(0)
+    pos = pd.Series(rng.choice([0.0, 1.0], 300))
+    ar = pd.Series(rng.normal(0, 0.01, 300))
+    strat = pos.shift(1).fillna(0) * ar
+    out = permutation_test(strat, ar, pos, n_perm=200, return_null=True)
+    assert "null_scores" in out and len(out["null_scores"]) == 200
 
 
 def test_dry_run_writes_code_but_does_not_execute_or_commit(repo):

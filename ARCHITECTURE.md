@@ -217,3 +217,14 @@ Targets: Windows 11 (AMD GPU) and macOS (Apple Silicon, 24 GB).
   (async job, cached GPU model, never touches the real repo) + `GET /agent/job/{id}`;
   a `/agent` page lets you type a hypothesis and see the catalog de-dup + generated
   `run.py` (+ metrics/REPORT when executed). 179 tests; `next build` green (6 routes).
+- **2026-06-21** — Anti-hallucination harness for the agent. The model now writes
+  ONLY the signal (`INSTRUMENT` + `generate_signal(prices)`) under strict
+  instructions (pd/np only, decision-time, no look-ahead); a fixed, audited harness
+  computes the full metric battery (CAGR/Sharpe/Sortino/Calmar/MaxDD+duration/vol/
+  win-rate/profit-factor/payoff/expectancy/avg-holding/#trades), the equity curve vs
+  Buy & Hold and S&P 500, the Monte-Carlo permutation test (with a plotted null
+  histogram), bootstrap CI and DSR — none of which can be hallucinated. The `/agent`
+  page renders all of it (metric grid, significance, both plots, benchmark, the
+  model's signal). `permutation_test` gained `return_null`; the API sanitizes
+  NaN/Inf and returns plots as base64. 181 tests; `next build` green. Verified
+  live on GPU: a turn-of-month run produced a correct signal + full analysis in ~60s.

@@ -17,8 +17,10 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "src"))  # make `quantlab` importable for standalone uvicorn
 sys.path.insert(0, str(ROOT))          # make `agent` / `live` importable too
 
+import base64  # noqa: E402
 import csv  # noqa: E402
 import importlib.util  # noqa: E402
+import math  # noqa: E402
 import shutil  # noqa: E402
 import subprocess  # noqa: E402
 import tempfile  # noqa: E402
@@ -220,6 +222,17 @@ def _get_agent_backend(name: str | None):
     return _AGENT_BACKENDS[key]
 
 
+def _sanitize(obj):
+    """Replace non-finite floats (NaN/Inf) with None so the result is valid JSON."""
+    if isinstance(obj, float):
+        return obj if math.isfinite(obj) else None
+    if isinstance(obj, dict):
+        return {k: _sanitize(v) for k, v in obj.items()}
+    if isinstance(obj, (list, tuple)):
+        return [_sanitize(v) for v in obj]
+    return obj
+
+
 def _agent_sandbox_run(job_id: str, hypothesis: str, dry_run: bool,
                        backend_name: str | None, slug: str | None) -> None:
     """Run one agent cycle in an isolated temp repo — never touches the real repo."""
@@ -247,7 +260,25 @@ def _agent_sandbox_run(job_id: str, hypothesis: str, dry_run: bool,
         res["run_py"] = (sdir / "run.py").read_text(encoding="utf-8") if (sdir / "run.py").exists() else ""
         report = sdir / "REPORT.md"
         res["report"] = report.read_text(encoding="utf-8") if report.exists() else None
-        _JOBS[job_id].update(status="done", result=res, finished=time.time())
+
+        # Restructure the harness metrics.json into named sections for the UI.
+        raw = res.get("metrics") if isinstance(res.get("metrics"), dict) else {}
+        if "metrics" in raw:  # harness output shape
+            res["summary"] = raw.get("metrics", {})
+            res["permutation"] = raw.get("permutation", {})
+            res["bootstrap_ci"] = raw.get("bootstrap_ci", {})
+            res["deflated_sharpe"] = raw.get("deflated_sharpe", {})
+            res["vs_benchmark"] = raw.get("vs_benchmark", {})
+            res["instrument"] = raw.get("instrument")
+
+        # Read plots out of the sandbox (base64) before it is deleted.
+        res["plots"] = {}
+        rdir = sdir / "results"
+        if rdir.exists():
+            for png in sorted(rdir.glob("*.png")):
+                res["plots"][png.stem] = base64.b64encode(png.read_bytes()).decode()
+
+        _JOBS[job_id].update(status="done", result=_sanitize(res), finished=time.time())
     except Exception as e:  # noqa: BLE001
         _JOBS[job_id].update(status="error", error=f"{type(e).__name__}: {e}", finished=time.time())
     finally:

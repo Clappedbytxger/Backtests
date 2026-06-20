@@ -33,6 +33,7 @@ def permutation_test(
     n_perm: int = 2000,
     metric: str = "sharpe",
     seed: int | None = 42,
+    return_null: bool = False,
 ) -> dict:
     """Monte-Carlo permutation test against random timing.
 
@@ -71,7 +72,7 @@ def permutation_test(
         null_scores[i] = score(shuffled * asset)
 
     p_value = float((np.sum(null_scores >= observed) + 1) / (n_perm + 1))
-    return {
+    result = {
         "observed": float(observed),
         "p_value": p_value,
         "null_mean": float(np.mean(null_scores)),
@@ -79,6 +80,9 @@ def permutation_test(
         "n_perm": n_perm,
         "metric": metric,
     }
+    if return_null:
+        result["null_scores"] = null_scores  # full distribution, for plotting
+    return result
 
 
 def bootstrap_ci(

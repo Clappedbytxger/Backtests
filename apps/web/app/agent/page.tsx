@@ -1,17 +1,51 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { agentRun, getAgentJob, type AgentJob } from "@/lib/api";
+import { agentRun, getAgentJob, type AgentJob, type AgentResult } from "@/lib/api";
+
+const pct = (x?: number | null, d = 1) =>
+  x == null ? "–" : `${(x * 100).toFixed(d)}%`;
+const num = (x?: number | null, d = 2) => (x == null ? "–" : x.toFixed(d));
+
+function metricCards(s: Record<string, number>) {
+  return [
+    { label: "CAGR", value: pct(s.cagr) },
+    { label: "Sharpe", value: num(s.sharpe) },
+    { label: "Sortino", value: num(s.sortino) },
+    { label: "Calmar", value: num(s.calmar) },
+    { label: "Max DD", value: pct(s.max_drawdown) },
+    { label: "DD duration", value: s.max_drawdown_duration_days != null ? `${s.max_drawdown_duration_days}d` : "–" },
+    { label: "Volatility", value: pct(s.annual_volatility) },
+    { label: "Win rate", value: pct(s.win_rate) },
+    { label: "Profit factor", value: num(s.profit_factor) },
+    { label: "Payoff", value: num(s.payoff_ratio) },
+    { label: "Expectancy", value: s.expectancy != null ? `${(s.expectancy * 100).toFixed(2)}%` : "–" },
+    { label: "Avg holding", value: s.avg_holding_days != null ? `${s.avg_holding_days.toFixed(1)}d` : "–" },
+    { label: "# Trades", value: s.n_trades != null ? String(s.n_trades) : "–" },
+  ];
+}
 
 export default function AgentPage() {
   const [hypothesis, setHypothesis] = useState("");
-  const [dryRun, setDryRun] = useState(true);
+  const [dryRun, setDryRun] = useState(false); // default: execute -> full metrics
   const [job, setJob] = useState<AgentJob | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [running, setRunning] = useState(false);
   const pollRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Deep-link: /agent?job=<id> loads an existing run (shareable / screenshotable).
+  function poll(jobId: string) {
+    getAgentJob(jobId)
+      .then((j) => {
+        setJob(j);
+        if (j.status === "running") pollRef.current = setTimeout(() => poll(jobId), 1500);
+        else setRunning(false);
+      })
+      .catch((e) => {
+        setError(String(e));
+        setRunning(false);
+      });
+  }
+
   useEffect(() => {
     const jid = new URLSearchParams(window.location.search).get("job");
     if (jid) {
@@ -20,22 +54,6 @@ export default function AgentPage() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  function poll(jobId: string) {
-    getAgentJob(jobId)
-      .then((j) => {
-        setJob(j);
-        if (j.status === "running") {
-          pollRef.current = setTimeout(() => poll(jobId), 1500);
-        } else {
-          setRunning(false);
-        }
-      })
-      .catch((e) => {
-        setError(String(e));
-        setRunning(false);
-      });
-  }
 
   async function run() {
     setError(null);
@@ -50,14 +68,20 @@ export default function AgentPage() {
     }
   }
 
-  const res = job?.result;
+  const res: AgentResult | undefined = job?.result;
+  const s = res?.summary;
+  const perm = res?.permutation;
+  const boot = res?.bootstrap_ci;
+  const dsr = res?.deflated_sharpe;
+  const vb = res?.vs_benchmark;
 
   return (
     <main className="mx-auto max-w-4xl p-8">
       <h1 className="text-2xl font-semibold">Agent — test a hypothesis</h1>
       <p className="mt-1 text-sm text-zinc-400">
-        Runs the autonomous research agent on the local model. Sandboxed — your repo
-        and branches are never modified.
+        The local model writes only the signal; a fixed harness computes all metrics,
+        the equity curve vs S&amp;P 500, the permutation test, bootstrap CI and DSR.
+        Sandboxed — your repo is never modified.
       </p>
 
       <textarea
@@ -70,7 +94,7 @@ export default function AgentPage() {
       <div className="mt-3 flex flex-wrap items-center gap-4">
         <label className="flex items-center gap-2 text-sm text-zinc-300">
           <input type="checkbox" checked={dryRun} onChange={(e) => setDryRun(e.target.checked)} />
-          dry-run (generate code only)
+          dry-run (code only, no metrics)
         </label>
         <button
           onClick={run}
@@ -79,15 +103,12 @@ export default function AgentPage() {
         >
           {running ? "Running…" : "Run Agent"}
         </button>
-        {!dryRun && (
-          <span className="text-xs text-amber-400">runs the backtest in the sandbox</span>
-        )}
       </div>
 
       {running && (
         <p className="mt-6 animate-pulse text-sm text-zinc-400">
-          Agent is working… (local model generation can take ~1 min; status:{" "}
-          {job?.status ?? "starting"})
+          Agent is working… (model + backtest + significance; ~1–2 min). status:{" "}
+          {job?.status ?? "starting"}
         </p>
       )}
       {error && (
@@ -118,35 +139,112 @@ export default function AgentPage() {
             </section>
           )}
 
-          {res.metrics && (
+          {s && (
+            <>
+              <section>
+                <h2 className="text-sm font-semibold">
+                  Metrics{res.instrument ? ` · ${res.instrument}` : ""}{" "}
+                  <span className="text-xs text-zinc-500">(OOS, net of costs)</span>
+                </h2>
+                <div className="mt-2 grid grid-cols-3 gap-2 sm:grid-cols-5 lg:grid-cols-7">
+                  {metricCards(s).map((c) => (
+                    <div key={c.label} className="rounded-lg border border-zinc-800 bg-zinc-900/60 p-2.5">
+                      <div className="font-mono text-base font-semibold">{c.value}</div>
+                      <div className="text-[10px] text-zinc-400">{c.label}</div>
+                    </div>
+                  ))}
+                </div>
+              </section>
+
+              <section>
+                <h2 className="text-sm font-semibold">Significance</h2>
+                <div className="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-4">
+                  <Stat label="Permutation p" value={num(perm?.p_value, 3)} />
+                  <Stat label="Observed Sharpe" value={num(perm?.observed)} />
+                  <Stat label="Bootstrap Sharpe CI" value={`[${num(boot?.ci_low)}, ${num(boot?.ci_high)}]`} />
+                  <Stat label="DSR" value={num(dsr?.psr_deflated, 3)} />
+                </div>
+              </section>
+
+              {res.plots?.equity && (
+                <section>
+                  <h2 className="text-sm font-semibold">Equity curve vs benchmarks</h2>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={`data:image/png;base64,${res.plots.equity}`}
+                    alt="equity curve"
+                    className="mt-2 rounded-lg border border-zinc-800"
+                  />
+                </section>
+              )}
+
+              {res.plots?.permutation && (
+                <section>
+                  <h2 className="text-sm font-semibold">Monte-Carlo permutation test</h2>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={`data:image/png;base64,${res.plots.permutation}`}
+                    alt="permutation test"
+                    className="mt-2 rounded-lg border border-zinc-800"
+                  />
+                </section>
+              )}
+
+              {vb && (
+                <section>
+                  <h2 className="text-sm font-semibold">Total return vs benchmarks</h2>
+                  <div className="mt-2 grid grid-cols-3 gap-2">
+                    <Stat label="Strategy" value={pct(vb.strategy_total_return)} />
+                    <Stat label={`Buy & Hold ${res.instrument ?? ""}`} value={pct(vb.buy_hold_total_return)} />
+                    <Stat label="S&P 500" value={pct(vb.sp500_total_return)} />
+                  </div>
+                </section>
+              )}
+            </>
+          )}
+
+          {!s && res.status === "no-metrics" && (
+            <div className="rounded-lg border border-amber-900 bg-amber-950/30 p-4 text-sm text-amber-300">
+              The generated strategy ran but produced no metrics. Output:
+              <pre className="mt-2 overflow-auto whitespace-pre-wrap text-xs text-amber-200/80">
+                {res.stdout_tail || "(none)"}
+              </pre>
+            </div>
+          )}
+
+          {res.signal_code && (
             <section>
-              <h2 className="text-sm font-semibold">Backtest metrics</h2>
-              <pre className="mt-2 overflow-x-auto rounded-lg border border-zinc-800 bg-zinc-900/60 p-3 text-xs">
-                {JSON.stringify(res.metrics, null, 2)}
+              <h2 className="text-sm font-semibold">
+                Signal written by the model{" "}
+                <span className="font-mono text-xs text-zinc-500">({res.branch})</span>
+              </h2>
+              <pre className="mt-2 overflow-auto rounded-lg border border-zinc-800 bg-zinc-950 p-3 text-xs leading-relaxed text-zinc-200">
+                {res.signal_code}
               </pre>
             </section>
           )}
 
-          <section>
-            <h2 className="text-sm font-semibold">
-              Generated run.py{" "}
-              <span className="font-mono text-xs text-zinc-500">({res.branch})</span>
-            </h2>
-            <pre className="mt-2 max-h-[28rem] overflow-auto rounded-lg border border-zinc-800 bg-zinc-950 p-3 text-xs leading-relaxed text-zinc-200">
-              {res.run_py || "(empty)"}
-            </pre>
-          </section>
-
-          {res.report && (
-            <section>
-              <h2 className="text-sm font-semibold">REPORT.md</h2>
-              <pre className="mt-2 whitespace-pre-wrap rounded-lg border border-zinc-800 bg-zinc-900/60 p-3 text-xs">
-                {res.report}
+          {res.run_py && (
+            <details className="rounded-lg border border-zinc-800 bg-zinc-900/40 p-3">
+              <summary className="cursor-pointer text-sm text-zinc-300">
+                Full run.py (signal + fixed harness)
+              </summary>
+              <pre className="mt-2 max-h-[28rem] overflow-auto text-xs leading-relaxed text-zinc-300">
+                {res.run_py}
               </pre>
-            </section>
+            </details>
           )}
         </div>
       )}
     </main>
+  );
+}
+
+function Stat({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-lg border border-zinc-800 bg-zinc-900/60 p-2.5">
+      <div className="font-mono text-sm font-semibold">{value}</div>
+      <div className="text-[10px] text-zinc-400">{label}</div>
+    </div>
   );
 }

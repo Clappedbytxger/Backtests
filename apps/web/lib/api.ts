@@ -77,10 +77,28 @@ export interface AgentResult {
   context: string[];
   dry_run?: boolean;
   status?: string;
-  metrics?: Record<string, unknown> | null;
   sha?: string;
   run_py?: string;
+  signal_code?: string;
   report?: string | null;
+  stdout_tail?: string;
+  instrument?: string | null;
+  summary?: Record<string, number>;
+  permutation?: {
+    observed?: number;
+    p_value?: number;
+    null_mean?: number;
+    null_std?: number;
+    n_perm?: number;
+  };
+  bootstrap_ci?: { statistic?: string; point?: number; ci_low?: number; ci_high?: number };
+  deflated_sharpe?: { psr_deflated?: number; observed_sharpe?: number };
+  vs_benchmark?: {
+    strategy_total_return?: number;
+    buy_hold_total_return?: number;
+    sp500_total_return?: number;
+  };
+  plots?: Record<string, string>;
 }
 
 export interface AgentJob {
