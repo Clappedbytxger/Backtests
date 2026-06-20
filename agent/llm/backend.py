@@ -99,16 +99,23 @@ def get_backend(name: str | None = None, **kwargs) -> LLMBackend:
     only instantiated (and their libs imported) here — pass their ``**kwargs``
     (e.g. ``model_path=`` / ``model=``).
     """
-    if name is None:
+    settings = None
+    if name is None or name.lower() in ("auto", "llamacpp", "mlx"):
         from quantlab.config import get_settings
-        name = get_settings().llm_backend
+        settings = get_settings()
+    if name is None:
+        name = settings.llm_backend
     name = (name or "auto").lower()
     if name == "auto":
         name = detect_platform_backend()
     if name == "mock":
         return MockBackend(**kwargs)
     if name == "llamacpp":
+        if "model_path" not in kwargs and settings and settings.llm_model:
+            kwargs["model_path"] = str(settings.llm_model)
         return LlamaCppBackend(**kwargs)
     if name == "mlx":
+        if "model" not in kwargs and settings and settings.llm_model:
+            kwargs["model"] = str(settings.llm_model)
         return MLXBackend(**kwargs)
     raise ValueError(f"unknown llm backend {name!r} (use auto|mock|llamacpp|mlx)")

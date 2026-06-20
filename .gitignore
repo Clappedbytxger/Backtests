@@ -30,6 +30,9 @@ Thumbs.db
 config.yaml
 strategies.db
 
+# Local LLM model weights (GGUF / MLX) for the agent
+models/
+
 # C++ kernel build output
 cpp/**/build/
 *.so
