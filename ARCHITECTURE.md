@@ -143,7 +143,7 @@ Targets: Windows 11 (AMD GPU) and macOS (Apple Silicon, 24 GB).
 | Phase | Content | Status |
 |-------|---------|--------|
 | **P1** | Config/cross-platform · DuckDB lake · `IStrategy` + parity · SQLite registry · C++ scaffold · API/UI skeletons | **complete (2026-06-20)** |
-| **P2** | Event-driven backtester (C++ inner loop) · TCA · robustness lab (MC, WFA, White's Reality Check; reuse DSR/CPCV) | planned |
+| **P2** | Event-driven backtester (C++ inner loop) · TCA · robustness lab (MC, WFA, White's Reality Check; reuse DSR/CPCV) | **complete (2026-06-20)** |
 | **P3** | Next.js + Tailwind dashboard (equity/drawdown/trade dists, live-book monitor) · knowledge hub | planned |
 | **P4** | Autonomous agent (LLM HW abstraction, RAG, loop) · OMS/broker (IB + CTI) formalized, human-in-the-loop | planned |
 
@@ -179,3 +179,11 @@ Targets: Windows 11 (AMD GPU) and macOS (Apple Silicon, 24 GB).
   (+21 new), frontend `next build` green. Toolchain: CMake via pip `cmake` pkg (the
   `D:\CMake` dir was source-only). Next: Phase 2 (event-driven backtester on the C++
   kernel, TCA, robustness lab).
+- **2026-06-20** — **Phase 2 complete.** Added: `quantlab.backtest_event` (bar-by-bar
+  engine, bit-for-bit parity with the vectorized engine on plain signals via the C++
+  kernel, plus intrabar stop-loss/take-profit with open-gap fills and post-stop
+  suppression); `quantlab.tca` (square-root market-impact TCA; `tca_from_backtest`
+  bridges weight-space turnover to dollar costs); `quantlab.robustness` (moving-block
+  Monte-Carlo with a max-drawdown distribution, walk-forward harness, White's Reality
+  Check — re-exporting the existing permutation/bootstrap/DSR battery). **147 Python
+  tests pass** (+13 new). Next: Phase 3 (dashboard) and Phase 4 (autonomous agent + OMS).
