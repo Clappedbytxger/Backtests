@@ -1,0 +1,15 @@
+[build-system]
+requires = ["scikit-build-core>=0.10", "pybind11>=2.12", "cmake>=3.15", "ninja>=1.11"]
+build-backend = "scikit_build_core.build"
+
+[project]
+name = "quant_kernel"
+version = "0.1.0"
+description = "Quant-OS C++ speed kernel (pybind11 / CMake) — event-driven backtest inner loops"
+requires-python = ">=3.10"
+
+[tool.scikit-build]
+# Generator is left unset so the build is cross-platform: MSVC on Windows,
+# Clang/Make/Ninja on macOS. Override locally via the CMAKE_GENERATOR env var.
+minimum-version = "build-system.requires"
+wheel.expand-macos-universal-tags = true
