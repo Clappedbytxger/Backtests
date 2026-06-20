@@ -145,7 +145,7 @@ Targets: Windows 11 (AMD GPU) and macOS (Apple Silicon, 24 GB).
 | **P1** | Config/cross-platform · DuckDB lake · `IStrategy` + parity · SQLite registry · C++ scaffold · API/UI skeletons | **complete (2026-06-20)** |
 | **P2** | Event-driven backtester (C++ inner loop) · TCA · robustness lab (MC, WFA, White's Reality Check; reuse DSR/CPCV) | **complete (2026-06-20)** |
 | **P3** | Next.js + Tailwind dashboard (overview charts, strategy detail + plots, research hub) · live-book monitor → P4 | **core complete (2026-06-20)** |
-| **P4** | Autonomous agent (LLM HW abstraction, RAG, loop) · OMS/broker (IB + CTI) formalized, human-in-the-loop | planned |
+| **P4** | Autonomous agent (LLM HW abstraction, RAG, loop) · OMS/broker (IB + CTI) formalized, human-in-the-loop | **core complete (2026-06-20)** |
 
 ## 10. Non-goals / deferred / rejected (with rationale)
 
@@ -195,3 +195,14 @@ Targets: Windows 11 (AMD GPU) and macOS (Apple Silicon, 24 GB).
   result plots) and a research hub (105-hypothesis backlog). **151 Python tests
   pass** (+4 API), `next build` green (5 routes). Deferred to P4: live-book monitor
   + interactive equity curves. Next: Phase 4 (autonomous agent + OMS).
+- **2026-06-20** — **Phase 4 core complete.** `agent/` — hard-walled autonomous
+  research agent: `guardrails` (branch isolation, no-push allow-list, `agent_commit`),
+  `llm/` (HW-abstracted backend + Mock + lazy llama.cpp/mlx + auto-select), `rag/`
+  (TF-IDF over HYPOTHESES.csv + de-dup vs CATALOG.md), `loop` (hypothesis → code →
+  backtest subprocess → REPORT → commit on `agent/*`, never `main`/push), `cli`
+  (`python -m agent`). `live/oms.py` — broker-agnostic OMS with PaperBroker, bracket
+  OCO orders and a human-in-the-loop confirm gate (deterministic, **no LLM in the
+  order path**). **24 new tests** (guardrails 7, llm 5, rag 4, loop 3, oms 5);
+  the full cycle is verified end-to-end with the mock backend (no model needed).
+  Real local inference is an optional one-time `pip install -e ".[agent]"` + model
+  download (see `agent/README.md`). **All four phases now landed.**
