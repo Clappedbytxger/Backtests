@@ -13,11 +13,13 @@
 # keys_dir:     D:/Backtests              # holds .fred.key, .databento.key, ... (git-ignored *.key)
 # registry_db:  D:/Backtests/strategies.db
 
-# Local LLM inference backend for the autonomous agent (P4):
+# Local LLM inference for the autonomous agent (P4):
 #   auto      -> pick by platform (mlx on Apple Silicon, llamacpp on Windows)
 #   mlx       -> macOS / Apple Silicon (mlx-lm)
 #   llamacpp  -> Windows (llama-cpp-python)
+#   mock      -> deterministic, no model (scaffold/dry-run only)
 # llm_backend: auto
+# llm_model: models/Qwen2.5-Coder-7B-Instruct-Q4_K_M.gguf   # GGUF path (llama.cpp) or MLX id
 
 # --- macOS example ---
 # ideas_dir: ~/Backtest Ideas

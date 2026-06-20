@@ -67,8 +67,9 @@ class Settings(BaseSettings):
     keys_dir: Path = REPO_ROOT  # location of .<service>.key files (git-ignored *.key)
     registry_db: Path = REPO_ROOT / "strategies.db"
 
-    # Local LLM inference backend for the autonomous agent (P4).
-    llm_backend: str = "auto"  # auto | mlx (macOS) | llamacpp (Windows)
+    # Local LLM inference for the autonomous agent (P4).
+    llm_backend: str = "auto"  # auto | mlx (macOS) | llamacpp (Windows) | mock
+    llm_model: str = ""        # local model path (GGUF for llama.cpp) or MLX model id
 
     @field_validator(
         "backtest_dir", "ideas_dir", "data_dir", "keys_dir", "registry_db",
