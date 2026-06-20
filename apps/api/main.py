@@ -17,6 +17,8 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "src"))  # make `quantlab` importable for standalone uvicorn
 
 import csv  # noqa: E402
+import importlib.util  # noqa: E402
+import time  # noqa: E402
 from collections import Counter  # noqa: E402
 
 from fastapi import FastAPI, HTTPException  # noqa: E402
@@ -138,3 +140,49 @@ def ideas() -> dict:
     with open(path, encoding="utf-8") as fh:
         rows = list(csv.DictReader(fh))
     return {"exists": True, "source": str(path), "count": len(rows), "ideas": rows}
+
+
+# ── Live-book monitor (0108 CTI CORE book) ──────────────────────────────────
+_LIVE_CACHE: dict = {"ts": 0.0, "data": None}
+_LIVE_TTL = 600.0  # seconds; compute_targets pulls live data, so cache it
+_SIGNAL_ENGINE = None
+
+
+def _signal_engine():
+    """Load the frozen 0108 signal engine (importlib; the module sets up its own paths)."""
+    global _SIGNAL_ENGINE
+    if _SIGNAL_ENGINE is None:
+        path = (get_settings().backtest_dir / "strategies"
+                / "0108_cti_core_book_live" / "signal_engine.py")
+        spec = importlib.util.spec_from_file_location("cti_signal_engine", path)
+        _SIGNAL_ENGINE = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(_SIGNAL_ENGINE)
+    return _SIGNAL_ENGINE
+
+
+@app.get("/live/book")
+def live_book(refresh: bool = False) -> dict:
+    """Today's target positions of the frozen 0108 CORE book (TTL-cached).
+
+    Calls the 0108 signal engine's ``compute_targets()``; on any data/network
+    failure returns ``{"ok": false, "error": ...}`` so the dashboard degrades.
+    """
+    now = time.time()
+    if not refresh and _LIVE_CACHE["data"] is not None and now - _LIVE_CACHE["ts"] < _LIVE_TTL:
+        return {**_LIVE_CACHE["data"], "cached": True}
+    try:
+        positions, ctx = _signal_engine().compute_targets()
+        data = {
+            "ok": True,
+            "asof": ctx.get("asof"),
+            "book_sharpe": ctx.get("book_sharpe"),
+            "gross_exposure_pct": round(sum(abs(v) for v in positions.values()) * 100, 1),
+            "positions": [{"instrument": k, "weight_pct": round(v * 100, 3)}
+                          for k, v in sorted(positions.items(), key=lambda kv: -abs(kv[1]))],
+            "context": {k: ctx.get(k) for k in
+                        ("month_end", "carry_on", "vix", "crypto_gate", "idx_in_pos", "K")},
+        }
+        _LIVE_CACHE.update(ts=now, data=data)
+        return {**data, "cached": False}
+    except Exception as e:  # noqa: BLE001 - any data/network/import issue degrades gracefully
+        return {"ok": False, "error": f"{type(e).__name__}: {e}"}

@@ -49,7 +49,20 @@ async function getJson<T>(path: string): Promise<T> {
   return res.json() as Promise<T>;
 }
 
+export interface LiveBook {
+  ok: boolean;
+  error?: string;
+  cached?: boolean;
+  asof?: string | null;
+  book_sharpe?: number | null;
+  gross_exposure_pct?: number;
+  positions?: { instrument: string; weight_pct: number }[];
+  context?: Record<string, unknown>;
+}
+
 export const getStrategies = () => getJson<Strategy[]>("/strategies");
+export const getLiveBook = (refresh = false) =>
+  getJson<LiveBook>(`/live/book${refresh ? "?refresh=true" : ""}`);
 export const getOverview = () => getJson<Overview>("/overview");
 export const getStrategy = (num: string) => getJson<StrategyDetail>(`/strategies/${num}`);
 export const getPlots = (num: string) =>

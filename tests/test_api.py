@@ -90,3 +90,22 @@ def test_ideas(client):
     assert "ideas" in body and "exists" in body
     if body["exists"]:
         assert body["count"] > 0 and "ID" in body["ideas"][0]
+
+
+def test_live_book_served_from_cache(client):
+    # seed the TTL cache so the endpoint returns without the heavy live compute
+    import time as _t
+
+    from apps.api import main as apimain
+
+    apimain._LIVE_CACHE.update(
+        ts=_t.time(),
+        data={"ok": True, "book_sharpe": 1.21, "gross_exposure_pct": 42.0,
+              "positions": [{"instrument": "EURUSD=X", "weight_pct": 3.2}],
+              "context": {"vix": 14.0}, "asof": "2026-06-20"},
+    )
+    r = client.get("/live/book")
+    assert r.status_code == 200
+    body = r.json()
+    assert body["ok"] is True and body["cached"] is True
+    assert body["book_sharpe"] == 1.21 and body["positions"][0]["instrument"] == "EURUSD=X"

@@ -144,7 +144,7 @@ Targets: Windows 11 (AMD GPU) and macOS (Apple Silicon, 24 GB).
 |-------|---------|--------|
 | **P1** | Config/cross-platform · DuckDB lake · `IStrategy` + parity · SQLite registry · C++ scaffold · API/UI skeletons | **complete (2026-06-20)** |
 | **P2** | Event-driven backtester (C++ inner loop) · TCA · robustness lab (MC, WFA, White's Reality Check; reuse DSR/CPCV) | **complete (2026-06-20)** |
-| **P3** | Next.js + Tailwind dashboard (overview charts, strategy detail + plots, research hub) · live-book monitor → P4 | **core complete (2026-06-20)** |
+| **P3** | Next.js + Tailwind dashboard (overview charts, strategy detail + plots, research hub, live-book monitor) | **complete (2026-06-20)** |
 | **P4** | Autonomous agent (LLM HW abstraction, RAG, loop) · OMS/broker (IB + CTI) formalized, human-in-the-loop | **core complete (2026-06-20)** |
 
 ## 10. Non-goals / deferred / rejected (with rationale)
@@ -206,3 +206,7 @@ Targets: Windows 11 (AMD GPU) and macOS (Apple Silicon, 24 GB).
   the full cycle is verified end-to-end with the mock backend (no model needed).
   Real local inference is an optional one-time `pip install -e ".[agent]"` + model
   download (see `agent/README.md`). **All four phases now landed.**
+- **2026-06-20** — Live-book monitor (the last P3 deferral): API `/live/book` calls the
+  0108 signal engine's `compute_targets()` (TTL-cached, graceful on data failure); a
+  `/live` dashboard page shows book Sharpe, gross exposure, gates (month-end/carry/
+  crypto/VIX) and today's target positions. 176 tests pass; `next build` green (6 routes).
