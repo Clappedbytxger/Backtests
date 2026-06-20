@@ -26,5 +26,19 @@ Thumbs.db
 .env
 *.key
 
+# Quant-OS: machine-specific config & generated artifacts
+config.yaml
+strategies.db
+
+# C++ kernel build output
+cpp/**/build/
+*.so
+*.pyd
+
+# Frontend (apps/web)
+node_modules/
+.next/
+apps/web/out/
+
 # Scheduled-task logs
 logs/

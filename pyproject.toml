@@ -8,6 +8,23 @@ version = "0.1.0"
 description = "Systematic backtesting framework for quantitative trading research"
 requires-python = ">=3.10"
 
+# Quant-OS productization layer — installed additively on top of requirements.txt.
+#   pip install -e ".[platform]"   (config, data lake, API)
+[project.optional-dependencies]
+platform = [
+  "duckdb>=1.0",
+  "pydantic-settings>=2.0",
+  "python-dotenv>=1.0",
+  "pyyaml>=6.0",
+  "fastapi>=0.110",
+  "uvicorn>=0.29",
+]
+cpp = ["pybind11>=2.12"]
+agent = [
+  "llama-cpp-python>=0.2; platform_system == 'Windows'",
+  "mlx-lm>=0.12; platform_system == 'Darwin'",
+]
+
 [tool.setuptools.packages.find]
 where = ["src"]
 
