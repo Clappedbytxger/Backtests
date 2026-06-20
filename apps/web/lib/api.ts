@@ -49,6 +49,53 @@ async function getJson<T>(path: string): Promise<T> {
   return res.json() as Promise<T>;
 }
 
+async function postJson<T>(path: string, body: unknown): Promise<T> {
+  const res = await fetch(`${API_URL}${path}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+    cache: "no-store",
+  });
+  if (!res.ok) {
+    let detail = `API ${res.status}`;
+    try {
+      detail = (await res.json()).detail ?? detail;
+    } catch {
+      /* ignore */
+    }
+    throw new Error(detail);
+  }
+  return res.json() as Promise<T>;
+}
+
+export interface AgentResult {
+  branch: string;
+  num?: string;
+  dir: string;
+  slug: string;
+  dups: [string, number][];
+  context: string[];
+  dry_run?: boolean;
+  status?: string;
+  metrics?: Record<string, unknown> | null;
+  sha?: string;
+  run_py?: string;
+  report?: string | null;
+}
+
+export interface AgentJob {
+  job_id: string;
+  status: "running" | "done" | "error";
+  hypothesis: string;
+  dry_run: boolean;
+  result?: AgentResult;
+  error?: string;
+}
+
+export const agentRun = (hypothesis: string, dry_run: boolean) =>
+  postJson<{ job_id: string; status: string }>("/agent/run", { hypothesis, dry_run });
+export const getAgentJob = (jobId: string) => getJson<AgentJob>(`/agent/job/${jobId}`);
+
 export interface LiveBook {
   ok: boolean;
   error?: string;

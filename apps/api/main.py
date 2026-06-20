@@ -15,15 +15,22 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "src"))  # make `quantlab` importable for standalone uvicorn
+sys.path.insert(0, str(ROOT))          # make `agent` / `live` importable too
 
 import csv  # noqa: E402
 import importlib.util  # noqa: E402
+import shutil  # noqa: E402
+import subprocess  # noqa: E402
+import tempfile  # noqa: E402
+import threading  # noqa: E402
 import time  # noqa: E402
 from collections import Counter  # noqa: E402
+from uuid import uuid4  # noqa: E402
 
 from fastapi import FastAPI, HTTPException  # noqa: E402
 from fastapi.middleware.cors import CORSMiddleware  # noqa: E402
 from fastapi.responses import FileResponse  # noqa: E402
+from pydantic import BaseModel  # noqa: E402
 
 from quantlab.config import get_settings  # noqa: E402
 from quantlab.registry import (  # noqa: E402
@@ -186,3 +193,94 @@ def live_book(refresh: bool = False) -> dict:
         return {**data, "cached": False}
     except Exception as e:  # noqa: BLE001 - any data/network/import issue degrades gracefully
         return {"ok": False, "error": f"{type(e).__name__}: {e}"}
+
+
+# ── Autonomous agent (sandboxed, async) ─────────────────────────────────────
+_JOBS: dict[str, dict] = {}
+_AGENT_BACKENDS: dict[str, object] = {}
+_AGENT_LOCK = threading.Lock()
+
+
+class AgentRunRequest(BaseModel):
+    hypothesis: str
+    dry_run: bool = True
+    backend: str | None = None  # None -> config backend; "mock" for a no-model smoke
+    slug: str | None = None
+
+
+def _get_agent_backend(name: str | None):
+    """Resolve + cache the LLM backend (a real model is loaded once and reused)."""
+    from agent.llm import get_backend
+
+    key = name or get_settings().llm_backend
+    if key == "mock":
+        return get_backend("mock")
+    if key not in _AGENT_BACKENDS:
+        _AGENT_BACKENDS[key] = get_backend(name)
+    return _AGENT_BACKENDS[key]
+
+
+def _agent_sandbox_run(job_id: str, hypothesis: str, dry_run: bool,
+                       backend_name: str | None, slug: str | None) -> None:
+    """Run one agent cycle in an isolated temp repo — never touches the real repo."""
+    from agent.loop import run_research_cycle
+
+    settings = get_settings()
+    tmp = Path(tempfile.mkdtemp(prefix="qos_agent_"))
+    try:
+        with _AGENT_LOCK:  # the cached model is not thread-safe -> one run at a time
+            subprocess.run(["git", "init", "-b", "main", str(tmp)], capture_output=True)
+            for k, v in (("user.email", "agent@quant-os.local"), ("user.name", "Quant-OS Agent")):
+                subprocess.run(["git", "-C", str(tmp), "config", k, v], capture_output=True)
+            (tmp / "strategies").mkdir()
+            (tmp / "strategies" / ".gitkeep").write_text("")
+            catalog = settings.backtest_dir / "CATALOG.md"
+            if catalog.exists():
+                shutil.copy(catalog, tmp / "CATALOG.md")  # seed catalog de-dup
+            subprocess.run(["git", "-C", str(tmp), "add", "-A"], capture_output=True)
+            subprocess.run(["git", "-C", str(tmp), "commit", "-m", "seed"], capture_output=True)
+
+            backend = _get_agent_backend(backend_name)
+            res = run_research_cycle(hypothesis, backend=backend, repo_root=tmp,
+                                     ideas_dir=settings.ideas_dir, slug=slug, dry_run=dry_run)
+        sdir = Path(res["dir"])
+        res["run_py"] = (sdir / "run.py").read_text(encoding="utf-8") if (sdir / "run.py").exists() else ""
+        report = sdir / "REPORT.md"
+        res["report"] = report.read_text(encoding="utf-8") if report.exists() else None
+        _JOBS[job_id].update(status="done", result=res, finished=time.time())
+    except Exception as e:  # noqa: BLE001
+        _JOBS[job_id].update(status="error", error=f"{type(e).__name__}: {e}", finished=time.time())
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
+
+
+@app.post("/agent/run")
+def agent_run(req: AgentRunRequest) -> dict:
+    """Start a sandboxed agent research cycle (async). Returns a job id to poll.
+
+    Runs in an isolated temporary repo — the user's working copy and branches are
+    never modified. ``dry_run`` (default) generates run.py without executing it.
+    """
+    hypothesis = req.hypothesis.strip()
+    if not hypothesis:
+        raise HTTPException(status_code=400, detail="hypothesis is required")
+    if any(j["status"] == "running" for j in _JOBS.values()):
+        raise HTTPException(status_code=409, detail="agent is busy — one run at a time")
+    job_id = uuid4().hex[:12]
+    _JOBS[job_id] = {"status": "running", "hypothesis": hypothesis,
+                     "dry_run": req.dry_run, "started": time.time()}
+    threading.Thread(
+        target=_agent_sandbox_run,
+        args=(job_id, hypothesis, req.dry_run, req.backend, req.slug),
+        daemon=True,
+    ).start()
+    return {"job_id": job_id, "status": "running"}
+
+
+@app.get("/agent/job/{job_id}")
+def agent_job(job_id: str) -> dict:
+    """Poll an agent job's status/result."""
+    job = _JOBS.get(job_id)
+    if job is None:
+        raise HTTPException(status_code=404, detail="job not found")
+    return {"job_id": job_id, **job}

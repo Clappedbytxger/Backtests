@@ -109,3 +109,32 @@ def test_live_book_served_from_cache(client):
     body = r.json()
     assert body["ok"] is True and body["cached"] is True
     assert body["book_sharpe"] == 1.21 and body["positions"][0]["instrument"] == "EURUSD=X"
+
+
+def test_agent_run_and_poll_mock(client):
+    import time as _t
+
+    r = client.post("/agent/run", json={"hypothesis": "turn of month effect on equities",
+                                         "backend": "mock", "dry_run": True})
+    assert r.status_code == 200
+    job_id = r.json()["job_id"]
+    job = None
+    for _ in range(80):
+        jr = client.get(f"/agent/job/{job_id}")
+        assert jr.status_code == 200
+        job = jr.json()
+        if job["status"] != "running":
+            break
+        _t.sleep(0.25)
+    assert job["status"] == "done", job
+    res = job["result"]
+    assert "run_py" in res and "dups" in res
+    assert res["branch"].startswith("agent/")  # ran on an isolated sandbox branch
+
+
+def test_agent_run_requires_hypothesis(client):
+    assert client.post("/agent/run", json={"hypothesis": "   "}).status_code == 400
+
+
+def test_agent_job_unknown_404(client):
+    assert client.get("/agent/job/does-not-exist").status_code == 404

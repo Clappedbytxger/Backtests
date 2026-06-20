@@ -210,3 +210,10 @@ Targets: Windows 11 (AMD GPU) and macOS (Apple Silicon, 24 GB).
   0108 signal engine's `compute_targets()` (TTL-cached, graceful on data failure); a
   `/live` dashboard page shows book Sharpe, gross exposure, gates (month-end/carry/
   crypto/VIX) and today's target positions. 176 tests pass; `next build` green (6 routes).
+- **2026-06-20** — Local model + GPU + agent-in-dashboard. Installed Qwen2.5-Coder-7B
+  (Q4) + `llama-cpp-python`; rebuilt with Vulkan for the RX 6600 (GPU offload verified;
+  `llm_model` config wires it into `python -m agent`). **Agent integrated into the
+  dashboard**: API `POST /agent/run` runs a cycle in an isolated **sandbox temp repo**
+  (async job, cached GPU model, never touches the real repo) + `GET /agent/job/{id}`;
+  a `/agent` page lets you type a hypothesis and see the catalog de-dup + generated
+  `run.py` (+ metrics/REPORT when executed). 179 tests; `next build` green (6 routes).

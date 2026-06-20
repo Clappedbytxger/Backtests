@@ -108,8 +108,11 @@ def run_research_cycle(
         summary["dry_run"] = True
         return summary
 
+    # The generated run.py imports quantlab: make BOTH the run repo's src and the
+    # real project src importable (so a sandboxed run_root still finds quantlab).
+    src_paths = [str(repo_root / "src"), str(get_settings().backtest_dir / "src")]
     env = {**os.environ,
-           "PYTHONPATH": str(repo_root / "src") + os.pathsep + os.environ.get("PYTHONPATH", "")}
+           "PYTHONPATH": os.pathsep.join([*src_paths, os.environ.get("PYTHONPATH", "")])}
     proc = subprocess.run([sys.executable, "run.py"], cwd=sdir, env=env,
                           capture_output=True, text=True, timeout=timeout)
     metrics_path = sdir / "results" / "metrics.json"

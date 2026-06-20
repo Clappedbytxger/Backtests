@@ -26,6 +26,9 @@ export default function RootLayout({
             <Link href="/live" className="text-sm text-zinc-400 hover:text-zinc-100">
               Live Book
             </Link>
+            <Link href="/agent" className="text-sm text-zinc-400 hover:text-zinc-100">
+              Agent
+            </Link>
             <Link href="/ideas" className="text-sm text-zinc-400 hover:text-zinc-100">
               Research Hub
             </Link>
