@@ -144,7 +144,7 @@ Targets: Windows 11 (AMD GPU) and macOS (Apple Silicon, 24 GB).
 |-------|---------|--------|
 | **P1** | Config/cross-platform · DuckDB lake · `IStrategy` + parity · SQLite registry · C++ scaffold · API/UI skeletons | **complete (2026-06-20)** |
 | **P2** | Event-driven backtester (C++ inner loop) · TCA · robustness lab (MC, WFA, White's Reality Check; reuse DSR/CPCV) | **complete (2026-06-20)** |
-| **P3** | Next.js + Tailwind dashboard (equity/drawdown/trade dists, live-book monitor) · knowledge hub | planned |
+| **P3** | Next.js + Tailwind dashboard (overview charts, strategy detail + plots, research hub) · live-book monitor → P4 | **core complete (2026-06-20)** |
 | **P4** | Autonomous agent (LLM HW abstraction, RAG, loop) · OMS/broker (IB + CTI) formalized, human-in-the-loop | planned |
 
 ## 10. Non-goals / deferred / rejected (with rationale)
@@ -187,3 +187,11 @@ Targets: Windows 11 (AMD GPU) and macOS (Apple Silicon, 24 GB).
   Monte-Carlo with a max-drawdown distribution, walk-forward harness, White's Reality
   Check — re-exporting the existing permutation/bootstrap/DSR battery). **147 Python
   tests pass** (+13 new). Next: Phase 3 (dashboard) and Phase 4 (autonomous agent + OMS).
+- **2026-06-20** — **Phase 3 core complete.** API gained dashboard endpoints
+  (`/overview` aggregate, `/strategies/{num}/plots` + path-safe PNG serving,
+  `/ideas` from `IDEAS_DIR/HYPOTHESES.csv`). Dashboard (`apps/web`, recharts) now has
+  an overview (lifecycle buckets, Sharpe histogram, category bar, top-by-Sharpe,
+  full table), a strategy detail page (catalog metrics + flattened metrics.json +
+  result plots) and a research hub (105-hypothesis backlog). **151 Python tests
+  pass** (+4 API), `next build` green (5 routes). Deferred to P4: live-book monitor
+  + interactive equity curves. Next: Phase 4 (autonomous agent + OMS).
