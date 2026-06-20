@@ -7,6 +7,17 @@ const pct = (x?: number | null, d = 1) =>
   x == null ? "–" : `${(x * 100).toFixed(d)}%`;
 const num = (x?: number | null, d = 2) => (x == null ? "–" : x.toFixed(d));
 
+const PLOT_TITLES: Record<string, string> = {
+  "01_equity": "Equity curve vs Buy & Hold + S&P 500",
+  "02_drawdown": "Drawdown (underwater)",
+  "03_monthly": "Monthly returns heatmap",
+  "04_permutation": "Monte-Carlo permutation test",
+  "05_montecarlo": "Monte-Carlo block bootstrap — Sharpe distribution",
+  "06_robustness": "Robustness heatmap — Sharpe across signal lag × cost",
+};
+const plotTitle = (key: string) =>
+  PLOT_TITLES[key] ?? key.replace(/^\d+_/, "").replace(/_/g, " ");
+
 function metricCards(s: Record<string, number>) {
   return [
     { label: "CAGR", value: pct(s.cagr) },
@@ -166,27 +177,24 @@ export default function AgentPage() {
                 </div>
               </section>
 
-              {res.plots?.equity && (
-                <section>
-                  <h2 className="text-sm font-semibold">Equity curve vs benchmarks</h2>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={`data:image/png;base64,${res.plots.equity}`}
-                    alt="equity curve"
-                    className="mt-2 rounded-lg border border-zinc-800"
-                  />
-                </section>
-              )}
-
-              {res.plots?.permutation && (
-                <section>
-                  <h2 className="text-sm font-semibold">Monte-Carlo permutation test</h2>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={`data:image/png;base64,${res.plots.permutation}`}
-                    alt="permutation test"
-                    className="mt-2 rounded-lg border border-zinc-800"
-                  />
+              {res.plots && Object.keys(res.plots).length > 0 && (
+                <section className="space-y-5">
+                  <h2 className="text-sm font-semibold">Visualizations</h2>
+                  {Object.entries(res.plots)
+                    .sort(([a], [b]) => a.localeCompare(b))
+                    .map(([key, b64]) => (
+                      <figure key={key}>
+                        <figcaption className="mb-1.5 text-xs font-medium text-zinc-300">
+                          {plotTitle(key)}
+                        </figcaption>
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={`data:image/png;base64,${b64}`}
+                          alt={plotTitle(key)}
+                          className="w-full rounded-lg border border-zinc-800 bg-white"
+                        />
+                      </figure>
+                    ))}
                 </section>
               )}
 

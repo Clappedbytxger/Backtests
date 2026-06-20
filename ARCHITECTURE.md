@@ -228,3 +228,9 @@ Targets: Windows 11 (AMD GPU) and macOS (Apple Silicon, 24 GB).
   model's signal). `permutation_test` gained `return_null`; the API sanitizes
   NaN/Inf and returns plots as base64. 181 tests; `next build` green. Verified
   live on GPU: a turn-of-month run produced a correct signal + full analysis in ~60s.
+- **2026-06-21** — Full visualization suite in the agent harness: equity vs Buy & Hold
+  + S&P 500, drawdown (underwater), monthly-returns heatmap, Monte-Carlo permutation
+  histogram, Monte-Carlo block-bootstrap Sharpe distribution, and a robustness heatmap
+  (net Sharpe across signal-lag × cost-multiplier). The `/agent` page renders all plots
+  generically (sorted, titled). Reuses `quantlab.robustness.block_bootstrap_paths`.
+  Verified live on GPU (QQQ 50/200 trend: 6 plots, Sharpe 0.70, DSR ~1.0).

@@ -136,11 +136,13 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
+import seaborn as sns
 from quantlab.data import get_prices
 from quantlab.backtest import run_backtest
-from quantlab.metrics import compute_metrics, trade_stats, equity_curve
+from quantlab.metrics import compute_metrics, trade_stats, equity_curve, drawdown_series, sharpe_ratio
 from quantlab.significance import permutation_test, bootstrap_ci, deflated_sharpe_ratio
-from quantlab.costs import IBKR_LIQUID_ETF
+from quantlab.costs import IBKR_LIQUID_ETF, CostModel
+from quantlab.robustness.monte_carlo import block_bootstrap_paths
 
 os.makedirs("results", exist_ok=True)
 START = "2005-01-01"
@@ -171,23 +173,81 @@ spy_ret = spy["Close"].pct_change().fillna(0.0).reindex(ret.index).fillna(0.0)
 spy_eq = equity_curve(spy_ret)
 eq = equity_curve(ret)
 bh = bt["buy_hold"]
+ANN = np.sqrt(252)
 
-fig, ax = plt.subplots(figsize=(9, 4.5))
-ax.plot(eq.index, eq.values, label=f"Strategy ({INSTRUMENT}, net)", lw=1.7, color="#22c55e")
-ax.plot(bh.index, bh.values, label=f"Buy & Hold {INSTRUMENT}", lw=1.0, alpha=0.7, color="#a1a1aa")
-ax.plot(spy_eq.index, spy_eq.values, label="S&P 500 (SPY)", lw=1.0, alpha=0.8, ls="--", color="#3b82f6")
-ax.set_yscale("log")
-ax.set_title("Equity curve (net of costs) vs benchmarks")
+# 1) equity curve vs Buy & Hold + S&P 500
+fig, ax = plt.subplots(figsize=(9, 4.4))
+ax.plot(eq.index, eq.values, label=f"Strategy ({INSTRUMENT}, net)", lw=1.7, color="#16a34a")
+ax.plot(bh.index, bh.values, label=f"Buy & Hold {INSTRUMENT}", lw=1.1, alpha=0.75, color="#6b7280")
+ax.plot(spy_eq.index, spy_eq.values, label="S&P 500 (SPY)", lw=1.1, alpha=0.85, ls="--", color="#2563eb")
+ax.set_yscale("log"); ax.set_title("Equity curve (net of costs) vs benchmarks")
 ax.legend(); ax.grid(alpha=0.3); fig.tight_layout()
-fig.savefig("results/equity.png", dpi=110); plt.close(fig)
+fig.savefig("results/01_equity.png", dpi=110); plt.close(fig)
 
+# 2) drawdown (underwater) vs buy & hold
+dd = drawdown_series(ret) * 100
+bh_dd = drawdown_series(asset_ret) * 100
+fig, ax = plt.subplots(figsize=(9, 3.3))
+ax.fill_between(dd.index, dd.values, 0, color="#dc2626", alpha=0.45, label="Strategy")
+ax.plot(bh_dd.index, bh_dd.values, color="#6b7280", lw=0.8, alpha=0.7, label=f"Buy & Hold {INSTRUMENT}")
+ax.set_title("Drawdown (underwater)"); ax.set_ylabel("Drawdown (%)")
+ax.legend(loc="lower left"); ax.grid(alpha=0.3); fig.tight_layout()
+fig.savefig("results/02_drawdown.png", dpi=110); plt.close(fig)
+
+# 3) monthly returns heatmap
+mt = ((1.0 + ret).resample("ME").prod() - 1.0).to_frame("r")
+mt["year"], mt["month"] = mt.index.year, mt.index.month
+pivot = mt.pivot_table(index="year", columns="month", values="r") * 100.0
+fig, ax = plt.subplots(figsize=(9, max(3.0, 0.42 * len(pivot))))
+sns.heatmap(pivot, annot=True, fmt=".1f", center=0, cmap="RdYlGn",
+            cbar_kws={"label": "Return (%)"}, annot_kws={"size": 7}, ax=ax)
+ax.set_title("Monthly returns (%)"); ax.set_xlabel("Month"); ax.set_ylabel("Year")
+fig.tight_layout(); fig.savefig("results/03_monthly.png", dpi=110); plt.close(fig)
+
+# 4) Monte-Carlo permutation test (random timing)
 null = np.asarray(perm["null_scores"], dtype=float)
-fig, ax = plt.subplots(figsize=(7.5, 4))
+fig, ax = plt.subplots(figsize=(8, 4))
 ax.hist(null, bins=40, color="#3b82f6", alpha=0.7, label="random-timing null")
-ax.axvline(perm["observed"], color="#ef4444", lw=2.0, label=f"observed Sharpe {perm['observed']:.2f}")
+ax.axvline(perm["observed"], color="#ef4444", lw=2.0, label=f"observed {perm['observed']:.2f}")
 ax.set_title(f"Monte-Carlo permutation test  (p = {perm['p_value']:.3f})")
 ax.set_xlabel("Sharpe under random timing"); ax.legend(); ax.grid(alpha=0.3); fig.tight_layout()
-fig.savefig("results/permutation.png", dpi=110); plt.close(fig)
+fig.savefig("results/04_permutation.png", dpi=110); plt.close(fig)
+
+# 5) Monte-Carlo block bootstrap — distribution of the realised Sharpe
+paths = block_bootstrap_paths(ret, block=20, n_paths=1000, seed=1)
+boot_sharpe = paths.mean(1) / (paths.std(1, ddof=1) + 1e-12) * ANN
+obs_sharpe = float(ret.mean() / ret.std(ddof=1) * ANN) if ret.std(ddof=1) > 0 else 0.0
+lo5, hi95 = np.percentile(boot_sharpe, [5, 95])
+fig, ax = plt.subplots(figsize=(8, 4))
+ax.hist(boot_sharpe, bins=40, color="#8b5cf6", alpha=0.7)
+ax.axvspan(lo5, hi95, color="#8b5cf6", alpha=0.12, label=f"5-95%: [{lo5:.2f}, {hi95:.2f}]")
+ax.axvline(obs_sharpe, color="#ef4444", lw=2.0, label=f"observed {obs_sharpe:.2f}")
+ax.axvline(0, color="#111827", lw=1.0, ls=":")
+ax.set_title("Monte-Carlo (block bootstrap) — Sharpe distribution")
+ax.set_xlabel("annualized Sharpe"); ax.legend(); ax.grid(alpha=0.3); fig.tight_layout()
+fig.savefig("results/05_montecarlo.png", dpi=110); plt.close(fig)
+
+# 6) robustness heatmap — net Sharpe across signal lag x cost multiplier
+lags = [-3, -2, -1, 0, 1, 2, 3]
+cmults = [0.0, 0.5, 1.0, 2.0, 3.0, 5.0]
+base = IBKR_LIQUID_ETF
+grid = np.full((len(lags), len(cmults)), np.nan)
+for i, lag in enumerate(lags):
+    slag = signal.shift(lag).fillna(0.0)
+    for j, cm in enumerate(cmults):
+        cmodel = CostModel(commission_per_share=base.commission_per_share,
+                           min_commission=base.min_commission,
+                           max_commission_pct=base.max_commission_pct,
+                           slippage_bps=base.slippage_bps * cm,
+                           regulatory_bps=base.regulatory_bps * cm)
+        grid[i, j] = sharpe_ratio(run_backtest(prices, slag, cost_model=cmodel)["returns"])
+robust = pd.DataFrame(grid, index=[f"{l:+d}" for l in lags], columns=[f"{c:g}x" for c in cmults])
+fig, ax = plt.subplots(figsize=(7.5, 4.3))
+sns.heatmap(robust, annot=True, fmt=".2f", center=0, cmap="RdYlGn",
+            cbar_kws={"label": "Sharpe"}, annot_kws={"size": 8}, ax=ax)
+ax.set_title("Robustness: net Sharpe across signal lag x cost")
+ax.set_xlabel("cost multiplier (x base)"); ax.set_ylabel("signal lag (trading days)")
+fig.tight_layout(); fig.savefig("results/06_robustness.png", dpi=110); plt.close(fig)
 
 out = {
     "instrument": INSTRUMENT,
