@@ -16,8 +16,12 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "src"))  # make `quantlab` importable for standalone uvicorn
 
+import csv  # noqa: E402
+from collections import Counter  # noqa: E402
+
 from fastapi import FastAPI, HTTPException  # noqa: E402
 from fastapi.middleware.cors import CORSMiddleware  # noqa: E402
+from fastapi.responses import FileResponse  # noqa: E402
 
 from quantlab.config import get_settings  # noqa: E402
 from quantlab.registry import (  # noqa: E402
@@ -75,3 +79,62 @@ def strategy(num: str) -> dict:
     if found is None:
         raise HTTPException(status_code=404, detail=f"strategy {num} not found")
     return found
+
+
+def _results_dir(num: str):
+    found = get_strategy(num)
+    if not found or not found.get("rel_path"):
+        return None
+    return get_settings().backtest_dir / found["rel_path"] / "results"
+
+
+@app.get("/strategies/{num}/plots")
+def plots(num: str) -> dict:
+    """List the PNG plot filenames in a strategy's results folder."""
+    d = _results_dir(num)
+    if d is None or not d.exists():
+        return {"num": num, "plots": []}
+    return {"num": num, "plots": sorted(p.name for p in d.glob("*.png"))}
+
+
+@app.get("/strategies/{num}/plot/{filename}")
+def plot(num: str, filename: str):
+    """Serve a single PNG plot (path-traversal-safe)."""
+    d = _results_dir(num)
+    if d is None:
+        raise HTTPException(status_code=404, detail=f"strategy {num} not found")
+    root = d.resolve()
+    target = (d / filename).resolve()
+    if (not target.is_relative_to(root)) or target.suffix.lower() != ".png" or not target.exists():
+        raise HTTPException(status_code=404, detail="plot not found")
+    return FileResponse(target, media_type="image/png")
+
+
+@app.get("/overview")
+def overview() -> dict:
+    """Aggregate stats for the dashboard overview (buckets, Sharpe dist, categories, top)."""
+    _require_registry()
+    rows = list_strategies()
+    sharpes = [r["sharpe"] for r in rows if r["sharpe"] is not None]
+    categories = Counter((r["category"] or "?") for r in rows)
+    ranked = sorted((r for r in rows if r["sharpe"] is not None),
+                    key=lambda r: r["sharpe"], reverse=True)[:12]
+    return {
+        "n_strategies": len(rows),
+        "buckets": bucket_counts(),
+        "categories": dict(categories.most_common()),
+        "sharpes": sharpes,
+        "top": [{"num": r["num"], "name": r["name"], "sharpe": r["sharpe"],
+                 "bucket": r["bucket"]} for r in ranked],
+    }
+
+
+@app.get("/ideas")
+def ideas() -> dict:
+    """Research hub: the hypothesis backlog from IDEAS_DIR/HYPOTHESES.csv."""
+    path = get_settings().ideas_dir / "HYPOTHESES.csv"
+    if not path.exists():
+        return {"exists": False, "source": str(path), "count": 0, "ideas": []}
+    with open(path, encoding="utf-8") as fh:
+        rows = list(csv.DictReader(fh))
+    return {"exists": True, "source": str(path), "count": len(rows), "ideas": rows}
