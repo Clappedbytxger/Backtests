@@ -13,9 +13,34 @@ export interface Strategy {
   has_metrics: number;
 }
 
-export interface BucketResponse {
+export interface StrategyDetail extends Strategy {
+  hypothesis: string | null;
+  note: string | null;
+  rel_path: string | null;
+  maxdd: string | null;
+  n_trades: string | null;
+  p_value: number | null;
+  dsr: number | null;
+  metrics: Record<string, number | string>;
+}
+
+export interface Overview {
+  n_strategies: number;
   buckets: Record<string, number>;
-  statuses: Record<string, number>;
+  categories: Record<string, number>;
+  sharpes: number[];
+  top: { num: string; name: string | null; sharpe: number; bucket: string | null }[];
+}
+
+export interface Idea {
+  ID: string;
+  Titel: string;
+  Markt: string;
+  Kategorie: string;
+  Kernidee_kurz: string;
+  Prioritaet: string;
+  Status: string;
+  [k: string]: string;
 }
 
 async function getJson<T>(path: string): Promise<T> {
@@ -25,4 +50,11 @@ async function getJson<T>(path: string): Promise<T> {
 }
 
 export const getStrategies = () => getJson<Strategy[]>("/strategies");
-export const getBuckets = () => getJson<BucketResponse>("/strategies/buckets");
+export const getOverview = () => getJson<Overview>("/overview");
+export const getStrategy = (num: string) => getJson<StrategyDetail>(`/strategies/${num}`);
+export const getPlots = (num: string) =>
+  getJson<{ num: string; plots: string[] }>(`/strategies/${num}/plots`);
+export const plotUrl = (num: string, file: string) =>
+  `${API_URL}/strategies/${num}/plot/${file}`;
+export const getIdeas = () =>
+  getJson<{ exists: boolean; count: number; ideas: Idea[] }>("/ideas");
