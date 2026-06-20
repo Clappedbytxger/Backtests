@@ -1,0 +1,24 @@
+# Quant-OS configuration template.
+#
+# Copy this file to `config.yaml` (git-ignored) and set your machine's base paths.
+# ALL keys are optional — omitted keys fall back to defaults derived from the repo
+# location, so the project runs out of the box without a config.yaml.
+#
+# Precedence (highest first): env vars (prefix QUANTLAB_) > .env > config.yaml > defaults.
+# Use forward slashes; ~ is expanded. Works on Windows and macOS unchanged.
+
+# backtest_dir: D:/Backtests              # repo root (default: auto-detected)
+# ideas_dir:    D:/Backtest Ideas         # sibling research workspace (default: <repo>/../Backtest Ideas)
+# data_dir:     D:/Backtests/data         # cache_dir is always <data_dir>/cache
+# keys_dir:     D:/Backtests              # holds .fred.key, .databento.key, ... (git-ignored *.key)
+# registry_db:  D:/Backtests/strategies.db
+
+# Local LLM inference backend for the autonomous agent (P4):
+#   auto      -> pick by platform (mlx on Apple Silicon, llamacpp on Windows)
+#   mlx       -> macOS / Apple Silicon (mlx-lm)
+#   llamacpp  -> Windows (llama-cpp-python)
+# llm_backend: auto
+
+# --- macOS example ---
+# ideas_dir: ~/Backtest Ideas
+# llm_backend: mlx

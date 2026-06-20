@@ -13,8 +13,10 @@ from pathlib import Path
 import pandas as pd
 import yfinance as yf
 
-# Cache lives next to the project root: D:/Backtests/data/cache
-CACHE_DIR = Path(__file__).resolve().parents[2] / "data" / "cache"
+from .config import get_settings
+
+# Cache root from central config (default: <repo>/data/cache, unchanged).
+CACHE_DIR = get_settings().cache_dir
 CACHE_DIR.mkdir(parents=True, exist_ok=True)
 
 
