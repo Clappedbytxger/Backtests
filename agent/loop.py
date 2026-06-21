@@ -78,24 +78,30 @@ def _report_prompt(hypothesis: str, metrics: dict | None, stdout: str) -> str:
 # DSR and the plots — so none of those can be hallucinated.
 
 _SIGNAL_SYSTEM = (
-    "You write ONLY the signal logic for a fixed quant backtest harness. Output a "
-    "single ```python code block containing EXACTLY two things and nothing else:\n"
-    '  1) INSTRUMENT = "<ticker>"   (a yfinance ticker, e.g. "SPY", "QQQ", "GLD", "^GSPC")\n'
-    "  2) def generate_signal(prices): returning a pandas Series of target positions.\n\n"
-    "STRICT RULES — the harness does EVERYTHING else, do NOT write any of it:\n"
-    "- `prices` is a DataFrame with columns Open, High, Low, Close, Volume and a DatetimeIndex.\n"
+    "You write ONLY the signal logic for a fixed quant backtest harness. Output a single "
+    "```python code block and NOTHING else, containing:\n"
+    '  1) INSTRUMENT = "<ticker>"  (a yfinance ticker, e.g. "SPY", "QQQ", "GLD", "BTC-USD").\n'
+    "  2) def generate_signal(prices, **params): returning a pandas Series of target positions.\n"
+    "  3) OPTIONAL — only if the strategy has tunable numeric parameters: declare module-level "
+    "PARAMS = {name: default} and PARAM_GRID = {name: [3-6 sweep values]}, and make "
+    "generate_signal take those names as keyword args (same defaults). The harness turns them "
+    "into LIVE SLIDERS and a parameter heatmap.\n\n"
+    "STRICT RULES — the harness does EVERYTHING else (data, metrics, plots, significance):\n"
+    "- DATA IS DAILY BARS ONLY: there is NO intraday / time-of-day info (no hours/minutes). An "
+    "idea like 'buy at 18:00, sell at 02:00' CANNOT be expressed — reformulate it as a daily "
+    "rule or the closest daily proxy.\n"
+    "- `prices` has columns Open, High, Low, Close, Volume and a DatetimeIndex.\n"
     "- Return a pandas Series indexed EXACTLY like `prices`, values in {1.0 long, 0.0 flat, "
-    "-1.0 short}. It is the DECISION-TIME target; the engine shifts it +1 for you.\n"
-    "- `pd` (pandas) and `np` (numpy) are ALREADY imported — use them directly. Do NOT add "
-    "any import, do NOT call get_prices, do NOT compute metrics, do NOT plot, do NOT print.\n"
-    "- NO LOOK-AHEAD: a value at row t may use only data up to and including row t "
-    "(rolling/shift are fine; never use .shift(-n) or future rows)."
+    "-1.0 short}. DECISION-TIME target; the engine shifts it +1 for you.\n"
+    "- `pd` and `np` are already imported. Do NOT import anything, call get_prices, compute "
+    "metrics, plot or print.\n"
+    "- NO LOOK-AHEAD: row t may use only data up to row t (rolling/shift(+n) fine; never shift(-n))."
 )
 
-_SIGNAL_EXAMPLES = '''Example A — turn-of-month (long the last + first 3 trading days of each month):
+_SIGNAL_EXAMPLES = '''Example A — turn-of-month, no parameters:
 ```python
 INSTRUMENT = "SPY"
-def generate_signal(prices):
+def generate_signal(prices, **params):
     idx = prices.index
     g = pd.Series(idx.to_period("M"), index=idx)
     tdom = g.groupby(g).cumcount() + 1                       # trading day of month
@@ -103,12 +109,14 @@ def generate_signal(prices):
     return ((tdom <= 3) | (from_end == 0)).astype(float)
 ```
 
-Example B — 50/200 SMA trend filter (long when the fast average is above the slow):
+Example B — SMA trend WITH tunable parameters (exposes sliders + a fast x slow heatmap):
 ```python
 INSTRUMENT = "QQQ"
-def generate_signal(prices):
+PARAMS = {"fast": 50, "slow": 200}
+PARAM_GRID = {"fast": [10, 20, 50, 100, 150], "slow": [100, 150, 200, 250, 300]}
+def generate_signal(prices, fast=50, slow=200):
     c = prices["Close"]
-    return (c.rolling(50).mean() > c.rolling(200).mean()).astype(float)
+    return (c.rolling(int(fast)).mean() > c.rolling(int(slow)).mean()).astype(float)
 ```'''
 
 
@@ -146,125 +154,190 @@ from quantlab.robustness.monte_carlo import block_bootstrap_paths
 
 os.makedirs("results", exist_ok=True)
 START = "2005-01-01"
-INSTRUMENT = "SPY"  # default; the agent section may override
+ANN = np.sqrt(252.0)
+INSTRUMENT = "SPY"   # the agent section may override
+PARAMS = {}          # {name: default}; declare to expose live sliders + a parameter heatmap
+PARAM_GRID = {}      # {name: [values, ...]}; sweep values for the parameter heatmap
 
 # ===================== AGENT-WRITTEN SECTION (signal only) =====================
 # __AGENT_SIGNAL__
 # =========================== END AGENT SECTION =================================
 
+MODE = os.environ.get("QOS_MODE", "full")
+try:
+    _override = json.loads(os.environ.get("QOS_PARAMS", "{}"))
+except Exception:
+    _override = {}
+params = {k: _override.get(k, PARAMS[k]) for k in PARAMS}
+
+
+def _make_signal(p):
+    try:
+        sig = generate_signal(prices, **p) if p else generate_signal(prices)
+    except TypeError:
+        sig = generate_signal(prices)
+    return pd.Series(sig, index=prices.index).reindex(prices.index).fillna(0.0).clip(-1, 1)
+
+
+def _save():
+    with open("results/metrics.json", "w") as f:
+        json.dump(out, f, indent=2, default=str)
+
+
+def _plot(fn, name):
+    try:
+        fn()
+    except Exception as e:  # one bad plot must never lose the metrics or the rest
+        out.setdefault("plot_errors", {})[name] = repr(e)
+        plt.close("all"); _save()
+
+
 prices = get_prices(INSTRUMENT, start=START)
-signal = pd.Series(generate_signal(prices), index=prices.index).reindex(prices.index).fillna(0.0).clip(-1, 1)
+asset_ret = prices["Close"].pct_change().fillna(0.0)
+signal = _make_signal(params)
 
 bt = run_backtest(prices, signal, cost_model=IBKR_LIQUID_ETF)
 ret, gross, pos = bt["returns"], bt["gross_returns"], bt["position"]
-
 m = compute_metrics(ret)
 ts = trade_stats(bt["trades"])
 
-asset_ret = prices["Close"].pct_change().fillna(0.0)
-perm = permutation_test(gross, asset_ret, pos, n_perm=1000, metric="sharpe", return_null=True)
-boot = bootstrap_ci(ret, statistic="sharpe", n_boot=1000)
-sp_pp = float(ret.mean() / ret.std(ddof=1)) if ret.std(ddof=1) > 0 else 0.0
-dsr = deflated_sharpe_ratio(sp_pp, n_obs=int(len(ret)), n_trials=1, returns=ret)
+warning = None
+if int(ts.get("n_trades", 0)) == 0:
+    warning = ("The strategy never opens a position on DAILY bars (0 trades). If this is an "
+               "intraday / time-of-day idea (buy at 18:00, sell at 02:00), the daily-bar harness "
+               "cannot express it — reformulate as a daily rule.")
 
-# benchmark: S&P 500 buy & hold
+eq = equity_curve(ret); bh = bt["buy_hold"]
 spy = get_prices("SPY", start=START)
 spy_ret = spy["Close"].pct_change().fillna(0.0).reindex(ret.index).fillna(0.0)
 spy_eq = equity_curve(spy_ret)
-eq = equity_curve(ret)
-bh = bt["buy_hold"]
-ANN = np.sqrt(252)
-
-# 1) equity curve vs Buy & Hold + S&P 500
-fig, ax = plt.subplots(figsize=(9, 4.4))
-ax.plot(eq.index, eq.values, label=f"Strategy ({INSTRUMENT}, net)", lw=1.7, color="#16a34a")
-ax.plot(bh.index, bh.values, label=f"Buy & Hold {INSTRUMENT}", lw=1.1, alpha=0.75, color="#6b7280")
-ax.plot(spy_eq.index, spy_eq.values, label="S&P 500 (SPY)", lw=1.1, alpha=0.85, ls="--", color="#2563eb")
-ax.set_yscale("log"); ax.set_title("Equity curve (net of costs) vs benchmarks")
-ax.legend(); ax.grid(alpha=0.3); fig.tight_layout()
-fig.savefig("results/01_equity.png", dpi=110); plt.close(fig)
-
-# 2) drawdown (underwater) vs buy & hold
-dd = drawdown_series(ret) * 100
-bh_dd = drawdown_series(asset_ret) * 100
-fig, ax = plt.subplots(figsize=(9, 3.3))
-ax.fill_between(dd.index, dd.values, 0, color="#dc2626", alpha=0.45, label="Strategy")
-ax.plot(bh_dd.index, bh_dd.values, color="#6b7280", lw=0.8, alpha=0.7, label=f"Buy & Hold {INSTRUMENT}")
-ax.set_title("Drawdown (underwater)"); ax.set_ylabel("Drawdown (%)")
-ax.legend(loc="lower left"); ax.grid(alpha=0.3); fig.tight_layout()
-fig.savefig("results/02_drawdown.png", dpi=110); plt.close(fig)
-
-# 3) monthly returns heatmap
-mt = ((1.0 + ret).resample("ME").prod() - 1.0).to_frame("r")
-mt["year"], mt["month"] = mt.index.year, mt.index.month
-pivot = mt.pivot_table(index="year", columns="month", values="r") * 100.0
-fig, ax = plt.subplots(figsize=(9, max(3.0, 0.42 * len(pivot))))
-sns.heatmap(pivot, annot=True, fmt=".1f", center=0, cmap="RdYlGn",
-            cbar_kws={"label": "Return (%)"}, annot_kws={"size": 7}, ax=ax)
-ax.set_title("Monthly returns (%)"); ax.set_xlabel("Month"); ax.set_ylabel("Year")
-fig.tight_layout(); fig.savefig("results/03_monthly.png", dpi=110); plt.close(fig)
-
-# 4) Monte-Carlo permutation test (random timing)
-null = np.asarray(perm["null_scores"], dtype=float)
-fig, ax = plt.subplots(figsize=(8, 4))
-ax.hist(null, bins=40, color="#3b82f6", alpha=0.7, label="random-timing null")
-ax.axvline(perm["observed"], color="#ef4444", lw=2.0, label=f"observed {perm['observed']:.2f}")
-ax.set_title(f"Monte-Carlo permutation test  (p = {perm['p_value']:.3f})")
-ax.set_xlabel("Sharpe under random timing"); ax.legend(); ax.grid(alpha=0.3); fig.tight_layout()
-fig.savefig("results/04_permutation.png", dpi=110); plt.close(fig)
-
-# 5) Monte-Carlo block bootstrap — distribution of the realised Sharpe
-paths = block_bootstrap_paths(ret, block=20, n_paths=1000, seed=1)
-boot_sharpe = paths.mean(1) / (paths.std(1, ddof=1) + 1e-12) * ANN
-obs_sharpe = float(ret.mean() / ret.std(ddof=1) * ANN) if ret.std(ddof=1) > 0 else 0.0
-lo5, hi95 = np.percentile(boot_sharpe, [5, 95])
-fig, ax = plt.subplots(figsize=(8, 4))
-ax.hist(boot_sharpe, bins=40, color="#8b5cf6", alpha=0.7)
-ax.axvspan(lo5, hi95, color="#8b5cf6", alpha=0.12, label=f"5-95%: [{lo5:.2f}, {hi95:.2f}]")
-ax.axvline(obs_sharpe, color="#ef4444", lw=2.0, label=f"observed {obs_sharpe:.2f}")
-ax.axvline(0, color="#111827", lw=1.0, ls=":")
-ax.set_title("Monte-Carlo (block bootstrap) — Sharpe distribution")
-ax.set_xlabel("annualized Sharpe"); ax.legend(); ax.grid(alpha=0.3); fig.tight_layout()
-fig.savefig("results/05_montecarlo.png", dpi=110); plt.close(fig)
-
-# 6) robustness heatmap — net Sharpe across signal lag x cost multiplier
-lags = [-3, -2, -1, 0, 1, 2, 3]
-cmults = [0.0, 0.5, 1.0, 2.0, 3.0, 5.0]
-base = IBKR_LIQUID_ETF
-grid = np.full((len(lags), len(cmults)), np.nan)
-for i, lag in enumerate(lags):
-    slag = signal.shift(lag).fillna(0.0)
-    for j, cm in enumerate(cmults):
-        cmodel = CostModel(commission_per_share=base.commission_per_share,
-                           min_commission=base.min_commission,
-                           max_commission_pct=base.max_commission_pct,
-                           slippage_bps=base.slippage_bps * cm,
-                           regulatory_bps=base.regulatory_bps * cm)
-        grid[i, j] = sharpe_ratio(run_backtest(prices, slag, cost_model=cmodel)["returns"])
-robust = pd.DataFrame(grid, index=[f"{l:+d}" for l in lags], columns=[f"{c:g}x" for c in cmults])
-fig, ax = plt.subplots(figsize=(7.5, 4.3))
-sns.heatmap(robust, annot=True, fmt=".2f", center=0, cmap="RdYlGn",
-            cbar_kws={"label": "Sharpe"}, annot_kws={"size": 8}, ax=ax)
-ax.set_title("Robustness: net Sharpe across signal lag x cost")
-ax.set_xlabel("cost multiplier (x base)"); ax.set_ylabel("signal lag (trading days)")
-fig.tight_layout(); fig.savefig("results/06_robustness.png", dpi=110); plt.close(fig)
 
 out = {
-    "instrument": INSTRUMENT,
-    "metrics": {**m, **ts},
-    "permutation": {k: perm[k] for k in ("observed", "p_value", "null_mean", "null_std", "n_perm")},
-    "bootstrap_ci": boot,
-    "deflated_sharpe": dsr,
+    "instrument": INSTRUMENT, "mode": MODE, "params": params, "param_grid": PARAM_GRID,
+    "warning": warning, "metrics": {**m, **ts},
     "vs_benchmark": {
         "strategy_total_return": float(m["total_return"]),
         "buy_hold_total_return": float(bh.iloc[-1] - 1.0),
         "sp500_total_return": float(spy_eq.iloc[-1] - 1.0),
     },
 }
-with open("results/metrics.json", "w") as f:
-    json.dump(out, f, indent=2, default=str)
-print(f"DONE {INSTRUMENT}: Sharpe {m['sharpe']:.2f} CAGR {m['cagr']*100:.1f}% "
-      f"perm_p {perm['p_value']:.3f} DSR {dsr['psr_deflated']:.3f}")
+_save()  # numbers persisted BEFORE any plot can fail
+
+perm = None
+if MODE == "full" and warning is None:
+    try:
+        perm = permutation_test(gross, asset_ret, pos, n_perm=1000, metric="sharpe", return_null=True)
+        sp_pp = float(ret.mean() / ret.std(ddof=1)) if ret.std(ddof=1) > 0 else 0.0
+        out["permutation"] = {k: perm[k] for k in ("observed", "p_value", "null_mean", "null_std", "n_perm")}
+        out["bootstrap_ci"] = bootstrap_ci(ret, statistic="sharpe", n_boot=1000)
+        out["deflated_sharpe"] = deflated_sharpe_ratio(sp_pp, n_obs=int(len(ret)), n_trials=1, returns=ret)
+        _save()
+    except Exception as e:
+        out["significance_error"] = repr(e); _save()
+
+
+def _p_equity():
+    fig, ax = plt.subplots(figsize=(9, 4.4))
+    ax.plot(eq.index, eq.values, label=f"Strategy ({INSTRUMENT}, net)", lw=1.7, color="#16a34a")
+    ax.plot(bh.index, bh.values, label=f"Buy & Hold {INSTRUMENT}", lw=1.1, alpha=0.75, color="#6b7280")
+    ax.plot(spy_eq.index, spy_eq.values, label="S&P 500 (SPY)", lw=1.1, alpha=0.85, ls="--", color="#2563eb")
+    ax.set_yscale("log"); ax.set_title("Equity curve (net of costs) vs benchmarks")
+    ax.legend(); ax.grid(alpha=0.3); fig.tight_layout()
+    fig.savefig("results/01_equity.png", dpi=110); plt.close(fig)
+
+
+def _p_drawdown():
+    sdd = drawdown_series(ret) * 100; bdd = drawdown_series(asset_ret) * 100
+    fig, ax = plt.subplots(figsize=(9, 3.3))
+    ax.fill_between(sdd.index, sdd.values, 0, color="#dc2626", alpha=0.45, label="Strategy")
+    ax.plot(bdd.index, bdd.values, color="#6b7280", lw=0.8, alpha=0.7, label=f"Buy & Hold {INSTRUMENT}")
+    ax.set_title("Drawdown (underwater)"); ax.set_ylabel("Drawdown (%)")
+    ax.legend(loc="lower left"); ax.grid(alpha=0.3); fig.tight_layout()
+    fig.savefig("results/02_drawdown.png", dpi=110); plt.close(fig)
+
+
+def _p_monthly():
+    mt = ((1.0 + ret).resample("ME").prod() - 1.0).to_frame("r")
+    mt["year"], mt["month"] = mt.index.year, mt.index.month
+    pv = mt.pivot_table(index="year", columns="month", values="r") * 100.0
+    fig, ax = plt.subplots(figsize=(9, max(3.0, 0.42 * len(pv))))
+    sns.heatmap(pv, annot=True, fmt=".1f", center=0, cmap="RdYlGn", cbar_kws={"label": "Return (%)"},
+                annot_kws={"size": 7}, ax=ax)
+    ax.set_title("Monthly returns (%)"); ax.set_xlabel("Month"); ax.set_ylabel("Year")
+    fig.tight_layout(); fig.savefig("results/03_monthly.png", dpi=110); plt.close(fig)
+
+
+_plot(_p_equity, "01_equity")
+_plot(_p_drawdown, "02_drawdown")
+_plot(_p_monthly, "03_monthly")
+
+if MODE == "full" and warning is None:
+    if perm is not None:
+        def _p_perm():
+            null = np.asarray(perm["null_scores"], dtype=float); null = null[np.isfinite(null)]
+            fig, ax = plt.subplots(figsize=(8, 4))
+            ax.hist(null, bins=40, color="#3b82f6", alpha=0.7, label="random-timing null")
+            ax.axvline(perm["observed"], color="#ef4444", lw=2.0, label=f"observed {perm['observed']:.2f}")
+            ax.set_title(f"Monte-Carlo permutation test  (p = {perm['p_value']:.3f})")
+            ax.set_xlabel("Sharpe under random timing"); ax.legend(); ax.grid(alpha=0.3); fig.tight_layout()
+            fig.savefig("results/04_permutation.png", dpi=110); plt.close(fig)
+        _plot(_p_perm, "04_permutation")
+
+    def _p_montecarlo():
+        bp = block_bootstrap_paths(ret, block=20, n_paths=1000, seed=1)
+        bs = bp.mean(1) / (bp.std(1, ddof=1) + 1e-12) * ANN; bs = bs[np.isfinite(bs)]
+        obs = float(ret.mean() / ret.std(ddof=1) * ANN) if ret.std(ddof=1) > 0 else 0.0
+        lo5, hi95 = np.percentile(bs, [5, 95])
+        fig, ax = plt.subplots(figsize=(8, 4))
+        ax.hist(bs, bins=40, color="#8b5cf6", alpha=0.7)
+        ax.axvspan(lo5, hi95, color="#8b5cf6", alpha=0.12, label=f"5-95%: [{lo5:.2f}, {hi95:.2f}]")
+        ax.axvline(obs, color="#ef4444", lw=2.0, label=f"observed {obs:.2f}")
+        ax.axvline(0, color="#111827", lw=1.0, ls=":")
+        ax.set_title("Monte-Carlo (block bootstrap) — Sharpe distribution")
+        ax.set_xlabel("annualized Sharpe"); ax.legend(); ax.grid(alpha=0.3); fig.tight_layout()
+        fig.savefig("results/05_montecarlo.png", dpi=110); plt.close(fig)
+    _plot(_p_montecarlo, "05_montecarlo")
+
+    def _p_robust():
+        lags = [-3, -2, -1, 0, 1, 2, 3]; cmults = [0.0, 0.5, 1.0, 2.0, 3.0, 5.0]; base = IBKR_LIQUID_ETF
+        g = np.full((len(lags), len(cmults)), np.nan)
+        for i, lag in enumerate(lags):
+            slag = signal.shift(lag).fillna(0.0)
+            for j, cm in enumerate(cmults):
+                cmodel = CostModel(commission_per_share=base.commission_per_share, min_commission=base.min_commission,
+                                   max_commission_pct=base.max_commission_pct,
+                                   slippage_bps=base.slippage_bps * cm, regulatory_bps=base.regulatory_bps * cm)
+                g[i, j] = sharpe_ratio(run_backtest(prices, slag, cost_model=cmodel)["returns"])
+        df = pd.DataFrame(g, index=[f"{l:+d}" for l in lags], columns=[f"{c:g}x" for c in cmults])
+        fig, ax = plt.subplots(figsize=(7.5, 4.3))
+        sns.heatmap(df, annot=True, fmt=".2f", center=0, cmap="RdYlGn", cbar_kws={"label": "Sharpe"},
+                    annot_kws={"size": 8}, ax=ax)
+        ax.set_title("Robustness: net Sharpe across signal lag x cost")
+        ax.set_xlabel("cost multiplier (x base)"); ax.set_ylabel("signal lag (trading days)")
+        fig.tight_layout(); fig.savefig("results/06_robustness.png", dpi=110); plt.close(fig)
+    _plot(_p_robust, "06_robustness")
+
+    gp = [k for k in PARAM_GRID if k in PARAMS][:2]
+    if len(gp) == 2:
+        def _p_param():
+            av, bv = PARAM_GRID[gp[0]], PARAM_GRID[gp[1]]
+            g = np.full((len(av), len(bv)), np.nan)
+            for i, a in enumerate(av):
+                for j, b in enumerate(bv):
+                    g[i, j] = sharpe_ratio(run_backtest(
+                        prices, _make_signal({**params, gp[0]: a, gp[1]: b}),
+                        cost_model=IBKR_LIQUID_ETF)["returns"])
+            df = pd.DataFrame(g, index=[str(x) for x in av], columns=[str(x) for x in bv])
+            fig, ax = plt.subplots(figsize=(7.5, 4.6))
+            sns.heatmap(df, annot=True, fmt=".2f", center=0, cmap="RdYlGn", cbar_kws={"label": "Sharpe"},
+                        annot_kws={"size": 8}, ax=ax)
+            ax.set_title(f"Parameter robustness: Sharpe across {gp[0]} x {gp[1]}")
+            ax.set_xlabel(gp[1]); ax.set_ylabel(gp[0]); fig.tight_layout()
+            fig.savefig("results/07_paramheatmap.png", dpi=110); plt.close(fig)
+        _plot(_p_param, "07_paramheatmap")
+
+_save()
+print(f"DONE {INSTRUMENT} mode={MODE} trades={ts.get('n_trades')} Sharpe {m['sharpe']:.2f}")
 '''
 
 
@@ -345,11 +418,14 @@ def run_research_cycle(
     sha = agent_commit(repo_root, f"feat(agent): {num} {slug}",
                        paths=[sdir.relative_to(repo_root).as_posix()])  # GUARDRAIL: no push
 
+    output = proc.stdout or ""
+    if proc.returncode != 0 and proc.stderr:
+        output += "\n--- stderr ---\n" + proc.stderr  # surface the real failure
     summary.update({
         "status": "ok" if metrics is not None else "no-metrics",
         "returncode": proc.returncode,
         "metrics": metrics,
         "sha": sha,
-        "stdout_tail": proc.stdout[-1500:],
+        "stdout_tail": output[-3000:],
     })
     return summary

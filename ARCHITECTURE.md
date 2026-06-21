@@ -234,3 +234,12 @@ Targets: Windows 11 (AMD GPU) and macOS (Apple Silicon, 24 GB).
   (net Sharpe across signal-lag × cost-multiplier). The `/agent` page renders all plots
   generically (sorted, titled). Reuses `quantlab.robustness.block_bootstrap_paths`.
   Verified live on GPU (QQQ 50/200 trend: 6 plots, Sharpe 0.70, DSR ~1.0).
+- **2026-06-21** — Agent harness made robust + interactive. **Bug fix:** a degenerate /
+  intraday signal (e.g. "buy BTC at 18:00" on daily bars → 0 trades) no longer crashes —
+  metrics are written before plotting, every plot is guarded, and a clear warning is
+  surfaced (plus stderr is now captured). **Parameterized signals:** the model may declare
+  `PARAMS` + `PARAM_GRID`; the harness then renders a real **parameter heatmap** (Sharpe
+  across the two params) and the `/agent` page shows **live sliders** that re-run the
+  backtest via `POST /agent/evaluate` (light mode, no LLM, ~4s) and update metrics/equity
+  live. **`POST /agent/promote`** + an "Add to catalog" button create a strategy folder +
+  append a CATALOG.md row on an isolated agent branch. 183 tests; verified live on GPU.

@@ -20,7 +20,9 @@ sys.path.insert(0, str(ROOT))          # make `agent` / `live` importable too
 import base64  # noqa: E402
 import csv  # noqa: E402
 import importlib.util  # noqa: E402
+import json  # noqa: E402
 import math  # noqa: E402
+import os  # noqa: E402
 import shutil  # noqa: E402
 import subprocess  # noqa: E402
 import tempfile  # noqa: E402
@@ -270,6 +272,9 @@ def _agent_sandbox_run(job_id: str, hypothesis: str, dry_run: bool,
             res["deflated_sharpe"] = raw.get("deflated_sharpe", {})
             res["vs_benchmark"] = raw.get("vs_benchmark", {})
             res["instrument"] = raw.get("instrument")
+            res["warning"] = raw.get("warning")
+            res["params"] = raw.get("params", {})
+            res["param_grid"] = raw.get("param_grid", {})
 
         # Read plots out of the sandbox (base64) before it is deleted.
         res["plots"] = {}
@@ -315,3 +320,102 @@ def agent_job(job_id: str) -> dict:
     if job is None:
         raise HTTPException(status_code=404, detail="job not found")
     return {"job_id": job_id, **job}
+
+
+def _run_harness_light(signal_code: str, params: dict) -> dict:
+    """Re-run the harness in LIGHT mode with given params (no LLM, no git). For sliders."""
+    from agent.loop import _build_run_py
+
+    settings = get_settings()
+    tmp = Path(tempfile.mkdtemp(prefix="qos_eval_"))
+    try:
+        (tmp / "run.py").write_text(_build_run_py(signal_code), encoding="utf-8")
+        env = {**os.environ,
+               "PYTHONPATH": str(settings.backtest_dir / "src") + os.pathsep + os.environ.get("PYTHONPATH", ""),
+               "QOS_MODE": "light", "QOS_PARAMS": json.dumps(params or {})}
+        proc = subprocess.run([sys.executable, "run.py"], cwd=tmp, env=env,
+                              capture_output=True, text=True, timeout=300)
+        mp = tmp / "results" / "metrics.json"
+        if not mp.exists():
+            return {"ok": False, "error": (proc.stderr or proc.stdout)[-1500:]}
+        raw = json.loads(mp.read_text(encoding="utf-8"))
+        out = {"ok": True, "summary": raw.get("metrics", {}), "warning": raw.get("warning"),
+               "params": raw.get("params", {}), "vs_benchmark": raw.get("vs_benchmark", {}),
+               "instrument": raw.get("instrument"), "plots": {}}
+        for png in sorted((tmp / "results").glob("*.png")):
+            out["plots"][png.stem] = base64.b64encode(png.read_bytes()).decode()
+        return _sanitize(out)
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
+
+
+class AgentEvalRequest(BaseModel):
+    job_id: str
+    params: dict = {}
+
+
+@app.post("/agent/evaluate")
+def agent_evaluate(req: AgentEvalRequest) -> dict:
+    """Re-run a finished run's signal with new parameter values (live slider). No LLM."""
+    job = _JOBS.get(req.job_id)
+    signal_code = (job or {}).get("result", {}).get("signal_code") if job else None
+    if not signal_code:
+        raise HTTPException(status_code=404, detail="job not found or has no parameterized signal")
+    return _run_harness_light(signal_code, req.params)
+
+
+def _catalog_row(num: str, slug: str, hypothesis: str, res: dict) -> str:
+    s = res.get("summary") or {}
+    p = (res.get("permutation") or {}).get("p_value")
+    dsr = (res.get("deflated_sharpe") or {}).get("psr_deflated")
+
+    def f(x, suffix="", scale=1.0, d=2):
+        return f"{x * scale:.{d}f}{suffix}" if isinstance(x, (int, float)) else "n/a"
+
+    name = slug.replace("-", " ").title()[:28]
+    hyp = " ".join(hypothesis.split())[:70].replace("|", "/")
+    return (f"| {num} | {name} | agent | {hyp} | testing (agent) | "
+            f"{f(s.get('sharpe'))} | {f(s.get('cagr'), '%', 100, 1)} | "
+            f"{f(s.get('max_drawdown'), '%', 100, 1)} | {int(s.get('n_trades') or 0)} | "
+            f"{f(p, '', 1, 3)} | {f(dsr, '', 1, 2)} | Agent-generated; review before trusting |")
+
+
+class AgentPromoteRequest(BaseModel):
+    job_id: str
+
+
+@app.post("/agent/promote")
+def agent_promote(req: AgentPromoteRequest) -> dict:
+    """Promote a finished agent run into the repo + CATALOG.md (on an isolated agent branch)."""
+    from agent.guardrails import agent_commit, ensure_agent_branch
+    from agent.loop import _build_run_py, next_strategy_number
+
+    job = _JOBS.get(req.job_id)
+    res = (job or {}).get("result") if job else None
+    if not res or not res.get("signal_code"):
+        raise HTTPException(status_code=404, detail="job not found or nothing to promote")
+    settings = get_settings()
+    repo = settings.backtest_dir
+    slug = res.get("slug") or "idea"
+    with _AGENT_LOCK:
+        branch = ensure_agent_branch(repo, f"promote-{slug}")  # GUARDRAIL: never main
+        num = next_strategy_number(repo)
+        sdir = repo / "strategies" / f"{num}_agent_{slug}"
+        sdir.mkdir(parents=True, exist_ok=True)
+        (sdir / "run.py").write_text(_build_run_py(res["signal_code"]), encoding="utf-8")
+        env = {**os.environ,
+               "PYTHONPATH": str(repo / "src") + os.pathsep + os.environ.get("PYTHONPATH", "")}
+        subprocess.run([sys.executable, "run.py"], cwd=sdir, env=env,
+                       capture_output=True, text=True, timeout=600)
+        (sdir / "REPORT.md").write_text(
+            f"# {num} — {slug} (agent-generated)\n\n**Hypothesis:** {job['hypothesis']}\n\n"
+            f"Promoted from the Quant-OS dashboard. Review before trusting.\n", encoding="utf-8")
+        row = _catalog_row(num, slug, job["hypothesis"], res)
+        catalog = repo / "CATALOG.md"
+        if catalog.exists():
+            with open(catalog, "a", encoding="utf-8") as fh:
+                fh.write("\n" + row)
+        sha = agent_commit(repo, f"feat(agent): promote {num} {slug} to catalog",
+                           paths=[sdir.relative_to(repo).as_posix(), "CATALOG.md"])
+    return {"ok": True, "branch": branch, "num": num,
+            "dir": sdir.relative_to(repo).as_posix(), "sha": sha, "catalog_row": row}

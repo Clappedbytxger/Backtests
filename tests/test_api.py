@@ -138,3 +138,22 @@ def test_agent_run_requires_hypothesis(client):
 
 def test_agent_job_unknown_404(client):
     assert client.get("/agent/job/does-not-exist").status_code == 404
+
+
+def test_agent_evaluate_and_promote_unknown_404(client):
+    assert client.post("/agent/evaluate", json={"job_id": "nope", "params": {}}).status_code == 404
+    assert client.post("/agent/promote", json={"job_id": "nope"}).status_code == 404
+
+
+def test_catalog_row_format(client):
+    from apps.api.main import _catalog_row
+
+    row = _catalog_row(
+        "0200", "my-test-strategy", "A test hypothesis about momentum on equities",
+        {"summary": {"sharpe": 1.23, "cagr": 0.15, "max_drawdown": -0.2, "n_trades": 42},
+         "permutation": {"p_value": 0.03}, "deflated_sharpe": {"psr_deflated": 0.9}},
+    )
+    cells = [c.strip() for c in row.strip().strip("|").split("|")]
+    assert len(cells) == 12  # matches CATALOG.md columns
+    assert cells[0] == "0200" and cells[2] == "agent"
+    assert cells[5] == "1.23" and cells[8] == "42"  # Sharpe, #Trades

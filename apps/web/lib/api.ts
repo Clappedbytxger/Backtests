@@ -99,6 +99,29 @@ export interface AgentResult {
     sp500_total_return?: number;
   };
   plots?: Record<string, string>;
+  warning?: string | null;
+  params?: Record<string, number>;
+  param_grid?: Record<string, number[]>;
+}
+
+export interface AgentEvalResult {
+  ok: boolean;
+  error?: string;
+  summary?: Record<string, number>;
+  warning?: string | null;
+  params?: Record<string, number>;
+  vs_benchmark?: AgentResult["vs_benchmark"];
+  instrument?: string | null;
+  plots?: Record<string, string>;
+}
+
+export interface PromoteResult {
+  ok: boolean;
+  branch: string;
+  num: string;
+  dir: string;
+  sha: string;
+  catalog_row: string;
 }
 
 export interface AgentJob {
@@ -113,6 +136,10 @@ export interface AgentJob {
 export const agentRun = (hypothesis: string, dry_run: boolean) =>
   postJson<{ job_id: string; status: string }>("/agent/run", { hypothesis, dry_run });
 export const getAgentJob = (jobId: string) => getJson<AgentJob>(`/agent/job/${jobId}`);
+export const agentEvaluate = (job_id: string, params: Record<string, number>) =>
+  postJson<AgentEvalResult>("/agent/evaluate", { job_id, params });
+export const agentPromote = (job_id: string) =>
+  postJson<PromoteResult>("/agent/promote", { job_id });
 
 export interface LiveBook {
   ok: boolean;
