@@ -98,6 +98,9 @@ _SIGNAL_SYSTEM = (
     "-1.0 short}. DECISION-TIME target; the engine shifts it +1 for you.\n"
     "- `pd` and `np` are already imported. Do NOT import anything, call get_prices, compute "
     "metrics, plot or print.\n"
+    "- Return NUMERIC values: cast booleans to float before any arithmetic — e.g. "
+    "(h==12).astype(float) - (h==18).astype(float), or np.where(cond, 1.0, 0.0). NEVER subtract "
+    "two boolean conditions directly (numpy forbids bool - bool).\n"
     "- NO LOOK-AHEAD: row t may use only data up to row t (rolling/shift(+n) fine; never shift(-n))."
 )
 
@@ -137,6 +140,15 @@ def _signal_prompt(hypothesis: str, context, dups) -> str:
     return (f"{_SIGNAL_EXAMPLES}\n\nAlready-tested similar strategies (for context):\n{dup}\n\n"
             f"Now write INSTRUMENT and generate_signal for THIS hypothesis (pick the single "
             f"most relevant instrument):\n{hypothesis}")
+
+
+def _signal_fix_prompt(hypothesis: str, prev_signal: str, error: str) -> str:
+    """Feed a failed signal's error back to the model for one self-correction."""
+    return (f"Your signal for this hypothesis FAILED when run — fix it.\n\nHYPOTHESIS:\n{hypothesis}\n\n"
+            f"YOUR SIGNAL:\n```python\n{prev_signal}\n```\n\nERROR:\n{error[:600]}\n\n"
+            "Rewrite it in the SAME format (INSTRUMENT, optional TIMEFRAME/PARAMS, generate_signal). "
+            "Common fix: cast booleans to float before arithmetic — (cond).astype(float) — or use "
+            "np.where(cond, 1.0, 0.0). Return ONLY the ```python code block.")
 
 
 # Fixed harness. ``# __AGENT_SIGNAL__`` is replaced with the model's signal code.
@@ -185,9 +197,12 @@ params = {k: _override.get(k, PARAMS[k]) for k in PARAMS}
 
 
 def _make_signal(p):
-    try:
-        sig = generate_signal(prices, **p) if p else generate_signal(prices)
-    except TypeError:
+    if p:
+        try:
+            sig = generate_signal(prices, **p)
+        except TypeError:
+            sig = generate_signal(prices)  # parameter-signature fallback only
+    else:
         sig = generate_signal(prices)
     return pd.Series(sig, index=prices.index).reindex(prices.index).fillna(0.0).clip(-1, 1)
 
@@ -207,7 +222,15 @@ def _plot(fn, name):
 
 prices = load_prices(INSTRUMENT, timeframe=TIMEFRAME, start=START)
 asset_ret = prices["Close"].pct_change().fillna(0.0)
-signal = _make_signal(params)
+try:
+    signal = _make_signal(params)
+except Exception as _sig_err:  # a broken model signal must fail gracefully, not crash blank
+    with open("results/metrics.json", "w") as _f:
+        json.dump({"instrument": INSTRUMENT, "timeframe": TIMEFRAME, "params": params,
+                   "param_grid": PARAM_GRID, "metrics": {}, "warning": None,
+                   "signal_error": f"{type(_sig_err).__name__}: {_sig_err}"}, _f, default=str)
+    print("SIGNAL_ERROR " + repr(_sig_err))
+    raise SystemExit(0)
 
 bt = run_backtest(prices, signal, cost_model=IBKR_LIQUID_ETF)
 ret, gross, pos = bt["returns"], bt["gross_returns"], bt["position"]
@@ -424,15 +447,30 @@ def run_research_cycle(
     src_paths = [str(repo_root / "src"), str(get_settings().backtest_dir / "src")]
     env = {**os.environ,
            "PYTHONPATH": os.pathsep.join([*src_paths, os.environ.get("PYTHONPATH", "")])}
-    proc = subprocess.run([sys.executable, "run.py"], cwd=sdir, env=env,
-                          capture_output=True, text=True, timeout=timeout)
-    metrics_path = sdir / "results" / "metrics.json"
-    metrics = None
-    if metrics_path.exists():
-        try:
-            metrics = json.loads(metrics_path.read_text(encoding="utf-8"))
-        except json.JSONDecodeError:
-            metrics = None
+    def _run_and_parse():
+        p = subprocess.run([sys.executable, "run.py"], cwd=sdir, env=env,
+                           capture_output=True, text=True, timeout=timeout)
+        mp = sdir / "results" / "metrics.json"
+        m = None
+        if mp.exists():
+            try:
+                m = json.loads(mp.read_text(encoding="utf-8"))
+            except json.JSONDecodeError:
+                m = None
+        return m, p
+
+    metrics, proc = _run_and_parse()
+    # One self-correcting retry: feed a signal error (or a blank crash) back to the model.
+    if harness and signal_code is not None:
+        err = (metrics or {}).get("signal_error")
+        if err or metrics is None:
+            fail = err or ((proc.stdout or "")[-800:] + "\n" + (proc.stderr or "")[-1600:])
+            signal_code = _extract_code(backend.generate(
+                _signal_fix_prompt(hypothesis, signal_code, fail), system=_SIGNAL_SYSTEM))
+            summary["signal_code"] = signal_code
+            summary["retried"] = True
+            (sdir / "run.py").write_text(_build_run_py(signal_code), encoding="utf-8")
+            metrics, proc = _run_and_parse()
 
     report = backend.generate(_report_prompt(hypothesis, metrics, proc.stdout), system=_REPORT_SYSTEM)
     (sdir / "REPORT.md").write_text(report, encoding="utf-8")

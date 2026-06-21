@@ -101,6 +101,7 @@ export interface AgentResult {
   };
   plots?: Record<string, string>;
   warning?: string | null;
+  signal_error?: string | null;
   params?: Record<string, number>;
   param_grid?: Record<string, number[]>;
 }

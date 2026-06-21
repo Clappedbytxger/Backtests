@@ -152,6 +152,7 @@ export default function AgentPage() {
   const res = liveRes;
   const base = job?.result;
   const s = res?.summary;
+  const hasMetrics = !!s && Object.keys(s).length > 0;
   const hasParams = !!base?.param_grid && Object.keys(base.param_grid).length > 0;
 
   return (
@@ -207,6 +208,13 @@ export default function AgentPage() {
               ⚠ {res.warning}
             </div>
           )}
+          {res.signal_error && (
+            <div className="rounded-lg border border-red-900 bg-red-950/40 p-4 text-sm text-red-300">
+              The generated signal raised an error (auto-retry didn&apos;t fix it):{" "}
+              <code className="text-red-200">{res.signal_error}</code>. See the signal below, or
+              rephrase and run again.
+            </div>
+          )}
 
           <div className="flex flex-wrap items-center gap-3">
             {res.dups?.length > 0 &&
@@ -215,7 +223,7 @@ export default function AgentPage() {
                   ≈ {id} · {sim.toFixed(2)}
                 </span>
               ))}
-            {base?.signal_code && s && (
+            {base?.signal_code && hasMetrics && (
               <button
                 onClick={doPromote}
                 disabled={promoting}
@@ -231,7 +239,7 @@ export default function AgentPage() {
             )}
           </div>
 
-          {s && (
+          {hasMetrics && s && (
             <>
               <section>
                 <h2 className="text-sm font-semibold">
@@ -325,7 +333,7 @@ export default function AgentPage() {
             </>
           )}
 
-          {!s && res.status === "no-metrics" && (
+          {!hasMetrics && !res.signal_error && res.status === "no-metrics" && (
             <div className="rounded-lg border border-amber-900 bg-amber-950/30 p-4 text-sm text-amber-300">
               The generated strategy ran but produced no metrics.
               <pre className="mt-2 overflow-auto whitespace-pre-wrap text-xs text-amber-200/80">

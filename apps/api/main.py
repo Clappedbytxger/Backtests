@@ -274,6 +274,7 @@ def _agent_sandbox_run(job_id: str, hypothesis: str, dry_run: bool,
             res["instrument"] = raw.get("instrument")
             res["timeframe"] = raw.get("timeframe")
             res["warning"] = raw.get("warning")
+            res["signal_error"] = raw.get("signal_error")
             res["params"] = raw.get("params", {})
             res["param_grid"] = raw.get("param_grid", {})
 

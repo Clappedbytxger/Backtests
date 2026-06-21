@@ -253,3 +253,10 @@ Targets: Windows 11 (AMD GPU) and macOS (Apple Silicon, 24 GB).
   the S&P 500 benchmark shown only for daily. The previously-failing "buy BTC at
   18:00, sell at 02:00" now runs end-to-end on hourly bars (724 trades, full
   analysis). `scripts/fetch_intraday.py` pre-populates the IBKR cache. 186 tests.
+- **2026-06-21** — Self-correcting agent + signal-error robustness. A model signal that
+  raises (e.g. `(h==12) - (h==18)` — numpy forbids bool−bool) no longer crashes the run
+  blank: the harness catches it and writes a clear `signal_error`, and `run_research_cycle`
+  feeds the error back to the model for **one automatic retry** (verified: a broken
+  boolean-subtract signal is auto-fixed to 722 trades). The signal prompt now warns
+  against boolean arithmetic; the `/agent` page shows the signal error prominently and
+  no longer renders an empty metric grid. 186 tests.
