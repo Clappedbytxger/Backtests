@@ -84,7 +84,7 @@ def test_build_run_py_wraps_signal_and_compiles():
     )
     code = _build_run_py(signal)
     # the fixed harness (cannot be hallucinated) is present...
-    assert "get_prices" in code and "permutation_test" in code and "deflated_sharpe_ratio" in code
+    assert "load_prices" in code and "permutation_test" in code and "deflated_sharpe_ratio" in code
     assert "compute_metrics" in code and "trade_stats" in code
     assert "01_equity.png" in code and "06_robustness.png" in code and "block_bootstrap_paths" in code
     # ...and the model's signal is injected

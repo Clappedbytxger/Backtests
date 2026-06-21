@@ -272,6 +272,7 @@ def _agent_sandbox_run(job_id: str, hypothesis: str, dry_run: bool,
             res["deflated_sharpe"] = raw.get("deflated_sharpe", {})
             res["vs_benchmark"] = raw.get("vs_benchmark", {})
             res["instrument"] = raw.get("instrument")
+            res["timeframe"] = raw.get("timeframe")
             res["warning"] = raw.get("warning")
             res["params"] = raw.get("params", {})
             res["param_grid"] = raw.get("param_grid", {})

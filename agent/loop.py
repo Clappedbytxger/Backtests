@@ -82,14 +82,17 @@ _SIGNAL_SYSTEM = (
     "```python code block and NOTHING else, containing:\n"
     '  1) INSTRUMENT = "<ticker>"  (a yfinance ticker, e.g. "SPY", "QQQ", "GLD", "BTC-USD").\n'
     "  2) def generate_signal(prices, **params): returning a pandas Series of target positions.\n"
-    "  3) OPTIONAL — only if the strategy has tunable numeric parameters: declare module-level "
+    '  3) OPTIONAL: TIMEFRAME = "1d" (default) or an intraday bar "1h"/"30m"/"15m"/"5m". Use '
+    "intraday for time-of-day / session ideas; then prices.index has .hour and .minute "
+    "(intraday history is ~2 years).\n"
+    "  4) OPTIONAL — only if the strategy has tunable numeric parameters: declare module-level "
     "PARAMS = {name: default} and PARAM_GRID = {name: [3-6 sweep values]}, and make "
     "generate_signal take those names as keyword args (same defaults). The harness turns them "
     "into LIVE SLIDERS and a parameter heatmap.\n\n"
     "STRICT RULES — the harness does EVERYTHING else (data, metrics, plots, significance):\n"
-    "- DATA IS DAILY BARS ONLY: there is NO intraday / time-of-day info (no hours/minutes). An "
-    "idea like 'buy at 18:00, sell at 02:00' CANNOT be expressed — reformulate it as a daily "
-    "rule or the closest daily proxy.\n"
+    '- Daily by default. For an intraday idea you MUST set TIMEFRAME (e.g. "1h") so the bars '
+    "carry the time of day; otherwise a rule that reads .hour is all-zero (every daily bar is "
+    "midnight).\n"
     "- `prices` has columns Open, High, Low, Close, Volume and a DatetimeIndex.\n"
     "- Return a pandas Series indexed EXACTLY like `prices`, values in {1.0 long, 0.0 flat, "
     "-1.0 short}. DECISION-TIME target; the engine shifts it +1 for you.\n"
@@ -117,6 +120,15 @@ PARAM_GRID = {"fast": [10, 20, 50, 100, 150], "slow": [100, 150, 200, 250, 300]}
 def generate_signal(prices, fast=50, slow=200):
     c = prices["Close"]
     return (c.rolling(int(fast)).mean() > c.rolling(int(slow)).mean()).astype(float)
+```
+
+Example C — intraday time-of-day (long Bitcoin from 18:00 until 02:00 UTC):
+```python
+INSTRUMENT = "BTC-USD"
+TIMEFRAME = "1h"
+def generate_signal(prices, **params):
+    h = prices.index.hour
+    return pd.Series((h >= 18) | (h < 2), index=prices.index).astype(float)
 ```'''
 
 
@@ -145,7 +157,7 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
 import seaborn as sns
-from quantlab.data import get_prices
+from quantlab.ib_data import load_prices
 from quantlab.backtest import run_backtest
 from quantlab.metrics import compute_metrics, trade_stats, equity_curve, drawdown_series, sharpe_ratio
 from quantlab.significance import permutation_test, bootstrap_ci, deflated_sharpe_ratio
@@ -156,6 +168,7 @@ os.makedirs("results", exist_ok=True)
 START = "2005-01-01"
 ANN = np.sqrt(252.0)
 INSTRUMENT = "SPY"   # the agent section may override
+TIMEFRAME = "1d"     # "1d" (daily) or intraday: "1h" / "30m" / "15m" / "5m" / "1m"
 PARAMS = {}          # {name: default}; declare to expose live sliders + a parameter heatmap
 PARAM_GRID = {}      # {name: [values, ...]}; sweep values for the parameter heatmap
 
@@ -192,13 +205,16 @@ def _plot(fn, name):
         plt.close("all"); _save()
 
 
-prices = get_prices(INSTRUMENT, start=START)
+prices = load_prices(INSTRUMENT, timeframe=TIMEFRAME, start=START)
 asset_ret = prices["Close"].pct_change().fillna(0.0)
 signal = _make_signal(params)
 
 bt = run_backtest(prices, signal, cost_model=IBKR_LIQUID_ETF)
 ret, gross, pos = bt["returns"], bt["gross_returns"], bt["position"]
-m = compute_metrics(ret)
+years = max((ret.index[-1] - ret.index[0]).days / 365.25, 1e-9)
+PPY = len(ret) / years          # bars per year, auto-adapting to any timeframe
+ANN = np.sqrt(PPY)
+m = compute_metrics(ret, periods_per_year=PPY)
 ts = trade_stats(bt["trades"])
 
 warning = None
@@ -208,17 +224,21 @@ if int(ts.get("n_trades", 0)) == 0:
                "cannot express it — reformulate as a daily rule.")
 
 eq = equity_curve(ret); bh = bt["buy_hold"]
-spy = get_prices("SPY", start=START)
-spy_ret = spy["Close"].pct_change().fillna(0.0).reindex(ret.index).fillna(0.0)
-spy_eq = equity_curve(spy_ret)
+spy_eq = None
+sp500_tr = None
+if TIMEFRAME in ("1d", "1day", "daily", "d"):  # S&P 500 benchmark only makes sense daily
+    spy = load_prices("SPY", timeframe="1d", start=START)
+    spy_ret = spy["Close"].pct_change().fillna(0.0).reindex(ret.index).fillna(0.0)
+    spy_eq = equity_curve(spy_ret)
+    sp500_tr = float(spy_eq.iloc[-1] - 1.0)
 
 out = {
-    "instrument": INSTRUMENT, "mode": MODE, "params": params, "param_grid": PARAM_GRID,
-    "warning": warning, "metrics": {**m, **ts},
+    "instrument": INSTRUMENT, "timeframe": TIMEFRAME, "mode": MODE, "params": params,
+    "param_grid": PARAM_GRID, "warning": warning, "metrics": {**m, **ts},
     "vs_benchmark": {
         "strategy_total_return": float(m["total_return"]),
         "buy_hold_total_return": float(bh.iloc[-1] - 1.0),
-        "sp500_total_return": float(spy_eq.iloc[-1] - 1.0),
+        "sp500_total_return": sp500_tr,
     },
 }
 _save()  # numbers persisted BEFORE any plot can fail
@@ -240,7 +260,8 @@ def _p_equity():
     fig, ax = plt.subplots(figsize=(9, 4.4))
     ax.plot(eq.index, eq.values, label=f"Strategy ({INSTRUMENT}, net)", lw=1.7, color="#16a34a")
     ax.plot(bh.index, bh.values, label=f"Buy & Hold {INSTRUMENT}", lw=1.1, alpha=0.75, color="#6b7280")
-    ax.plot(spy_eq.index, spy_eq.values, label="S&P 500 (SPY)", lw=1.1, alpha=0.85, ls="--", color="#2563eb")
+    if spy_eq is not None:
+        ax.plot(spy_eq.index, spy_eq.values, label="S&P 500 (SPY)", lw=1.1, alpha=0.85, ls="--", color="#2563eb")
     ax.set_yscale("log"); ax.set_title("Equity curve (net of costs) vs benchmarks")
     ax.legend(); ax.grid(alpha=0.3); fig.tight_layout()
     fig.savefig("results/01_equity.png", dpi=110); plt.close(fig)
@@ -307,7 +328,8 @@ if MODE == "full" and warning is None:
                 cmodel = CostModel(commission_per_share=base.commission_per_share, min_commission=base.min_commission,
                                    max_commission_pct=base.max_commission_pct,
                                    slippage_bps=base.slippage_bps * cm, regulatory_bps=base.regulatory_bps * cm)
-                g[i, j] = sharpe_ratio(run_backtest(prices, slag, cost_model=cmodel)["returns"])
+                g[i, j] = sharpe_ratio(run_backtest(prices, slag, cost_model=cmodel)["returns"],
+                                       periods_per_year=PPY)
         df = pd.DataFrame(g, index=[f"{l:+d}" for l in lags], columns=[f"{c:g}x" for c in cmults])
         fig, ax = plt.subplots(figsize=(7.5, 4.3))
         sns.heatmap(df, annot=True, fmt=".2f", center=0, cmap="RdYlGn", cbar_kws={"label": "Sharpe"},
@@ -326,7 +348,7 @@ if MODE == "full" and warning is None:
                 for j, b in enumerate(bv):
                     g[i, j] = sharpe_ratio(run_backtest(
                         prices, _make_signal({**params, gp[0]: a, gp[1]: b}),
-                        cost_model=IBKR_LIQUID_ETF)["returns"])
+                        cost_model=IBKR_LIQUID_ETF)["returns"], periods_per_year=PPY)
             df = pd.DataFrame(g, index=[str(x) for x in av], columns=[str(x) for x in bv])
             fig, ax = plt.subplots(figsize=(7.5, 4.6))
             sns.heatmap(df, annot=True, fmt=".2f", center=0, cmap="RdYlGn", cbar_kws={"label": "Sharpe"},

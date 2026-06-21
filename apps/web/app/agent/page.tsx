@@ -235,7 +235,8 @@ export default function AgentPage() {
             <>
               <section>
                 <h2 className="text-sm font-semibold">
-                  Metrics{res.instrument ? ` · ${res.instrument}` : ""}{" "}
+                  Metrics{res.instrument ? ` · ${res.instrument}` : ""}
+                  {res.timeframe && res.timeframe !== "1d" ? ` · ${res.timeframe}` : ""}{" "}
                   <span className="text-xs text-zinc-500">(OOS, net of costs)</span>
                 </h2>
                 <div className="mt-2 grid grid-cols-3 gap-2 sm:grid-cols-5 lg:grid-cols-7">

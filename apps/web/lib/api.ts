@@ -83,6 +83,7 @@ export interface AgentResult {
   report?: string | null;
   stdout_tail?: string;
   instrument?: string | null;
+  timeframe?: string | null;
   summary?: Record<string, number>;
   permutation?: {
     observed?: number;

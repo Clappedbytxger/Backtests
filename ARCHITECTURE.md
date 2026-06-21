@@ -243,3 +243,13 @@ Targets: Windows 11 (AMD GPU) and macOS (Apple Silicon, 24 GB).
   backtest via `POST /agent/evaluate` (light mode, no LLM, ~4s) and update metrics/equity
   live. **`POST /agent/promote`** + an "Add to catalog" button create a strategy folder +
   append a CATALOG.md row on an isolated agent branch. 183 tests; verified live on GPU.
+- **2026-06-21** — Intraday data + strategies. New `quantlab.ib_data`: `get_intraday`
+  pulls bars from Interactive Brokers (`ib_async`, reusing the 0108 connection +
+  contract mapping, Parquet-cached) and `load_prices(instrument, timeframe)` is the
+  unified loader — daily via yfinance, intraday via a cached IBKR pull or a yfinance
+  fallback (~2y of 1h, no gateway needed). The agent harness gained a `TIMEFRAME`
+  (`1d`/`1h`/`30m`/`15m`/`5m`); the model may now write **time-of-day strategies**
+  (`prices.index.hour`), with annualization auto-derived from the bar frequency and
+  the S&P 500 benchmark shown only for daily. The previously-failing "buy BTC at
+  18:00, sell at 02:00" now runs end-to-end on hourly bars (724 trades, full
+  analysis). `scripts/fetch_intraday.py` pre-populates the IBKR cache. 186 tests.
