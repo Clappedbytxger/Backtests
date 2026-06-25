@@ -1,0 +1,45 @@
+{
+  "core_sharpe": 1.214,
+  "mc_1step": [
+    {
+      "target_vol_pct": 4.0,
+      "p_pass": 0.811,
+      "p_bust": 0.163,
+      "p_timeout": 0.027,
+      "median_months": 14.4,
+      "worst_day_pct": -1.97
+    },
+    {
+      "target_vol_pct": 6.0,
+      "p_pass": 0.72,
+      "p_bust": 0.279,
+      "p_timeout": 0.0,
+      "median_months": 8.1,
+      "worst_day_pct": -2.96
+    },
+    {
+      "target_vol_pct": 8.0,
+      "p_pass": 0.647,
+      "p_bust": 0.353,
+      "p_timeout": 0.0,
+      "median_months": 5.2,
+      "worst_day_pct": -3.95
+    },
+    {
+      "target_vol_pct": 10.0,
+      "p_pass": 0.595,
+      "p_bust": 0.405,
+      "p_timeout": 0.0,
+      "median_months": 3.7,
+      "worst_day_pct": -4.93
+    },
+    {
+      "target_vol_pct": 12.0,
+      "p_pass": 0.562,
+      "p_bust": 0.438,
+      "p_timeout": 0.0,
+      "median_months": 2.8,
+      "worst_day_pct": -5.92
+    }
+  ]
+}

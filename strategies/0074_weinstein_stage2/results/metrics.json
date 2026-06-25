@@ -1,0 +1,546 @@
+{
+  "universe_n": 113,
+  "dropped": [
+    [
+      "MMC",
+      "load error: No data returned for ticker 'MMC' (2000-01-01..None)."
+    ]
+  ],
+  "n_signals": 1901,
+  "params": {
+    "ma_period": 30,
+    "base_window": 40,
+    "min_touches": 3,
+    "touch_band": 0.03,
+    "vol_window": 20,
+    "vol_mult": 1.5,
+    "rs_period": 30,
+    "ma_cross_lookback": 10,
+    "rs_cross_lookback": 20,
+    "max_base_range": 0.45,
+    "max_ma_slope": 0.15,
+    "atr_period": 14,
+    "stop_mode": "support",
+    "stop_buffer": 0.02,
+    "stop_atr_mult": 2.0
+  },
+  "oos_start": "2015-01-01",
+  "headline_config": "ma",
+  "headline": {
+    "full": {
+      "total_return": 1.5300022047877815,
+      "cagr": 0.035795127191770026,
+      "annual_volatility": 0.05607063395224327,
+      "sharpe": 0.3021577574881303,
+      "sortino": 0.38109886161995293,
+      "calmar": 0.29432053544401865,
+      "max_drawdown": -0.12161953680115689,
+      "max_drawdown_duration_days": 1341,
+      "n_periods": 6651
+    },
+    "is": {
+      "total_return": 0.5693142034826371,
+      "cagr": 0.030555851524328048,
+      "annual_volatility": 0.055586334055150635,
+      "sharpe": 0.21305381532672438,
+      "sortino": 0.27288484579901795,
+      "calmar": 0.2512413081648687,
+      "max_drawdown": -0.12161953680115689,
+      "max_drawdown_duration_days": 1341,
+      "n_periods": 3773
+    },
+    "oos": {
+      "total_return": 0.6121705896583196,
+      "cagr": 0.042704082284840794,
+      "annual_volatility": 0.056706205332269506,
+      "sharpe": 0.4166607830343761,
+      "sortino": 0.5147781401494533,
+      "calmar": 0.3754173441251351,
+      "max_drawdown": -0.11375095730954443,
+      "max_drawdown_duration_days": 740,
+      "n_periods": 2878
+    },
+    "trade_stats": {
+      "n_trades": 1462,
+      "win_rate": 0.4439124487004104,
+      "profit_factor": 1.547388968846181,
+      "payoff_ratio": 1.9384086774606244,
+      "expectancy": 104.65131359697462,
+      "avg_holding_days": 27.338577291381668,
+      "avg_win": 666.4242858020732,
+      "avg_loss": 343.79968143513975
+    },
+    "n_trades": 1462
+  },
+  "variants": {
+    "ma": {
+      "is": {
+        "total_return": 0.5693142034826371,
+        "cagr": 0.030555851524328048,
+        "annual_volatility": 0.055586334055150635,
+        "sharpe": 0.21305381532672438,
+        "sortino": 0.27288484579901795,
+        "calmar": 0.2512413081648687,
+        "max_drawdown": -0.12161953680115689,
+        "max_drawdown_duration_days": 1341,
+        "n_periods": 3773
+      },
+      "oos": {
+        "total_return": 0.6121705896583196,
+        "cagr": 0.042704082284840794,
+        "annual_volatility": 0.056706205332269506,
+        "sharpe": 0.4166607830343761,
+        "sortino": 0.5147781401494533,
+        "calmar": 0.3754173441251351,
+        "max_drawdown": -0.11375095730954443,
+        "max_drawdown_duration_days": 740,
+        "n_periods": 2878
+      },
+      "full": {
+        "total_return": 1.5300022047877815,
+        "cagr": 0.035795127191770026,
+        "annual_volatility": 0.05607063395224327,
+        "sharpe": 0.3021577574881303,
+        "sortino": 0.38109886161995293,
+        "calmar": 0.29432053544401865,
+        "max_drawdown": -0.12161953680115689,
+        "max_drawdown_duration_days": 1341,
+        "n_periods": 6651
+      },
+      "trade_stats": {
+        "n_trades": 1462,
+        "win_rate": 0.4439124487004104,
+        "profit_factor": 1.547388968846181,
+        "payoff_ratio": 1.9384086774606244,
+        "expectancy": 104.65131359697462,
+        "avg_holding_days": 27.338577291381668,
+        "avg_win": 666.4242858020732,
+        "avg_loss": 343.79968143513975
+      },
+      "n_trades": 1462
+    },
+    "trail1r": {
+      "is": {
+        "total_return": 1.1329828535797506,
+        "cagr": 0.0518969164935148,
+        "annual_volatility": 0.07798123418953835,
+        "sharpe": 0.4339547034747114,
+        "sortino": 0.5890073364297888,
+        "calmar": 0.22600718295198363,
+        "max_drawdown": -0.22962507569744173,
+        "max_drawdown_duration_days": 1235,
+        "n_periods": 3773
+      },
+      "oos": {
+        "total_return": 0.7413021597524965,
+        "cagr": 0.04976269113101783,
+        "annual_volatility": 0.07802150831187381,
+        "sharpe": 0.40776596081222977,
+        "sortino": 0.5294672150725408,
+        "calmar": 0.36315163098895914,
+        "max_drawdown": -0.13703006371057924,
+        "max_drawdown_duration_days": 521,
+        "n_periods": 2878
+      },
+      "full": {
+        "total_return": 2.714167649653455,
+        "cagr": 0.05097286910653365,
+        "annual_volatility": 0.07799282406975878,
+        "sharpe": 0.42265070409293953,
+        "sortino": 0.5626399001188793,
+        "calmar": 0.2219830258159455,
+        "max_drawdown": -0.22962507569744173,
+        "max_drawdown_duration_days": 1235,
+        "n_periods": 6651
+      },
+      "trade_stats": {
+        "n_trades": 345,
+        "win_rate": 0.4115942028985507,
+        "profit_factor": 2.5472696276572617,
+        "payoff_ratio": 3.6415192564396066,
+        "expectancy": 786.7152607691171,
+        "avg_holding_days": 208.75072463768117,
+        "avg_win": 3146.7137813395884,
+        "avg_loss": 864.1211427826416
+      },
+      "n_trades": 345
+    },
+    "chandelier": {
+      "is": {
+        "total_return": 0.4322560774097022,
+        "cagr": 0.024284676882989853,
+        "annual_volatility": 0.05015021545175776,
+        "sharpe": 0.10867480112542216,
+        "sortino": 0.14225761025071426,
+        "calmar": 0.20789474798811164,
+        "max_drawdown": -0.11681236355417002,
+        "max_drawdown_duration_days": 1216,
+        "n_periods": 3773
+      },
+      "oos": {
+        "total_return": 0.41830392346010425,
+        "cagr": 0.031072117279331346,
+        "annual_volatility": 0.04632369430659661,
+        "sharpe": 0.2562408336580037,
+        "sortino": 0.34257883013079077,
+        "calmar": 0.34959336170953415,
+        "max_drawdown": -0.08888074169196658,
+        "max_drawdown_duration_days": 741,
+        "n_periods": 2878
+      },
+      "full": {
+        "total_return": 1.0313744139897678,
+        "cagr": 0.027216215645470276,
+        "annual_volatility": 0.04852830126760864,
+        "sharpe": 0.1695523730034048,
+        "sortino": 0.22355836147221553,
+        "calmar": 0.2329908822780489,
+        "max_drawdown": -0.11681236355417002,
+        "max_drawdown_duration_days": 1216,
+        "n_periods": 6651
+      },
+      "trade_stats": {
+        "n_trades": 1543,
+        "win_rate": 0.4394037589112119,
+        "profit_factor": 1.4172131835592945,
+        "payoff_ratio": 1.8080964657504277,
+        "expectancy": 66.84215255928581,
+        "avg_holding_days": 21.924173687621515,
+        "avg_win": 516.7301708706856,
+        "avg_loss": 285.7868375160079
+      },
+      "n_trades": 1543
+    },
+    "partial": {
+      "is": {
+        "total_return": 0.7946605211990176,
+        "cagr": 0.03983293282401368,
+        "annual_volatility": 0.05635094909116808,
+        "sharpe": 0.369972858260653,
+        "sortino": 0.5023353056950531,
+        "calmar": 0.2303857445572869,
+        "max_drawdown": -0.17289669072432112,
+        "max_drawdown_duration_days": 963,
+        "n_periods": 3773
+      },
+      "oos": {
+        "total_return": 0.61064687972686,
+        "cagr": 0.042617754725325474,
+        "annual_volatility": 0.056944892744564816,
+        "sharpe": 0.4136877247281231,
+        "sortino": 0.5451134526267637,
+        "calmar": 0.382600317065049,
+        "max_drawdown": -0.1113897527640566,
+        "max_drawdown_duration_days": 442,
+        "n_periods": 2878
+      },
+      "full": {
+        "total_return": 1.8905643686381866,
+        "cagr": 0.041037058172570084,
+        "annual_volatility": 0.05660451807722836,
+        "sharpe": 0.3890252530809589,
+        "sortino": 0.5212842720050469,
+        "calmar": 0.23735016558531194,
+        "max_drawdown": -0.17289669072432112,
+        "max_drawdown_duration_days": 963,
+        "n_periods": 6651
+      },
+      "trade_stats": {
+        "n_trades": 570,
+        "win_rate": 0.643859649122807,
+        "profit_factor": 2.2651623752276526,
+        "payoff_ratio": 1.2529372266245598,
+        "expectancy": 331.6779594102067,
+        "avg_holding_days": 164.75964912280702,
+        "avg_win": 922.3133091783857,
+        "avg_loss": 736.1209241608359
+      },
+      "n_trades": 570
+    },
+    "ma+pyramid": {
+      "is": {
+        "total_return": 0.5822771985025712,
+        "cagr": 0.031122237480667225,
+        "annual_volatility": 0.06176880824283326,
+        "sharpe": 0.20650480857068795,
+        "sortino": 0.2623261334476389,
+        "calmar": 0.24294561467737955,
+        "max_drawdown": -0.12810372198731024,
+        "max_drawdown_duration_days": 1342,
+        "n_periods": 3773
+      },
+      "oos": {
+        "total_return": 0.6711505099156183,
+        "cagr": 0.04598973545567242,
+        "annual_volatility": 0.0630689075423843,
+        "sharpe": 0.43057877020610547,
+        "sortino": 0.5294412573101424,
+        "calmar": 0.32449989476098823,
+        "max_drawdown": -0.14172496262147127,
+        "max_drawdown_duration_days": 741,
+        "n_periods": 2878
+      },
+      "full": {
+        "total_return": 1.6442233471054548,
+        "cagr": 0.037529540147695384,
+        "annual_volatility": 0.06233161868466625,
+        "sharpe": 0.30461151211783627,
+        "sortino": 0.3816266558890974,
+        "calmar": 0.2648054333796665,
+        "max_drawdown": -0.14172496262146994,
+        "max_drawdown_duration_days": 1342,
+        "n_periods": 6651
+      },
+      "trade_stats": {
+        "n_trades": 1614,
+        "win_rate": 0.4436183395291202,
+        "profit_factor": 1.5243597471716026,
+        "payoff_ratio": 1.91183666614539,
+        "expectancy": 101.87257417010397,
+        "avg_holding_days": 27.33085501858736,
+        "avg_win": 667.5839933688153,
+        "avg_loss": 349.18463757407994
+      },
+      "n_trades": 1614
+    },
+    "trail1r+pyramid": {
+      "is": {
+        "total_return": 1.383970499139302,
+        "cagr": 0.05974178479023129,
+        "annual_volatility": 0.10231348394854861,
+        "sharpe": 0.42487487456278106,
+        "sortino": 0.5658837780606536,
+        "calmar": 0.2131804252343931,
+        "max_drawdown": -0.28024048045004535,
+        "max_drawdown_duration_days": 1327,
+        "n_periods": 3773
+      },
+      "oos": {
+        "total_return": 0.6208486048576387,
+        "cagr": 0.04319433054746202,
+        "annual_volatility": 0.09863363490242208,
+        "sharpe": 0.2774411781757833,
+        "sortino": 0.35670262746666176,
+        "calmar": 0.2194364625886825,
+        "max_drawdown": -0.19684208375354018,
+        "max_drawdown_duration_days": 558,
+        "n_periods": 2878
+      },
+      "full": {
+        "total_return": 2.8640552575516955,
+        "cagr": 0.052549447716207176,
+        "annual_volatility": 0.10073140496777729,
+        "sharpe": 0.36236317311035615,
+        "sortino": 0.4755078769557007,
+        "calmar": 0.1875155496158752,
+        "max_drawdown": -0.28024048045004535,
+        "max_drawdown_duration_days": 1327,
+        "n_periods": 6651
+      },
+      "trade_stats": {
+        "n_trades": 474,
+        "win_rate": 0.41350210970464135,
+        "profit_factor": 2.120984802560431,
+        "payoff_ratio": 3.008335587305101,
+        "expectancy": 604.2310669940217,
+        "avg_holding_days": 209.69620253164558,
+        "avg_win": 2764.7963871085253,
+        "avg_loss": 919.0452018636854
+      },
+      "n_trades": 474
+    },
+    "chandelier+pyramid": {
+      "is": {
+        "total_return": 0.4506923399321241,
+        "cagr": 0.02516004726962695,
+        "annual_volatility": 0.055897226754786165,
+        "sharpe": 0.11823478611515195,
+        "sortino": 0.15455212950547687,
+        "calmar": 0.19293728501657464,
+        "max_drawdown": -0.13040531418002244,
+        "max_drawdown_duration_days": 1216,
+        "n_periods": 3773
+      },
+      "oos": {
+        "total_return": 0.43615163854803973,
+        "cagr": 0.03220173521686753,
+        "annual_volatility": 0.050718133639657804,
+        "sharpe": 0.25983122360557825,
+        "sortino": 0.3462802324956692,
+        "calmar": 0.2993464096856439,
+        "max_drawdown": -0.10757348067305672,
+        "max_drawdown_duration_days": 995,
+        "n_periods": 2878
+      },
+      "full": {
+        "total_return": 1.0834141810226159,
+        "cagr": 0.028201189181033648,
+        "annual_volatility": 0.05371392363690321,
+        "sharpe": 0.17596149426543056,
+        "sortino": 0.2314163992874225,
+        "calmar": 0.21625797505539046,
+        "max_drawdown": -0.13040531418002244,
+        "max_drawdown_duration_days": 1216,
+        "n_periods": 6651
+      },
+      "trade_stats": {
+        "n_trades": 1713,
+        "win_rate": 0.43782837127845886,
+        "profit_factor": 1.3903040774745214,
+        "payoff_ratio": 1.7851504354772856,
+        "expectancy": 63.24659550628179,
+        "avg_holding_days": 21.83654407472271,
+        "avg_win": 514.5646656544867,
+        "avg_loss": 288.2472285966815
+      },
+      "n_trades": 1713
+    },
+    "partial+pyramid": {
+      "is": {
+        "total_return": 1.4283145984678396,
+        "cagr": 0.06104707745407123,
+        "annual_volatility": 0.0840039093582927,
+        "sharpe": 0.5117623753503642,
+        "sortino": 0.7051063181603128,
+        "calmar": 0.24702186427108808,
+        "max_drawdown": -0.24713228375232654,
+        "max_drawdown_duration_days": 1311,
+        "n_periods": 3773
+      },
+      "oos": {
+        "total_return": 0.6169400946725565,
+        "cagr": 0.04297382373208025,
+        "annual_volatility": 0.083142408646119,
+        "sharpe": 0.3096069212015715,
+        "sortino": 0.3894316678258218,
+        "calmar": 0.27853330744621624,
+        "max_drawdown": -0.1542861215633191,
+        "max_drawdown_duration_days": 549,
+        "n_periods": 2878
+      },
+      "full": {
+        "total_return": 2.9264392367413397,
+        "cagr": 0.05318835112260056,
+        "annual_volatility": 0.08362767472301365,
+        "sharpe": 0.4248149988335445,
+        "sortino": 0.5622115626428258,
+        "calmar": 0.2152221891653192,
+        "max_drawdown": -0.24713228375232654,
+        "max_drawdown_duration_days": 1311,
+        "n_periods": 6651
+      },
+      "trade_stats": {
+        "n_trades": 847,
+        "win_rate": 0.6363636363636364,
+        "profit_factor": 1.960489040336245,
+        "payoff_ratio": 1.1202794516207113,
+        "expectancy": 345.506403393311,
+        "avg_holding_days": 160.62101534828807,
+        "avg_win": 1108.211751141743,
+        "avg_loss": 989.2279551664453
+      },
+      "n_trades": 847
+    }
+  },
+  "benchmarks": {
+    "ew_bh": {
+      "is": {
+        "total_return": 7.0576102107033964,
+        "cagr": 0.149544625140559,
+        "annual_volatility": 0.20827966934913536,
+        "sharpe": 0.6782446290388591,
+        "sortino": 0.9082924004962575,
+        "calmar": 0.30441288291146085,
+        "max_drawdown": -0.49125590122956253,
+        "max_drawdown_duration_days": 607,
+        "n_periods": 3773
+      },
+      "oos": {
+        "total_return": 5.089260240643537,
+        "cagr": 0.1713781078750214,
+        "annual_volatility": 0.17679120612645527,
+        "sharpe": 0.8716883524680373,
+        "sortino": 1.0591132258410862,
+        "calmar": 0.4854912186596493,
+        "max_drawdown": -0.352999397905001,
+        "max_drawdown_duration_days": 380,
+        "n_periods": 2878
+      },
+      "full": {
+        "total_return": 48.06488549063966,
+        "cagr": 0.15894194352573887,
+        "annual_volatility": 0.19526462702600433,
+        "sharpe": 0.751911063286552,
+        "sortino": 0.9664485830728146,
+        "calmar": 0.323542054411812,
+        "max_drawdown": -0.49125590122956253,
+        "max_drawdown_duration_days": 607,
+        "n_periods": 6651
+      }
+    },
+    "spy": {
+      "is": {
+        "total_return": 0.8629820020932293,
+        "cagr": 0.042431032594694384,
+        "annual_volatility": 0.20486095032339385,
+        "sharpe": 0.20849181667681724,
+        "sortino": 0.2737049037248246,
+        "calmar": 0.07688250778180203,
+        "max_drawdown": -0.551894492244148,
+        "max_drawdown_duration_days": 1656,
+        "n_periods": 3773
+      },
+      "oos": {
+        "total_return": 3.3576964130262397,
+        "cagr": 0.1375588033157853,
+        "annual_volatility": 0.1765356533727745,
+        "sharpe": 0.706565577141441,
+        "sortino": 0.864968391240237,
+        "calmar": 0.4079774882930875,
+        "max_drawdown": -0.33717253344371845,
+        "max_drawdown_duration_days": 488,
+        "n_periods": 2878
+      },
+      "full": {
+        "total_return": 7.118309988054172,
+        "cagr": 0.08257695750204741,
+        "annual_volatility": 0.19311773346081432,
+        "sharpe": 0.4049561595469885,
+        "sortino": 0.5156161103200436,
+        "calmar": 0.1496245363244482,
+        "max_drawdown": -0.551894492244148,
+        "max_drawdown_duration_days": 1656,
+        "n_periods": 6651
+      }
+    }
+  },
+  "beats_ew_oos_sharpe": false,
+  "tests": {
+    "perm_full": {
+      "observed": 0.3021577574881303,
+      "p_value": 0.0033222591362126247,
+      "null_mean": -0.13602022302438976,
+      "null_std": 0.15077740575674126,
+      "n_perm": 300
+    },
+    "perm_oos": {
+      "observed": 0.4166607830343761,
+      "p_value": 0.019933554817275746,
+      "null_mean": -0.036226815530186245,
+      "null_std": 0.20834172919208208,
+      "n_perm": 300
+    },
+    "block_boot_sharpe_oos_ci": [
+      -0.18373948668399334,
+      1.0514876469557957
+    ],
+    "ttest_oos_p": 0.009694250790897405,
+    "dsr": {
+      "observed_sharpe": 0.04128282402270341,
+      "expected_max_sharpe_under_null": 0.006096278435883338,
+      "sharpe_variance_used": 1.7458648617835712e-05,
+      "n_trials": 8,
+      "psr_deflated": 0.997672481266037
+    }
+  }
+}

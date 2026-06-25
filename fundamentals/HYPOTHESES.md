@@ -319,6 +319,36 @@ YoY-Änderung als Feature.
 
 ---
 
+## EQ — US-Aktien (Cross-Sectional, eigenes Programm)
+
+> Eigene Schiene (Einzelaktien, nicht Commodity-Fundamental). Eigener
+> Multiple-Testing-Zähler — bisher **1** getestete SUE-Definition.
+
+### H-EQ-01: Post-Earnings Announcement Drift (PEAD) via SUE
+
+**Kausalkette:**
+Positiver Earnings-Surprise → systematische Under-Reaction (begrenzte
+Aufmerksamkeit, langsame Diffusion) → Aktie driftet über 1–3 Monate weiter in
+Surprise-Richtung. Cross-sectional: hohe SUE → positive markt-adjustierte Drift.
+
+**Feature:**
+`sue` = Seasonal-Random-Walk-SUE aus EDGAR-XBRL `(EPS_q − EPS_{q−4Q}) / std(frühere
+Saison-Differenzen)` (`quantlab.edgar_data`). Braucht KEINE Analysten-Schätzung.
+
+**Vorab-Prediction:** hohe SUE → long, tiefe SUE → short; gepoolter Rank-IC > 0,
+Top-minus-Bottom-Dezil-Excess-Return > 0 bei 22–66 Tagen.
+
+**Horizonte:** 5 / 22 / 66 Tage (Ziel 66d = kanonische ~60-T-Drift)
+**Datenquelle:** SEC EDGAR XBRL (gratis, survivorship-frei auf der Earnings-Seite);
+Kurse yfinance (Universum survivorship-VERZERRT → Kill-Screen, nicht sauberer Test).
+**PIT-Caveat:** release_date = 10-Q-Filing (konservativ, ≥ tatsächliches Announcement).
+**Multiple-Testing-N (EQ-Schiene):** Test-Nr. 1
+**Status:** TESTING — Signal vorhanden (monatl. IC-IR t=3.0 @66d, p=0.003, kein
+Decay), aber handelbarer Dezil-Spread dünn (+1.22 %/66 T, p=0.12, 52 % Top-Hit);
+survivorship+kosten ungetestet. Qualifizierter Kill-Screen-PASS. Strategie 0073.
+
+---
+
 ## Multiple-Testing-Budget
 
 Aktuell vorab registrierte Tests: **14**  

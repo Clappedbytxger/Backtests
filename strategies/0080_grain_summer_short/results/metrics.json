@@ -1,0 +1,78 @@
+{
+  "idea_id": "I0044",
+  "window": [
+    [
+      6,
+      14
+    ],
+    [
+      7,
+      19
+    ]
+  ],
+  "markets": {
+    "ZC=F": {
+      "label": "Corn",
+      "n_trades": 26,
+      "win_rate": 0.6153846153846154,
+      "expectancy_pct": 5.603664739577545,
+      "net_sharpe": 0.2503119273173017,
+      "bh_sharpe": 0.19420852247903303,
+      "perm_p": 0.0009998000399920016,
+      "trade_mean_boot_ci_pct": [
+        -0.12467320749442218,
+        11.239982284377238
+      ]
+    },
+    "ZW=F": {
+      "label": "Wheat (Chicago)",
+      "n_trades": 26,
+      "win_rate": 0.38461538461538464,
+      "expectancy_pct": -2.8061002721962827,
+      "net_sharpe": -0.4399093005226205,
+      "bh_sharpe": 0.2050613280907675,
+      "perm_p": 0.8064387122575485,
+      "trade_mean_boot_ci_pct": [
+        -7.52187512119476,
+        1.9403604920168516
+      ]
+    },
+    "KE=F": {
+      "label": "Wheat (Kansas)",
+      "n_trades": 25,
+      "win_rate": 0.56,
+      "expectancy_pct": -0.6760592812886645,
+      "net_sharpe": -0.27687804294174345,
+      "bh_sharpe": 0.18055563628054716,
+      "perm_p": 0.4553089382123575,
+      "trade_mean_boot_ci_pct": [
+        -5.453606695826725,
+        3.948460411294399
+      ]
+    },
+    "ZS=F": {
+      "label": "Soybeans (cross-check)",
+      "n_trades": 25,
+      "win_rate": 0.48,
+      "expectancy_pct": 1.0627068023425148,
+      "net_sharpe": -0.10459821488695026,
+      "bh_sharpe": 0.1791992515399847,
+      "perm_p": 0.10897820435912818,
+      "trade_mean_boot_ci_pct": [
+        -2.824620489432612,
+        4.986258149050032
+      ]
+    }
+  },
+  "roll_check_corn": {
+    "base_perm_p": 0.0011997600479904018,
+    "base_expectancy_pct": 5.603664739577545,
+    "excl_perm_p": 0.023595280943811237,
+    "excl_expectancy_pct": 0.7430391134385746,
+    "share_on_roll_days": 0.40798194277285216
+  },
+  "is_oos_corn": {
+    "IS 2001-2012": 0.1762492050369464,
+    "OOS 2013-2026": 0.571527947982959
+  }
+}

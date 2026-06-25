@@ -1,0 +1,65 @@
+{
+  "idea": "I0076",
+  "name": "Index RSI-2 mean-reversion (Connors + SMA200)",
+  "per_index": {
+    "US500": {
+      "n_trades": 259,
+      "gross_mean_bps": 40.86,
+      "net_mean_bps": 31.94,
+      "gross_sharpe_per_trade": 0.2394,
+      "net_sharpe_per_trade": 0.1863,
+      "win": 0.722,
+      "avg_nights": 2.96,
+      "period": "1995-10-16..2026-06-17"
+    },
+    "US30": {
+      "n_trades": 265,
+      "gross_mean_bps": 23.58,
+      "net_mean_bps": 14.54,
+      "gross_sharpe_per_trade": 0.141,
+      "net_sharpe_per_trade": 0.0865,
+      "win": 0.7057,
+      "avg_nights": 3.02,
+      "period": "1995-10-16..2026-06-17"
+    },
+    "NAS100": {
+      "n_trades": 254,
+      "gross_mean_bps": 38.88,
+      "net_mean_bps": 29.55,
+      "gross_sharpe_per_trade": 0.1422,
+      "net_sharpe_per_trade": 0.1077,
+      "win": 0.6969,
+      "avg_nights": 3.17,
+      "period": "1995-10-16..2026-06-17"
+    },
+    "GER40": {
+      "n_trades": 223,
+      "gross_mean_bps": 20.14,
+      "net_mean_bps": 10.56,
+      "gross_sharpe_per_trade": 0.0926,
+      "net_sharpe_per_trade": 0.0483,
+      "win": 0.6592,
+      "avg_nights": 3.29,
+      "period": "1995-10-17..2026-06-17"
+    }
+  },
+  "pooled": {
+    "n_trades": 1001,
+    "gross_mean_bps": 31.17,
+    "net_mean_bps": 21.96,
+    "gross_sharpe_per_trade": 0.148,
+    "net_sharpe_per_trade": 0.1038,
+    "net_sharpe_ann_approx": 0.685,
+    "win": 0.6973,
+    "boot_net_mean_ci_bps": [
+      8.48,
+      34.89
+    ],
+    "perm_p_random_entry_per_index": [
+      0.002,
+      0.004,
+      0.0259,
+      0.1557
+    ]
+  }
+}

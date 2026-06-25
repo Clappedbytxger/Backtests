@@ -1,0 +1,116 @@
+{
+  "cti_lock_single_vol": [
+    {
+      "target_vol_pct": 4.0,
+      "vol_late_pct": null,
+      "ann_return_est_pct": 3.5,
+      "p_pass_8pct": 0.686,
+      "p_bust": 0.258,
+      "median_months": 16.4,
+      "p25_months": 11.6,
+      "p75_months": 22.3
+    },
+    {
+      "target_vol_pct": 6.0,
+      "vol_late_pct": null,
+      "ann_return_est_pct": 5.3,
+      "p_pass_8pct": 0.625,
+      "p_bust": 0.374,
+      "median_months": 9.2,
+      "p25_months": 6.3,
+      "p75_months": 12.9
+    },
+    {
+      "target_vol_pct": 8.0,
+      "vol_late_pct": null,
+      "ann_return_est_pct": 7.1,
+      "p_pass_8pct": 0.567,
+      "p_bust": 0.433,
+      "median_months": 5.9,
+      "p25_months": 3.9,
+      "p75_months": 8.5
+    },
+    {
+      "target_vol_pct": 10.0,
+      "vol_late_pct": null,
+      "ann_return_est_pct": 8.8,
+      "p_pass_8pct": 0.532,
+      "p_bust": 0.468,
+      "median_months": 4.1,
+      "p25_months": 2.8,
+      "p75_months": 5.9
+    },
+    {
+      "target_vol_pct": 12.0,
+      "vol_late_pct": null,
+      "ann_return_est_pct": 10.6,
+      "p_pass_8pct": 0.513,
+      "p_bust": 0.487,
+      "median_months": 3.1,
+      "p25_months": 2.2,
+      "p75_months": 4.6
+    },
+    {
+      "target_vol_pct": 15.0,
+      "vol_late_pct": null,
+      "ann_return_est_pct": 13.2,
+      "p_pass_8pct": 0.497,
+      "p_bust": 0.503,
+      "median_months": 2.2,
+      "p25_months": 1.5,
+      "p75_months": 3.3
+    }
+  ],
+  "cti_lock_two_stage": [
+    {
+      "target_vol_pct": 4.0,
+      "vol_late_pct": 10.0,
+      "ann_return_est_pct": 3.5,
+      "p_pass_8pct": 0.655,
+      "p_bust": 0.309,
+      "median_months": 13.5,
+      "p25_months": 8.9,
+      "p75_months": 19.6
+    },
+    {
+      "target_vol_pct": 4.0,
+      "vol_late_pct": 15.0,
+      "ann_return_est_pct": 3.5,
+      "p_pass_8pct": 0.619,
+      "p_bust": 0.352,
+      "median_months": 12.7,
+      "p25_months": 8.3,
+      "p75_months": 18.5
+    },
+    {
+      "target_vol_pct": 5.0,
+      "vol_late_pct": 20.0,
+      "ann_return_est_pct": 4.4,
+      "p_pass_8pct": 0.567,
+      "p_bust": 0.43,
+      "median_months": 8.7,
+      "p25_months": 5.7,
+      "p75_months": 13.1
+    },
+    {
+      "target_vol_pct": 6.0,
+      "vol_late_pct": 20.0,
+      "ann_return_est_pct": 5.3,
+      "p_pass_8pct": 0.537,
+      "p_bust": 0.463,
+      "median_months": 6.8,
+      "p25_months": 4.6,
+      "p75_months": 10.0
+    },
+    {
+      "target_vol_pct": 5.0,
+      "vol_late_pct": 30.0,
+      "ann_return_est_pct": 4.4,
+      "p_pass_8pct": 0.545,
+      "p_bust": 0.454,
+      "median_months": 8.3,
+      "p25_months": 5.5,
+      "p75_months": 12.4
+    }
+  ]
+}

@@ -1,0 +1,3 @@
+ticket_id,strategy_id,action,date,instrument,direction,status,instruction,logged_at
+pre_fomc-20260616,pre_fomc,entry,2026-06-16,MES (oder SPY),long,testing,LONG MES (oder SPY) zum BÖRSENSCHLUSS (MOC) am Tue 16.06.2026 — Verkauf zur ERÖFFNUNG am FOMC-Tag Wed 17.06.2026.,2026-06-16 08:00
+pre_fomc-20260616,pre_fomc,exit,2026-06-17,MES (oder SPY),long,testing,Position MES (oder SPY) zur ERÖFFNUNG (MOO) am Wed 17.06.2026 schließen (VOR der 14-Uhr-ET-Ankündigung — nur die Nacht halten).,2026-06-17 08:00

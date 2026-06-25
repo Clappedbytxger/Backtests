@@ -50,12 +50,57 @@ Reproduktion auf ES/NQ/GC, Long+Short, Time-Exit zum Close, plus Konditionierung
 | NQ | +1,18 bps | +0,018 | hi-OR-Volumen +2,53 bps | alle < 0 |
 | GC | +0,97 bps | +0,025 | wide-OR +2,10 bps | alle < 0 |
 
-**Verdikt: abgelehnt.** Reproduziert exakt 0039 (OR-Breakout brutto ≈ 0). Der
-beste konditionierte Brutto-Puls (+2,5 bps, NQ hi-Volumen) liegt **unter** der
-3-bps-CFD-Wand → netto überall negativ. Die behauptete Sharpe 2,81 stammt aus
-einem **7000-Aktien-„Stocks-in-Play"-Querschnittsportfolio** (Diversifikation über
-viele simultane Breakouts + Relative-Volumen-Selektion auf News-Aktien); das
-übersetzt sich nicht auf ein einzelnes Index-/Gold-Instrument.
+**Stufe 2 (CTI-Adaption) abgelehnt.** Reproduziert exakt 0039 (OR-Breakout auf
+einem Einzelinstrument brutto ≈ 0). Der beste konditionierte Brutto-Puls (+2,5 bps,
+NQ hi-Volumen) liegt **unter** der 3-bps-CFD-Wand → netto überall negativ.
+
+#### Stufe 1 — Faithful Querschnitts-Reproduktion (das eigentliche Original)
+Die behauptete Sharpe 2,81 sitzt in einem **Aktien-Querschnitts-Portfolio**, nicht
+im Einzel-Timing. Daher die Originalform nachgebaut (`e8_stocksinplay_orb.py`):
+**50 liquide Nasdaq-Namen 1-Min 2018-2026** (Databento XNAS.ITCH, ~$30), täglich die
+**Top-10 „stocks in play"** nach Relative-Volumen (erste 5 Min vs. 20-Tage-Baseline),
+5-Min-ORB long+short, Stop = gegenüberliegende OR-Grenze, **Risikoparität** (jede
+Position 0,5 % Risiko, Portfolio-Tagesrendite = Σ R-Multiples), flat zum Close.
+
+| | ann.Sharpe | CAGR | MaxDD | meanR/Tag | Beta vs SPY |
+|---|---:|---:|---:|---:|---:|
+| **brutto** | **+0,62** | +18,5 % | −78 % | +0,197 | +0,03 |
+| netto (IBKR 4 bps RT) | −0,77 | −32 % | −98 % | −0,244 | — |
+
+IS 2018-22 brutto-Sh −1,07 / OOS 2023-26 −0,32 (netto). **Befund:** Im Querschnitt
+existiert ein **echter, marktneutraler Brutto-Edge** (meanR +0,02/Trade, Sh 0,62) —
+**den der Einzelinstrument-Test (brutto ≈0) komplett verfehlt.** ABER: (a) **weit
+unter den behaupteten 2,81**, (b) **netto negativ** (winziges R/Trade × kleine OR-
+Risk = hohe Kosten-in-R), (c) −78 % Brutto-MaxDD = instabil.
+
+**Warum die Lücke zu 2,81:** das Paper nutzt ein **Universum von tausenden Aktien**;
+„stocks in play" = Namen mit *abnormalem* Volumen/News an dem Tag (oft Small/Mid-Cap).
+50 immer-liquide Mega-Caps können diese Selektion strukturell nicht abbilden.
+
+**Robustheits-Sweep** (`e8b_sweep.py`, `results/stocksinplay_sweep.txt`):
+- **Diversifikation = Treiber:** brutto-Sharpe steigt mit Positionszahl (TOP_K 5/10/20
+  → 0,77 / 0,62 / 0,87) — genau die Paper-These (viele dekorrelierte Wetten).
+- **Der „stocks in play"-Filter SCHADET auf diesem Universum:** rvol≥0 (nur Ranking)
+  brutto 0,62-0,87 → rvol≥1,5 kollabiert auf 0,10-0,30 → **rvol≥2,5 wird negativ
+  (−1,4 bis −1,7)**. Auf Mega-Caps sind Hoch-Relative-Volumen-Tage (News/Earnings)
+  choppy/reversal statt clean continuation — der zentrale Selektions-Mechanismus des
+  Papers funktioniert auf Mega-Caps INVERS. Stärkster Beleg, dass das Universum (nicht
+  die Mechanik) die 2,81 trägt.
+- **Regime-abhängig:** brutto-Sharpe je Jahr 2018 **+2,31** / 2019 +1,29 / 2020 −1,16
+  / 2021 −0,37 / 2022 −0,03 / 2023 −1,16 / 2024 +1,43 / 2025 +2,18 / 2026 +3,85. Stark
+  2018-19, **tot 2020-2023**, wiederbelebt 2024-26 — kein stabiler Edge, Regime-Switch.
+- **Kostenkritisch:** netto-positiv nur bei ~1 bp RT (TOP_K20 +0,41 / TOP_K5 +0,53);
+  bei realistischen 4 bps (IBKR liquide Aktie) überall netto negativ.
+
+**Verdikt I0067:** Stufe-1-Edge **real, aber schwach (Sh 0,62 brutto, nicht 2,81),
+regime-abhängig (tot 2020-2023), kosten-tot bei realistischen 4 bps** und auf dem
+falschen Universum (Mega-Caps invertieren die „stocks in play"-Selektion). Stufe 2
+(CTI) ohnehin nicht handelbar (keine Einzelaktien-CFDs). **Korrektur ggü. erstem
+Urteil:** nicht „Signal leer", sondern „realer, aber schwacher + instabiler +
+kosten-toter Querschnitts-Edge; die 2,81 hängt am breiten Tausende-Aktien-Universum,
+das 50 Mega-Caps nicht abbilden — und ist retail nach Kosten nicht erreichbar".
+Methodisch der Kern: Stufe 1 (Originalform) MUSS vor jedem Reject getestet werden;
+ein Stufe-2-(Adaptions-)Reject ist KEIN Edge-Reject.
 
 ### I0068 — Intraday-Momentum „Noise-Area" (Zarattini, SPY-Sharpe 1,33 / 3,50 @VIX>40)
 Faithful: Band = Open ± σ·Ø|Move(min)| aus den letzten 14 Sessions; long über

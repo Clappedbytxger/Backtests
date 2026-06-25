@@ -1,0 +1,27 @@
+{
+  "idea": "I0083",
+  "name": "VIX vol-regime sizing gate (overlay on RSI-2 book)",
+  "period": "2000-01-03..2026-06-17",
+  "ungated": {
+    "sharpe_raw": 0.43,
+    "sharpe_at10vol": 0.232,
+    "maxdd_at10vol": -0.2926,
+    "worst_day_bps": -585.4,
+    "exposure_frac": 0.268
+  },
+  "gated": {
+    "sharpe_raw": 0.35,
+    "sharpe_at10vol": 0.152,
+    "maxdd_at10vol": -0.3168,
+    "worst_day_bps": -337.6,
+    "exposure_frac": 0.257
+  },
+  "crash_gfc_2008": {
+    "ungated_ret": 0.0,
+    "gated_ret": 0.0
+  },
+  "crash_covid_2020": {
+    "ungated_ret": -0.0543,
+    "gated_ret": -0.0509
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "idea": "I0077",
+  "name": "Cross-asset daily TSMOM (dual-sleeve, vol-scaled)",
+  "book": {
+    "period": "2003-10-13..2026-06-17",
+    "net_sharpe": -0.309,
+    "gross_sharpe": 0.154,
+    "net_cagr": -0.0005,
+    "net_maxdd": -0.2427,
+    "net_calmar": -0.002,
+    "ann_turnover_cost_bps": 2001.1,
+    "avg_leg_sharpe": 0.201
+  },
+  "leg_sharpes": {
+    "US500": 0.338,
+    "NAS100": 0.337,
+    "GER40": 0.2,
+    "JP225": 0.125,
+    "Gold": 0.496,
+    "Silver": 0.313,
+    "Oil": 0.286,
+    "EURUSD": 0.086,
+    "GBPUSD": -0.055,
+    "USDJPY": 0.151,
+    "AUDUSD": -0.07
+  },
+  "crisis_years_net": {
+    "2008": 0.1277,
+    "2018": -0.0338,
+    "2020": 0.044,
+    "2022": 0.021
+  },
+  "cost_breakdown": {
+    "spread_ann_bps_unscaled": 123.6,
+    "swap_ann_bps_unscaled": 1877.5,
+    "book_scale_k": 0.1389,
+    "swap_ann_bps_scaled_to_6pct": 260.9,
+    "gross_leverage_scaled": 0.84
+  },
+  "stage1_classic_monthly_12m": {
+    "gross_sharpe": 0.741,
+    "net_sharpe": 0.232,
+    "swap_ann_bps_unscaled": 2639.0
+  }
+}

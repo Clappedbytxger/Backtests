@@ -1,0 +1,14 @@
+#!/bin/sh
+# ───────────────────────────────────────────────────────────────────────────
+# PLACEHOLDER — not the real backend.
+#
+# Tauri's `externalBin` requires this file to exist. It is replaced by the real
+# Apple-Silicon API binary when you run, on the Mac:
+#
+#     bash scripts/build_sidecar_mac.sh
+#
+# Until then the desktop app starts WITHOUT an embedded backend (the license gate
+# works; dashboards show "API not reachable"). See docs/DESKTOP_BUILD.md.
+# ───────────────────────────────────────────────────────────────────────────
+echo "quant-os-api placeholder — build the real sidecar with scripts/build_sidecar_mac.sh" >&2
+exit 1

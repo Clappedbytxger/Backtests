@@ -1,0 +1,160 @@
+{
+  "ic": {
+    "BTC_w3_h1": {
+      "ic": 0.0462,
+      "p": 0.0101,
+      "n": 3090
+    },
+    "BTC_w3_h7": {
+      "ic": 0.1615,
+      "p": 0.0,
+      "n": 3085
+    },
+    "BTCETH_w3_h1": {
+      "ic": 0.0538,
+      "p": 0.0028,
+      "n": 3090
+    },
+    "BTCETH_w3_h7": {
+      "ic": 0.1593,
+      "p": 0.0,
+      "n": 3085
+    },
+    "BTC_w7_h1": {
+      "ic": 0.036,
+      "p": 0.0453,
+      "n": 3090
+    },
+    "BTC_w7_h7": {
+      "ic": 0.1208,
+      "p": 0.0,
+      "n": 3085
+    },
+    "BTCETH_w7_h1": {
+      "ic": 0.0428,
+      "p": 0.0174,
+      "n": 3090
+    },
+    "BTCETH_w7_h7": {
+      "ic": 0.1328,
+      "p": 0.0,
+      "n": 3085
+    },
+    "BTC_w14_h1": {
+      "ic": 0.0235,
+      "p": 0.191,
+      "n": 3090
+    },
+    "BTC_w14_h7": {
+      "ic": 0.0802,
+      "p": 0.0,
+      "n": 3085
+    },
+    "BTCETH_w14_h1": {
+      "ic": 0.0339,
+      "p": 0.0592,
+      "n": 3090
+    },
+    "BTCETH_w14_h7": {
+      "ic": 0.1028,
+      "p": 0.0,
+      "n": 3085
+    },
+    "BTC_w30_h1": {
+      "ic": 0.0222,
+      "p": 0.2165,
+      "n": 3090
+    },
+    "BTC_w30_h7": {
+      "ic": 0.0429,
+      "p": 0.0171,
+      "n": 3085
+    },
+    "BTCETH_w30_h1": {
+      "ic": 0.0302,
+      "p": 0.0938,
+      "n": 3090
+    },
+    "BTCETH_w30_h7": {
+      "ic": 0.0669,
+      "p": 0.0002,
+      "n": 3085
+    }
+  },
+  "overlay_grid": {
+    "BTC_w3": {
+      "overlay_sharpe": 0.762,
+      "bh_sharpe": 0.612,
+      "overlay_maxdd": -0.782,
+      "bh_maxdd": -0.812,
+      "frac_x1.25": 0.196,
+      "frac_x0.5": 0.266
+    },
+    "BTCETH_w3": {
+      "overlay_sharpe": 0.814,
+      "bh_sharpe": 0.602,
+      "overlay_maxdd": -0.784,
+      "bh_maxdd": -0.879,
+      "frac_x1.25": 0.196,
+      "frac_x0.5": 0.266
+    },
+    "BTC_w7": {
+      "overlay_sharpe": 0.684,
+      "bh_sharpe": 0.612,
+      "overlay_maxdd": -0.795,
+      "bh_maxdd": -0.812,
+      "frac_x1.25": 0.175,
+      "frac_x0.5": 0.226,
+      "perm_p": 0.1525,
+      "ann_excess_ret_ci": [
+        -0.0831,
+        0.1491
+      ]
+    },
+    "BTCETH_w7": {
+      "overlay_sharpe": 0.715,
+      "bh_sharpe": 0.602,
+      "overlay_maxdd": -0.858,
+      "bh_maxdd": -0.879,
+      "frac_x1.25": 0.175,
+      "frac_x0.5": 0.226,
+      "perm_p": 0.0775,
+      "ann_excess_ret_ci": [
+        -0.058,
+        0.1915
+      ]
+    },
+    "BTC_w14": {
+      "overlay_sharpe": 0.738,
+      "bh_sharpe": 0.612,
+      "overlay_maxdd": -0.761,
+      "bh_maxdd": -0.812,
+      "frac_x1.25": 0.17,
+      "frac_x0.5": 0.211
+    },
+    "BTCETH_w14": {
+      "overlay_sharpe": 0.747,
+      "bh_sharpe": 0.602,
+      "overlay_maxdd": -0.841,
+      "bh_maxdd": -0.879,
+      "frac_x1.25": 0.17,
+      "frac_x0.5": 0.211
+    },
+    "BTC_w30": {
+      "overlay_sharpe": 0.715,
+      "bh_sharpe": 0.612,
+      "overlay_maxdd": -0.768,
+      "bh_maxdd": -0.812,
+      "frac_x1.25": 0.164,
+      "frac_x0.5": 0.203
+    },
+    "BTCETH_w30": {
+      "overlay_sharpe": 0.71,
+      "bh_sharpe": 0.602,
+      "overlay_maxdd": -0.83,
+      "bh_maxdd": -0.879,
+      "frac_x1.25": 0.164,
+      "frac_x0.5": 0.203
+    }
+  }
+}

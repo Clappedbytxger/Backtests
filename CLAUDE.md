@@ -89,6 +89,37 @@ jährlich pflegen (Test erzwingt 8/Jahr). Fills via
 
 ## Lessons Learned
 
+- **2026-06-16 (0101 NACHTRAG, I0067 Stufe-1 — Reject-ohne-Reproduktion korrigiert;
+  der Querschnitts-Edge IST real, nur schwach + kosten-tot):** Auf User-Druck (zu
+  Recht) die Ablehnung von I0067 nachgebessert. Ich hatte „Sharpe 2,81 zerfällt auf
+  einem Einzelinstrument → reject" geschrieben, **OHNE die Originalform je gebaut zu
+  haben** — exakt die 0069-Falle (Reject vor Reproduktion = wertlos). Die Originalform
+  ist ein **Aktien-QUERSCHNITTS-Portfolio**, nicht das Einzelinstrument. Nachgebaut
+  (`e8_stocksinplay_orb.py` + neuer Loader `quantlab.equities_intraday` für Databento
+  XNAS.ITCH 1-Min, Nasdaq-gelistet ab 2018): 50 liquide Nasdaq-Namen, täglich Top-10
+  „stocks in play" (Relative-Volumen), 5-Min-ORB long+short, Risikoparität, flat zum
+  Close. **Ergebnis: brutto Sh 0,62, marktneutral (Beta +0,03), meanR +0,02/Trade —
+  ein ECHTER Querschnitts-Edge, den mein Einzelinstrument-Test (brutto ≈0) komplett
+  verfehlt.** ABER: (a) weit unter 2,81; (b) netto NEGATIV (−0,77) — winziges R/Trade ×
+  kleine OR-Risk = hohe Kosten-in-R; (c) −78% Brutto-MaxDD = instabil. **Lücke zu 2,81:
+  das Paper nutzt TAUSENDE Aktien; „stocks in play" = Namen mit ABNORMALEM Volumen/News
+  (oft Small/Mid-Cap) — 50 immer-liquide Mega-Caps bilden diese Selektion strukturell
+  nicht ab (Relative-Volumen trennt kaum, alle immer liquide).** Korrigiertes Verdikt:
+  Stufe-1-Edge real-aber-schwach + netto-tot; Stufe 2 (CTI) ohnehin nicht handelbar.
+  **KERN-LEHRE (verbindlich, jetzt in `D:\Backtest Ideas\RESEARCH-PROCESS.md` als
+  „Reproduktions-Treue-Pflicht" für den Quant Researcher):** eine publizierte
+  Performance IMMER in der ORIGINALFORM testen (Stufe 1), bevor man sie ablehnt; eine
+  bequeme Single-Instrument-Adaption (Stufe 2) testet einen ANDEREN Edge — ein Stufe-2-
+  Reject darf NIE als Edge-Reject protokolliert werden. Vorher die „Worauf beruht der
+  Sharpe?"-Frage beantworten (Querschnitt-Diversifikation vs. Instrument/Periode vs.
+  Einzel-Timing). **TEUER-LEHRE (Databento OOM, Geld verbrannt):** ein Bulk-`to_df()`
+  über 47,8M Zeilen OOMt im pandas-Deep-Copy NACH der gemeterten Übertragung → ~$30
+  Credit bezahlt, 0 Daten gecacht. Bei großen Databento-Pulls IMMER **pro Symbol
+  streamen und sofort als Parquet cachen** (Loader gefixt) — ein Crash verliert dann
+  höchstens ein Symbol, nicht den ganzen bezahlten Pull. Gesamt-Spend I0067-Stufe-1
+  ~$60 (1× verbrannt + 1× erfolgreich). 50 Nasdaq-Namen 1-Min 2018-26 jetzt gecacht
+  (`data/cache/equities/`).
+
 - **2026-06-15 (0101, Prop-Challenge Batch 3 — I0067-I0074, ALLE 8 abgelehnt; die
   Intraday-Richtungs-Kostenwand reproduziert sich gegen Peer-Evidenz):** Dritter
   `D:\Backtest Ideas`-Handoff-Batch (`ideas/prop-challenge.md`): acht publizierte/

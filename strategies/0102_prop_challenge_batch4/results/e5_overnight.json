@@ -1,0 +1,85 @@
+{
+  "idea": "I0079",
+  "name": "Overnight premium (regime-conditioned, re-test 0051)",
+  "cost_night_bps": 5.0,
+  "per_index": {
+    "US500": {
+      "period": "1995-01-04..2026-06-12",
+      "unconditioned": {
+        "n": 7913,
+        "gross_mean_bps": 3.95,
+        "net_mean_bps": -1.05,
+        "gross_sharpe": 0.917,
+        "net_sharpe": -0.244,
+        "win": 0.5615
+      },
+      "conditioned_K1_K2": {
+        "n": 3543,
+        "gross_mean_bps": 3.805,
+        "net_mean_bps": -1.195,
+        "gross_sharpe": 1.501,
+        "net_sharpe": -0.471,
+        "win": 0.5718
+      },
+      "buy_hold_sharpe": 0.654,
+      "frac_nights_active": 0.448,
+      "net_cond_boot_sharpe_ci": [
+        -1.275,
+        -0.265
+      ],
+      "net_cond_ttest_p": 0.0772
+    },
+    "US30": {
+      "period": "1995-01-04..2026-06-17",
+      "unconditioned": {
+        "n": 7916,
+        "gross_mean_bps": 0.334,
+        "net_mean_bps": -4.666,
+        "gross_sharpe": 0.184,
+        "net_sharpe": -2.576,
+        "win": 0.4497
+      },
+      "conditioned_K1_K2": {
+        "n": 3420,
+        "gross_mean_bps": 0.158,
+        "net_mean_bps": -4.842,
+        "gross_sharpe": 0.172,
+        "net_sharpe": -5.274,
+        "win": 0.4424
+      },
+      "buy_hold_sharpe": 0.553,
+      "frac_nights_active": 0.432,
+      "net_cond_boot_sharpe_ci": [
+        -6.786,
+        -5.537
+      ],
+      "net_cond_ttest_p": 0.0
+    },
+    "NAS100": {
+      "period": "1995-01-04..2026-06-17",
+      "unconditioned": {
+        "n": 7916,
+        "gross_mean_bps": 2.953,
+        "net_mean_bps": -2.047,
+        "gross_sharpe": 0.58,
+        "net_sharpe": -0.402,
+        "win": 0.4798
+      },
+      "conditioned_K1_K2": {
+        "n": 3399,
+        "gross_mean_bps": 4.287,
+        "net_mean_bps": -0.713,
+        "gross_sharpe": 1.393,
+        "net_sharpe": -0.232,
+        "win": 0.5099
+      },
+      "buy_hold_sharpe": 0.64,
+      "frac_nights_active": 0.429,
+      "net_cond_boot_sharpe_ci": [
+        -1.013,
+        0.065
+      ],
+      "net_cond_ttest_p": 0.3952
+    }
+  }
+}

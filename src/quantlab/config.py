@@ -71,8 +71,29 @@ class Settings(BaseSettings):
     llm_backend: str = "auto"  # auto | mlx (macOS) | llamacpp (Windows) | mock
     llm_model: str = ""        # local model path (GGUF for llama.cpp) or MLX model id
 
+    # Swarm Command Center (hybrid multi-agent desk): local Ollama "worker drones"
+    # aggregated by a cloud "commander" (Gemini free tier). Everything degrades to a
+    # deterministic fallback when a service is unreachable, so the JSON flow always runs.
+    ollama_base_url: str = "http://localhost:11434"  # point at the Mac M5 over LAN later
+    ollama_model: str = "llama3"                     # small/fast model for the drones
+    ollama_timeout_s: float = 45.0
+    gemini_model: str = "gemini-2.5-flash"           # commander, primary
+    gemini_fallback_model: str = "gemini-2.0-flash"  # auto-switch on quota/429
+    gemini_timeout_s: float = 60.0
+
+    # Quant Academy (interactive learning module). All paths derive from the repo
+    # so a fresh clone works on Windows and macOS; override per-machine in config.yaml.
+    books_dir: Path = REPO_ROOT / "Quant Books"           # local reference literature (PDFs)
+    academy_content_dir: Path = REPO_ROOT / "content" / "academy"  # curriculum.json + module md
+    progress_file: Path = REPO_ROOT / "progress.json"     # learning progress (git/cloud-synced)
+    academy_agent_interval_h: int = 24                     # min hours between agent content refreshes
+
+    # Alpha Factory (autonomous continuous research worker).
+    reports_dir: Path = REPO_ROOT / "reports"             # pending_review reports + reject log
+
     @field_validator(
         "backtest_dir", "ideas_dir", "data_dir", "keys_dir", "registry_db",
+        "books_dir", "academy_content_dir", "progress_file", "reports_dir",
         mode="before",
     )
     @classmethod

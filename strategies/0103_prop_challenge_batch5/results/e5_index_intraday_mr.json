@@ -1,0 +1,27 @@
+{
+  "idea": "I0084",
+  "name": "Index intraday VWAP-fade MR (ES/NQ 15m)",
+  "ES": {
+    "n_trades": 18980,
+    "trades_per_day": 4.69,
+    "gross_mean_bps": -1.001,
+    "net_mean_bps": -4.001,
+    "net_sharpe_per_trade": -0.132,
+    "win": 0.438,
+    "perm_p_sign": 1.0
+  },
+  "NQ": {
+    "n_trades": 18022,
+    "trades_per_day": 4.46,
+    "gross_mean_bps": -1.325,
+    "net_mean_bps": -4.325,
+    "net_sharpe_per_trade": -0.1149,
+    "win": 0.444,
+    "perm_p_sign": 1.0
+  },
+  "combined": {
+    "net_sharpe_daily": -4.497,
+    "net_sharpe_scaled10vol": -4.695,
+    "net_maxdd_at10vol": -0.9993
+  }
+}

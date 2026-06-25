@@ -1,0 +1,96 @@
+{
+  "sharpe_0.88": [
+    {
+      "sharpe": 0.88,
+      "vol_pct": 6.0,
+      "p_pass": 0.847,
+      "p_bust": 0.082,
+      "median_months": 25.7,
+      "p25": 17.9,
+      "p75": 36.4
+    },
+    {
+      "sharpe": 0.88,
+      "vol_pct": 8.0,
+      "p_pass": 0.826,
+      "p_bust": 0.157,
+      "median_months": 18.1,
+      "p25": 12.2,
+      "p75": 26.8
+    },
+    {
+      "sharpe": 0.88,
+      "vol_pct": 10.0,
+      "p_pass": 0.771,
+      "p_bust": 0.225,
+      "median_months": 13.3,
+      "p25": 8.7,
+      "p75": 19.9
+    },
+    {
+      "sharpe": 0.88,
+      "vol_pct": 12.0,
+      "p_pass": 0.72,
+      "p_bust": 0.279,
+      "median_months": 10.3,
+      "p25": 6.8,
+      "p75": 15.3
+    },
+    {
+      "sharpe": 0.88,
+      "vol_pct": 15.0,
+      "p_pass": 0.662,
+      "p_bust": 0.338,
+      "median_months": 7.2,
+      "p25": 4.8,
+      "p75": 10.9
+    }
+  ],
+  "sharpe_1.05": [
+    {
+      "sharpe": 1.05,
+      "vol_pct": 6.0,
+      "p_pass": 0.91,
+      "p_bust": 0.053,
+      "median_months": 23.3,
+      "p25": 16.4,
+      "p75": 33.2
+    },
+    {
+      "sharpe": 1.05,
+      "vol_pct": 8.0,
+      "p_pass": 0.876,
+      "p_bust": 0.115,
+      "median_months": 16.4,
+      "p25": 11.1,
+      "p75": 24.2
+    },
+    {
+      "sharpe": 1.05,
+      "vol_pct": 10.0,
+      "p_pass": 0.824,
+      "p_bust": 0.175,
+      "median_months": 12.2,
+      "p25": 8.3,
+      "p75": 18.3
+    },
+    {
+      "sharpe": 1.05,
+      "vol_pct": 12.0,
+      "p_pass": 0.772,
+      "p_bust": 0.228,
+      "median_months": 9.6,
+      "p25": 6.3,
+      "p75": 14.2
+    },
+    {
+      "sharpe": 1.05,
+      "vol_pct": 15.0,
+      "p_pass": 0.71,
+      "p_bust": 0.29,
+      "median_months": 7.0,
+      "p25": 4.6,
+      "p75": 10.3
+    }
+  ]
+}

@@ -1,0 +1,172 @@
+{
+  "joint_window": "2017-11-09..2026-06-17",
+  "standalone_sharpe": {
+    "i0076_rsi2_ungated": 0.447,
+    "i0080_crypto_tsmom": 0.545,
+    "i0081_fx_xsec_mom": -0.315,
+    "i0082_goldsilver_rv": -0.356,
+    "i0083_rsi2_gated": 0.228,
+    "i0084_index_intraday_mr": -4.141,
+    "i0085_fx_rv_coint": -0.56,
+    "i0075_monthend_fx": 0.343
+  },
+  "correlation_matrix": {
+    "i0076_rsi2_ungated": {
+      "i0076_rsi2_ungated": 1.0,
+      "i0080_crypto_tsmom": 0.07,
+      "i0081_fx_xsec_mom": -0.03,
+      "i0082_goldsilver_rv": 0.04,
+      "i0083_rsi2_gated": 0.88,
+      "i0084_index_intraday_mr": 0.03,
+      "i0085_fx_rv_coint": 0.01,
+      "i0075_monthend_fx": 0.02
+    },
+    "i0080_crypto_tsmom": {
+      "i0076_rsi2_ungated": 0.07,
+      "i0080_crypto_tsmom": 1.0,
+      "i0081_fx_xsec_mom": -0.0,
+      "i0082_goldsilver_rv": -0.02,
+      "i0083_rsi2_gated": 0.06,
+      "i0084_index_intraday_mr": 0.04,
+      "i0085_fx_rv_coint": 0.04,
+      "i0075_monthend_fx": 0.01
+    },
+    "i0081_fx_xsec_mom": {
+      "i0076_rsi2_ungated": -0.03,
+      "i0080_crypto_tsmom": -0.0,
+      "i0081_fx_xsec_mom": 1.0,
+      "i0082_goldsilver_rv": -0.02,
+      "i0083_rsi2_gated": -0.03,
+      "i0084_index_intraday_mr": 0.04,
+      "i0085_fx_rv_coint": -0.07,
+      "i0075_monthend_fx": 0.01
+    },
+    "i0082_goldsilver_rv": {
+      "i0076_rsi2_ungated": 0.04,
+      "i0080_crypto_tsmom": -0.02,
+      "i0081_fx_xsec_mom": -0.02,
+      "i0082_goldsilver_rv": 1.0,
+      "i0083_rsi2_gated": 0.05,
+      "i0084_index_intraday_mr": 0.07,
+      "i0085_fx_rv_coint": 0.02,
+      "i0075_monthend_fx": -0.03
+    },
+    "i0083_rsi2_gated": {
+      "i0076_rsi2_ungated": 0.88,
+      "i0080_crypto_tsmom": 0.06,
+      "i0081_fx_xsec_mom": -0.03,
+      "i0082_goldsilver_rv": 0.05,
+      "i0083_rsi2_gated": 1.0,
+      "i0084_index_intraday_mr": 0.05,
+      "i0085_fx_rv_coint": 0.0,
+      "i0075_monthend_fx": 0.01
+    },
+    "i0084_index_intraday_mr": {
+      "i0076_rsi2_ungated": 0.03,
+      "i0080_crypto_tsmom": 0.04,
+      "i0081_fx_xsec_mom": 0.04,
+      "i0082_goldsilver_rv": 0.07,
+      "i0083_rsi2_gated": 0.05,
+      "i0084_index_intraday_mr": 1.0,
+      "i0085_fx_rv_coint": -0.02,
+      "i0075_monthend_fx": -0.02
+    },
+    "i0085_fx_rv_coint": {
+      "i0076_rsi2_ungated": 0.01,
+      "i0080_crypto_tsmom": 0.04,
+      "i0081_fx_xsec_mom": -0.07,
+      "i0082_goldsilver_rv": 0.02,
+      "i0083_rsi2_gated": 0.0,
+      "i0084_index_intraday_mr": -0.02,
+      "i0085_fx_rv_coint": 1.0,
+      "i0075_monthend_fx": 0.0
+    },
+    "i0075_monthend_fx": {
+      "i0076_rsi2_ungated": 0.02,
+      "i0080_crypto_tsmom": 0.01,
+      "i0081_fx_xsec_mom": 0.01,
+      "i0082_goldsilver_rv": -0.03,
+      "i0083_rsi2_gated": 0.01,
+      "i0084_index_intraday_mr": -0.02,
+      "i0085_fx_rv_coint": 0.0,
+      "i0075_monthend_fx": 1.0
+    }
+  },
+  "book_survivors": [
+    "i0075_monthend_fx",
+    "i0076_rsi2_ungated",
+    "i0080_crypto_tsmom"
+  ],
+  "inverse_vol_weights": {
+    "i0075_monthend_fx": 0.717,
+    "i0076_rsi2_ungated": 0.176,
+    "i0080_crypto_tsmom": 0.107
+  },
+  "book_combined_sharpe_raw": 0.676,
+  "book_sharpe_at10vol": 0.478,
+  "book_maxdd_at10vol": -0.1845,
+  "book_gated_variant_sharpe": 0.576,
+  "naive_sqrtK_expectation": 0.771,
+  "monte_carlo": {
+    "achieved_book_s0.68_v10_1step": {
+      "p_pass": 0.439,
+      "p_bust": 0.561,
+      "median_months": 3.8
+    },
+    "achieved_book_s0.68_v10_2step": {
+      "p_pass": 0.791,
+      "p_bust": 0.207,
+      "median_months": 3.8
+    },
+    "achieved_book_s0.68_v12_1step": {
+      "p_pass": 0.435,
+      "p_bust": 0.565,
+      "median_months": 2.8
+    },
+    "achieved_book_s0.68_v12_2step": {
+      "p_pass": 0.699,
+      "p_bust": 0.301,
+      "median_months": 2.6
+    },
+    "achieved_book_s0.68_v15_1step": {
+      "p_pass": 0.397,
+      "p_bust": 0.603,
+      "median_months": 1.8
+    },
+    "achieved_book_s0.68_v15_2step": {
+      "p_pass": 0.605,
+      "p_bust": 0.395,
+      "median_months": 1.8
+    },
+    "target_1.5_s1.5_v10_1step": {
+      "p_pass": 0.645,
+      "p_bust": 0.355,
+      "median_months": 3.4
+    },
+    "target_1.5_s1.5_v10_2step": {
+      "p_pass": 0.953,
+      "p_bust": 0.047,
+      "median_months": 2.6
+    },
+    "target_1.5_s1.5_v12_1step": {
+      "p_pass": 0.595,
+      "p_bust": 0.405,
+      "median_months": 2.6
+    },
+    "target_1.5_s1.5_v12_2step": {
+      "p_pass": 0.908,
+      "p_bust": 0.092,
+      "median_months": 2.2
+    },
+    "target_1.5_s1.5_v15_1step": {
+      "p_pass": 0.555,
+      "p_bust": 0.445,
+      "median_months": 1.8
+    },
+    "target_1.5_s1.5_v15_2step": {
+      "p_pass": 0.845,
+      "p_bust": 0.155,
+      "median_months": 1.6
+    }
+  }
+}

@@ -38,3 +38,16 @@ Kalender-Pipeline), kein Single-Instrument-Backtest.
 Historie erschlossen ist (z. B. Nasdaq Data Link Sharadar SF1/Actions, ~günstig; oder
 Financial-Modeling-Prep-API) UND (b) der User ein Einzelaktien-Cross-Sectional-Programm
 fahren will. Bis dahin außerhalb des Scopes.
+
+## UPDATE 2026-06-14 — Blocker (a) teilweise gelöst → Strategie 0073
+
+Blocker (a) ist auf der **Earnings-Seite** gelöst: SEC EDGAR XBRL liefert die
+berichtete Quartals-EPS gratis + survivorship-frei. Statt Analysten-Konsens nutzt
+0073 das **Seasonal-Random-Walk-SUE** (braucht keine Schätzungen). Blocker (b)
+— survivorship-freie *Kurse* delisteter Namen — bleibt offen, daher lief 0073 als
+**Kill-Screen auf heutigen Large-Caps** (survivorship-verzerrt auf der
+Mitgliedschaft, bewusst, um die Vorfrage zu klären). **Ergebnis: Signal vorhanden**
+(monatl. IC-IR t=3.0 @66d, kein Decay), aber handelbarer Dezil-Spread dünn
+(+1.22 %/66 T, p=0.12). Qualifizierter PASS → saubere (bezahlte) Kursdaten erstmals
+gerechtfertigt, *falls* eine Aktien-Cross-Sectional-Schiene gewünscht ist. Details:
+`strategies/0073_pead_edgar_sue/REPORT.md`.

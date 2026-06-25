@@ -5,7 +5,22 @@
   "verdict": "8/8 rejected",
   "cost_models_added": ["CFD_INDEX 3bps RT", "CFD_GOLD 4bps RT", "CFD_FX 1.6bps RT", "CFD_CRYPTO 20bps RT"],
   "results": {
-    "I0067_or_breakout": {"verdict": "rejected", "gross_best_bps": 2.53, "cost_rt_bps": 3.0, "note": "NQ hi-OR-volume best gross < cost; reproduces 0039; 2.81 Sharpe is cross-sectional"},
+    "I0067_or_breakout": {
+      "stufe2_single_instrument": {"verdict": "rejected", "gross_best_bps": 2.53, "cost_rt_bps": 3.0, "note": "NQ hi-OR-volume best gross < cost; reproduces 0039"},
+      "stufe1_cross_sectional": {
+        "verdict": "rejected (real but weak/unstable/cost-dead)",
+        "universe": "50 liquid Nasdaq names, XNAS.ITCH 1m 2018-2026",
+        "gross_sharpe": 0.62, "net_sharpe_4bps": -0.77, "beta_vs_spy": 0.03, "meanR_per_trade_gross": 0.02, "gross_maxdd": -0.78,
+        "sweep": {
+          "diversification_driver": "gross Sharpe TOP_K 5/10/20 = 0.77/0.62/0.87 (more positions better)",
+          "rvol_filter_inverts": "rvol>=0 gross 0.62-0.87; rvol>=1.5 -> 0.10-0.30; rvol>=2.5 -> NEGATIVE (-1.4..-1.7) = stocks-in-play selection works INVERSELY on mega-caps",
+          "regime_dependent_gross_sharpe_by_year": {"2018": 2.31, "2019": 1.29, "2020": -1.16, "2021": -0.37, "2022": -0.03, "2023": -1.16, "2024": 1.43, "2025": 2.18, "2026": 3.85},
+          "cost_critical": "net-positive only at ~1bp RT (0.3-0.5); net-negative at 4bps everywhere"
+        },
+        "note": "real market-neutral cross-sectional edge that single-instrument test (gross ~0) missed; but far below claimed 2.81, regime-unstable, cost-dead retail; 2.81 needs broad thousands-of-stocks universe (small/mid-cap movers), not 50 mega-caps; Stufe-2 not CTI-tradable regardless"
+      },
+      "correction": "first verdict 'signal empty' was wrong-grounded (rejected without reproducing original cross-sectional form = 0069 trap); fixed via two-stage test discipline"
+    },
     "I0068_noise_area": {"verdict": "rejected", "gross_daily_sharpe": {"ES": -0.68, "NQ": 0.21}, "note": "faithful low-turnover (1.5 trades/day); signal empty; VIX>40 no rescue; claimed 1.33 not reproduced"},
     "I0069_vwap_mr": {"verdict": "rejected", "gross_bps": {"ES": -0.75, "NQ": -1.14}, "note": "gross negative: extensions continue not revert (0013); sign not flipped (0047)"},
     "I0070_gap_fade": {"verdict": "rejected", "gross_bps": {"ES_thr0.5pct": -4.29, "NQ_thr0.5pct": -1.55}, "note": "gross negative, worse with gap size: gaps continue not fill (0038)"},

@@ -57,6 +57,59 @@ FOMC_ANNOUNCEMENTS = [
     "2026-07-29", "2026-09-16", "2026-10-28", "2026-12-09",
 ]
 
+# 30-year Treasury Bond auction dates (for the auction-concession short, 0078).
+# 30y bonds auction monthly (new issue Feb/May/Aug/Nov + reopenings), ~2nd week.
+# The live trigger PREFERS the live TreasuryDirect feed (auctions are announced
+# ~7 trading days ahead, before the T-5 entry) and caches it; this hard-coded list
+# is the OFFLINE fallback. Source: treasurydirect.gov, verified 2026-06-15.
+BOND_30Y_AUCTIONS_FALLBACK = [
+    "2024-01-11", "2024-02-08", "2024-03-13", "2024-04-11", "2024-05-09", "2024-06-13",
+    "2024-07-11", "2024-08-08", "2024-09-12", "2024-10-10", "2024-11-06", "2024-12-12",
+    "2025-01-08", "2025-02-13", "2025-03-13", "2025-04-10", "2025-05-08", "2025-06-12",
+    "2025-07-10", "2025-08-07", "2025-09-11", "2025-10-09", "2025-11-13", "2025-12-11",
+    "2026-01-13", "2026-02-12", "2026-03-12", "2026-04-09", "2026-05-13", "2026-06-11",
+    # H2-2026 PROJECTED from the regular monthly ~2nd-week pattern (Treasury
+    # tentative auction schedule). The live feed refines each to the exact date
+    # once announced (~5 td ahead); human-in-the-loop confirms before the T-5 entry.
+    "2026-07-09", "2026-08-12", "2026-09-09", "2026-10-08", "2026-11-12", "2026-12-09",
+]
+_AUCTION_CACHE = Path(__file__).resolve().parent / "state" / "auctions_30y.json"
+_30Y_TERMS = {"30-Year", "29-Year 11-Month", "29-Year 10-Month", "29-Year 9-Month"}
+
+
+def load_30y_auctions(refresh: bool = True) -> list[str]:
+    """30y auction dates: live TreasuryDirect feed (cached) + offline fallback.
+
+    Tries to fetch upcoming + recently-auctioned 30y bonds (announced ~7 td ahead,
+    before the T-5 entry), unions with the cache and the hard-coded fallback, and
+    persists. On any network failure falls back to cache/hard-coded list — so the
+    offline ``run_daily.py --no-gates`` path still works.
+    """
+    import json
+    dates: set[str] = set(BOND_30Y_AUCTIONS_FALLBACK)
+    if _AUCTION_CACHE.exists():
+        try:
+            dates |= set(json.loads(_AUCTION_CACHE.read_text()))
+        except Exception:  # noqa: BLE001
+            pass
+    if refresh:
+        import urllib.request
+        for ep in ("upcoming", "auctioned?type=Bond"):
+            try:
+                url = f"https://www.treasurydirect.gov/TA_WS/securities/{ep}{'&' if '?' in ep else '?'}format=json"
+                req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+                rows = json.load(urllib.request.urlopen(req, timeout=20))
+                dates |= {r["auctionDate"][:10] for r in rows
+                          if r.get("securityType") == "Bond" and r.get("securityTerm") in _30Y_TERMS}
+            except Exception:  # noqa: BLE001
+                pass
+        try:
+            _AUCTION_CACHE.parent.mkdir(parents=True, exist_ok=True)
+            _AUCTION_CACHE.write_text(json.dumps(sorted(dates)))
+        except Exception:  # noqa: BLE001
+            pass
+    return sorted(dates)
+
 
 def trading_days(start, end) -> pd.DatetimeIndex:
     return pd.date_range(start, end, freq=US_BDAY)
@@ -144,6 +197,43 @@ def _month_turn_events(cfg: dict, year: int) -> list[tuple[str, pd.Timestamp, pd
     return out
 
 
+def _month_end_events(cfg: dict, year: int) -> list[tuple[str, pd.Timestamp, pd.Timestamp]]:
+    """End-of-month Treasury turn (0075): buy MOC ``before`` trading days from the
+    month end, hold the last day + first day of next month, sell MOC on the first
+    trading day of next month. before=2 -> held {last day, first next day} (matches
+    turn_of_month_signal(before=2, after=0))."""
+    before = int(cfg["trigger"].get("before", 2))
+    out = []
+    for month in range(1, 13):
+        month_days = trading_days(f"{year}-{month:02d}-01",
+                                  pd.Timestamp(year, month, 1) + pd.offsets.MonthEnd(0))
+        if len(month_days) < before:
+            continue
+        entry = month_days[-before]          # e.g. 2nd-to-last trading day
+        exit_ = next_trading_day(month_days[-1])  # first trading day of next month
+        out.append(("entry", entry, exit_))
+        out.append(("exit", exit_, entry))
+    return out
+
+
+def _treasury_auction_events(cfg: dict, year: int) -> list[tuple[str, pd.Timestamp, pd.Timestamp]]:
+    """Treasury auction concession short (0078): short MOC ``pre_days`` trading days
+    before each 30y auction, cover MOC on the auction day (end of the concession,
+    before the post-auction reversal)."""
+    pre = int(cfg["trigger"].get("pre_days", 5))
+    auctions = cfg.setdefault("_auction_dates", load_30y_auctions(refresh=cfg["trigger"].get("refresh", True)))
+    out = []
+    for ds in auctions:
+        a = pd.Timestamp(ds)
+        if a.year != year:
+            continue
+        ad = a if is_trading_day(a) else next_trading_day(a)
+        entry = prev_trading_day(ad, pre)
+        out.append(("entry", entry, ad))
+        out.append(("exit", ad, entry))
+    return out
+
+
 def _fomc_events(cfg: dict, year: int) -> list[tuple[str, pd.Timestamp, pd.Timestamp]]:
     out = []
     for d in pd.to_datetime(FOMC_ANNOUNCEMENTS):
@@ -165,6 +255,8 @@ _TRIGGERS = {
     "isoweek": _isoweek_events,
     "date_window": _date_window_events,
     "month_turn": _month_turn_events,
+    "month_end": _month_end_events,
+    "treasury_auction": _treasury_auction_events,
     "fomc": _fomc_events,
     "monthly_task": _monthly_task_events,
 }

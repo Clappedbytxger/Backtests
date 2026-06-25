@@ -1,0 +1,50 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "Quant OS Pro",
+  "version": "0.1.0",
+  "identifier": "com.quantos.pro",
+  "build": {
+    "beforeDevCommand": "npm run dev",
+    "devUrl": "http://localhost:3000",
+    "beforeBuildCommand": "npm run build:tauri",
+    "frontendDist": "../out"
+  },
+  "app": {
+    "windows": [
+      {
+        "label": "main",
+        "title": "Quant OS Pro",
+        "width": 1440,
+        "height": 900,
+        "minWidth": 1100,
+        "minHeight": 700,
+        "resizable": true,
+        "fullscreen": false,
+        "center": true
+      }
+    ],
+    "security": {
+      "csp": null
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": ["app", "dmg"],
+    "externalBin": ["binaries/quant-os-api"],
+    "resources": ["resources/**/*"],
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
+    "copyright": "© 2026 Quant OS",
+    "category": "Finance",
+    "shortDescription": "KI-gesteuertes Trading- & Research-Desk",
+    "longDescription": "Quant OS Pro — regime-konditionales Strategie-Routing, COT/Saisonalität, Agentenschwarm und Hedgefonds-Risikomanagement als native macOS-App.",
+    "macOS": {
+      "minimumSystemVersion": "11.0"
+    }
+  }
+}

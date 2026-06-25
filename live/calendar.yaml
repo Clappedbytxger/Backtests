@@ -57,6 +57,27 @@
   size_hint: "ZC ~$22k Notional. KLEIN sizen: 78% des Edges sitzen auf 6 WASDE-Tagen (Event-Bet)."
   notes: "Vermutlich nur im Kalenderspread voll real (siehe Idee A)."
 
+# ----------------------------------- Rates-Flow-Beine (NEU, Handoff 2026-06-15)
+- id: eom_treasury
+  name: End-of-Month Treasury (0075, I0010)
+  status: testing
+  instrument: TLT (oder IEF)
+  direction: long
+  trigger: {type: month_end, before: 2}
+  expectancy: "EOM-Tag TLT +8.3 bps / IEF +4.9 bps; perm p=0.02, monotone Laufzeit-Skalierung, kein Decay; ~12/Jahr"
+  size_hint: "TLT (langes Ende = staerkster Effekt) oder IEF (10y); Overlay-Bein, ~10% Marktzeit. Kauf MOC vorletzter Handelstag, Verkauf MOC erster Handelstag Folgemonat."
+  notes: "Bond-Zwilling von 0050 (Index-Extension/Window-Dressing-Flow am Monatsende). Im reinen ZN=F-Future repliziert (kein ETF-Div-Artefakt)."
+
+- id: treasury_auction_short
+  name: Treasury Auction Concession (0078, I0009)
+  status: testing
+  instrument: TLT
+  direction: short
+  trigger: {type: treasury_auction, pre_days: 5}
+  expectancy: "TLT pre-Auktion -28.8 bps (Concession), Short netto Sharpe 0.44, perm p=0.000, IS/OOS-stabil, kein 2022-Artefakt; ~9-12/Jahr"
+  size_hint: "SHORT TLT ~5 Handelstage vor jeder 30y-Auktion, Cover MOC am Auktionstag. SHORT-Duration -> gegenlaeufig/unkorreliert zu eom_treasury."
+  notes: "30y-Auktionstermine live von TreasuryDirect (announced ~7 td vorab), Cache live/state/auctions_30y.json + Offline-Fallback in engine.py. Nur LANGES Ende (10y zu klein, #s18)."
+
 # ------------------------------------------------- Tier 2 (Leads, testing)
 - id: turn_of_month
   name: Turn-of-the-Month (0050)
@@ -87,6 +108,26 @@
   expectancy: "Sharpe 0.55, CAGR 6.6%, MaxDD -11% (linear 0.149-gesized), p=0.012"
   size_hint: "Sleeve-Faktor 0.149 (worst-day -5%-Sizing). Tail bleibt: kein Cap fuer kuenftig schlimmere Gaps."
   notes: "Gate: VIX3M/VIX > 1.03 -> short, sonst flat. Alert nur bei Gate-Flip."
+
+- id: usd_regime
+  name: USD-Regime-Overlay (0086, I0038)
+  status: testing
+  instrument: Korb GC/HG/CL/EEM (gleichgewichtet)
+  direction: long
+  trigger: {type: daily_gate, module: dxy_regime_signal}
+  expectancy: "timed Sharpe 0.86 vs B&H-Korb 0.34, perm p=0.002 (DXY 63d-Momentum<0 -> long Rohstoff/EM)"
+  size_hint: "KLEIN — Regime-Lead mit wenigen unabhaengigen Episoden (Brief: regime-instabil). Alert nur bei Regime-Flip."
+  notes: "Strukturelle USD-Rohstoff-Inverse ist timbar; flat bei USD-Staerke umgeht Rohstoff-Baerenmaerkte. Gate: vix-artig, nur Flip alertet."
+
+- id: wheat_rv
+  name: Weizen CHI/KC RV-Spread (0087, I0005)
+  status: testing
+  instrument: ZW=F vs KE=F (Spread)
+  direction: market-neutral
+  trigger: {type: daily_gate, module: wheat_rv_signal}
+  expectancy: "z-Score-MR netto Sharpe 0.31, perm p=0.000, markt-neutral (Entry |z|>=2, Exit z=0)"
+  size_hint: "KLEIN — modester Sharpe. Long/Short ZW gegen KE laut Gate-State; Deferred-Liquiditaet je Kontrakt pruefen."
+  notes: "Regionale Weizen-Qualitaets-/Erntebasis mean-revertiert. Zustandsbasiert (Position persistiert)."
 
 - id: crypto_rebalance
   name: Crypto-ML Monatsbuch (0059/0060)

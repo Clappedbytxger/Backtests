@@ -88,7 +88,13 @@ _SIGNAL_SYSTEM = (
     "  4) OPTIONAL — only if the strategy has tunable numeric parameters: declare module-level "
     "PARAMS = {name: default} and PARAM_GRID = {name: [3-6 sweep values]}, and make "
     "generate_signal take those names as keyword args (same defaults). The harness turns them "
-    "into LIVE SLIDERS and a parameter heatmap.\n\n"
+    "into LIVE SLIDERS and a parameter heatmap.\n"
+    "  5) REQUIRED — declare ALLOWED_MARKET_REGIMES = [...], the subset of the four market "
+    "regimes you CLAIM this edge lives in, chosen from exactly: \"high_vol_trend\" (agitated "
+    "directional move), \"low_vol_trend\" (calm orderly trend), \"high_vol_range\" (choppy/"
+    "whipsaw), \"low_vol_range\" (quiet accumulation). E.g. a trend-following rule → "
+    "[\"low_vol_trend\", \"high_vol_trend\"]; a mean-reversion rule → [\"high_vol_range\", "
+    "\"low_vol_range\"]. The harness slices your returns by regime and checks this claim.\n\n"
     "STRICT RULES — the harness does EVERYTHING else (data, metrics, plots, significance):\n"
     '- Daily by default. For an intraday idea you MUST set TIMEFRAME (e.g. "1h") so the bars '
     "carry the time of day; otherwise a rule that reads .hour is all-zero (every daily bar is "
@@ -104,9 +110,10 @@ _SIGNAL_SYSTEM = (
     "- NO LOOK-AHEAD: row t may use only data up to row t (rolling/shift(+n) fine; never shift(-n))."
 )
 
-_SIGNAL_EXAMPLES = '''Example A — turn-of-month, no parameters:
+_SIGNAL_EXAMPLES = '''Example A — turn-of-month, no parameters (a calm-range / quiet effect):
 ```python
 INSTRUMENT = "SPY"
+ALLOWED_MARKET_REGIMES = ["low_vol_range", "low_vol_trend"]
 def generate_signal(prices, **params):
     idx = prices.index
     g = pd.Series(idx.to_period("M"), index=idx)
@@ -115,9 +122,10 @@ def generate_signal(prices, **params):
     return ((tdom <= 3) | (from_end == 0)).astype(float)
 ```
 
-Example B — SMA trend WITH tunable parameters (exposes sliders + a fast x slow heatmap):
+Example B — SMA trend WITH tunable parameters (a trend-regime edge; exposes sliders + heatmap):
 ```python
 INSTRUMENT = "QQQ"
+ALLOWED_MARKET_REGIMES = ["low_vol_trend", "high_vol_trend"]
 PARAMS = {"fast": 50, "slow": 200}
 PARAM_GRID = {"fast": [10, 20, 50, 100, 150], "slow": [100, 150, 200, 250, 300]}
 def generate_signal(prices, fast=50, slow=200):
@@ -129,6 +137,7 @@ Example C — intraday time-of-day (long Bitcoin from 18:00 until 02:00 UTC):
 ```python
 INSTRUMENT = "BTC-USD"
 TIMEFRAME = "1h"
+ALLOWED_MARKET_REGIMES = ["low_vol_trend", "high_vol_trend"]
 def generate_signal(prices, **params):
     h = prices.index.hour
     return pd.Series((h >= 18) | (h < 2), index=prices.index).astype(float)
@@ -183,6 +192,8 @@ INSTRUMENT = "SPY"   # the agent section may override
 TIMEFRAME = "1d"     # "1d" (daily) or intraday: "1h" / "30m" / "15m" / "5m" / "1m"
 PARAMS = {}          # {name: default}; declare to expose live sliders + a parameter heatmap
 PARAM_GRID = {}      # {name: [values, ...]}; sweep values for the parameter heatmap
+ALLOWED_MARKET_REGIMES = []  # subset of {high_vol_trend, low_vol_trend, high_vol_range, low_vol_range}
+                             # the agent CLAIMS the edge lives in; harness checks it (Weather Radar)
 
 # ===================== AGENT-WRITTEN SECTION (signal only) =====================
 # __AGENT_SIGNAL__
@@ -265,6 +276,39 @@ out = {
     },
 }
 _save()  # numbers persisted BEFORE any plot can fail
+
+# ── Market Weather Radar: in which regime did THIS strategy actually earn? ──
+# Always-on, cheap. Classifies the instrument and slices the strategy's net
+# returns by regime, then checks the agent's ALLOWED_MARKET_REGIMES claim.
+try:
+    from quantlab import regime as _rg
+    _cls = _rg.classify(prices)
+    _by = _rg.regime_performance(ret, _cls, ann_factor=PPY)
+    out["regime_performance"] = _by
+    out["regime_current"] = _rg.current_regime(_cls)
+    out["allowed_market_regimes"] = list(ALLOWED_MARKET_REGIMES)
+    if ALLOWED_MARKET_REGIMES:
+        _allow = set(ALLOWED_MARKET_REGIMES)
+        _in = {k: v for k, v in _by.items() if k in _allow}
+        _outr = {k: v for k, v in _by.items() if k not in _allow}
+        _ret_in = sum(v["total_return"] for v in _in.values())
+        _ret_out = sum(v["total_return"] for v in _outr.values())
+        _sh_in = (sum(v["sharpe"] * v["n"] for v in _in.values())
+                  / max(sum(v["n"] for v in _in.values()), 1))
+        _sh_out = (sum(v["sharpe"] * v["n"] for v in _outr.values())
+                   / max(sum(v["n"] for v in _outr.values()), 1))
+        _pct_in = sum(v["pct_of_time"] for v in _in.values())
+        out["regime_claim"] = {
+            "allowed": list(ALLOWED_MARKET_REGIMES),
+            "return_in_allowed": float(_ret_in), "return_out_allowed": float(_ret_out),
+            "sharpe_in_allowed": float(_sh_in), "sharpe_out_allowed": float(_sh_out),
+            "pct_time_in_allowed": float(_pct_in),
+            # the claim holds if the strategy genuinely does better inside its regimes
+            "claim_supported": bool(_ret_in > _ret_out and _sh_in >= _sh_out),
+        }
+    _save()
+except Exception as _e:  # regime breakdown must never lose the core metrics
+    out["regime_error"] = repr(_e); _save()
 
 perm = None
 if MODE == "full" and warning is None:
@@ -380,6 +424,70 @@ if MODE == "full" and warning is None:
             ax.set_xlabel(gp[1]); ax.set_ylabel(gp[0]); fig.tight_layout()
             fig.savefig("results/07_paramheatmap.png", dpi=110); plt.close(fig)
         _plot(_p_param, "07_paramheatmap")
+
+# ── Opt-in EXTRA robustness for the Alpha Factory (OOS split + walk-forward + MC) ──
+# Off by default (the dashboard is unaffected); the factory sets QOS_ROBUST_EXTRA=1.
+if MODE == "full" and warning is None and os.environ.get("QOS_ROBUST_EXTRA"):
+    try:
+        import itertools
+        from quantlab.robustness.walk_forward import walk_forward
+
+        def _sh(r):
+            r = pd.Series(r).dropna()
+            sd = r.std(ddof=1)
+            return float(r.mean() / sd * ANN) if len(r) > 2 and sd > 0 else 0.0
+
+        # (a) explicit In-Sample / Out-of-Sample split (70/30 by time)
+        n = len(ret); split = int(n * 0.7)
+        is_ret, oos_ret = ret.iloc[:split], ret.iloc[split:]
+        out["oos"] = {
+            "is_frac": 0.7,
+            "split_date": str(ret.index[split].date()) if 0 < split < n else None,
+            "is_sharpe": _sh(is_ret), "oos_sharpe": _sh(oos_ret),
+            "is_return": float((1.0 + is_ret).prod() - 1.0),
+            "oos_return": float((1.0 + oos_ret).prod() - 1.0),
+        }
+
+        # (b) walk-forward: re-backtest the signal on each rolling OOS slice
+        def _sig_on(sl, p):
+            try:
+                s = generate_signal(sl, **p) if p else generate_signal(sl)
+            except TypeError:
+                s = generate_signal(sl)
+            return pd.Series(s, index=sl.index).reindex(sl.index).fillna(0.0).clip(-1, 1)
+
+        def _run_fn(p, idx):
+            sl = prices.loc[idx]
+            return run_backtest(sl, _sig_on(sl, p), cost_model=IBKR_LIQUID_ETF)["returns"]
+
+        if PARAM_GRID:
+            keys = list(PARAM_GRID)
+            combos = [dict(zip(keys, c)) for c in itertools.product(*(PARAM_GRID[k] for k in keys))]
+            grid = combos[:12] if len(combos) > 12 else combos
+        else:
+            grid = [params or {}]
+        tr = int(min(max(PPY * 2, 40), n // 2)); te = int(max(PPY * 0.5, 15))
+        if tr + te < n:
+            wf = walk_forward(ret.index, grid, _run_fn, train=tr, test=te)
+            full_sh = _sh(ret)
+            out["walk_forward"] = {
+                "oos_sharpe": float(wf["oos_sharpe"]), "n_windows": int(wf["n_windows"]),
+                "efficiency": (float(wf["oos_sharpe"]) / full_sh) if full_sh > 0 else 0.0,
+                "train_bars": tr, "test_bars": te,
+            }
+        else:
+            out["walk_forward"] = {"oos_sharpe": 0.0, "n_windows": 0, "efficiency": 0.0,
+                                   "note": "series too short for walk-forward"}
+
+        # (c) Monte-Carlo (block bootstrap) Sharpe percentiles
+        bp = block_bootstrap_paths(ret, block=20, n_paths=1000, seed=1)
+        bs = bp.mean(1) / (bp.std(1, ddof=1) + 1e-12) * ANN; bs = bs[np.isfinite(bs)]
+        p5, p50, p95 = (float(x) for x in np.percentile(bs, [5, 50, 95]))
+        out["monte_carlo"] = {"p5": p5, "p50": p50, "p95": p95,
+                              "observed": _sh(ret), "frac_negative": float((bs < 0).mean())}
+        _save()
+    except Exception as e:  # extra robustness must never lose the core metrics
+        out["robust_extra_error"] = repr(e); _save()
 
 _save()
 print(f"DONE {INSTRUMENT} mode={MODE} trades={ts.get('n_trades')} Sharpe {m['sharpe']:.2f}")

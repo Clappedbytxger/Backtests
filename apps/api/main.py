@@ -44,7 +44,27 @@ from quantlab.registry import (  # noqa: E402
     status_counts,
 )
 
-app = FastAPI(title="Quant-OS API", version="0.1.0")
+from .academy import router as academy_router  # noqa: E402
+from .altdata import router as altdata_router  # noqa: E402
+from .attribution import router as attribution_router  # noqa: E402
+from .charts import router as charts_router  # noqa: E402
+from .conditional import router as conditional_router  # noqa: E402
+from .data import router as data_router  # noqa: E402
+from .cot import router as cot_router  # noqa: E402
+from .execution import router as execution_router  # noqa: E402
+from .factory import router as factory_router  # noqa: E402
+from .featurestore import router as featurestore_router  # noqa: E402
+from .news import router as news_router  # noqa: E402
+from .optimize import router as optimize_router  # noqa: E402
+from .pairs import router as pairs_router  # noqa: E402
+from .regime import router as regime_router  # noqa: E402
+from .risk import router as risk_router  # noqa: E402
+from .seasonal import router as seasonal_router  # noqa: E402
+from .settings import router as settings_router  # noqa: E402
+from .swarm import router as swarm_router  # noqa: E402
+from .switchboard import router as switchboard_router  # noqa: E402
+
+app = FastAPI(title="Quant-OS API", version="0.1.0")  # news + charts routers mounted below
 
 # Allow the local Next.js dev server to call the API.
 app.add_middleware(
@@ -53,6 +73,26 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.include_router(charts_router)  # /api/charts/{instruments,candles,footprint}
+app.include_router(news_router)  # /api/news/{items,ingest,verify,feedback,lessons,stats}
+app.include_router(academy_router)  # /api/academy/{curriculum,module,lesson,quiz,books,generate}
+app.include_router(factory_router)  # /api/factory/{state,pending,report,asset,rejects,stop}
+app.include_router(seasonal_router)  # /api/seasonal/{universe,profile,heatmap,patterns,pattern,upcoming,scan}
+app.include_router(regime_router)  # /api/regime/{palette,universe,current,timeline,performance,overview}
+app.include_router(pairs_router)  # /api/pairs/{universe,scan,pair,heatmap}
+app.include_router(risk_router)  # /api/risk/{book,dashboard,correlation}
+app.include_router(switchboard_router)  # /api/switchboard/{benchmarks,matrix}
+app.include_router(altdata_router)  # /api/altdata/{sources,status,events,series,anomalies,ingest,seed}
+app.include_router(cot_router)  # /api/cot/{universe,asset,scan}
+app.include_router(featurestore_router)  # /api/features/{factors,universe,status,correlation,timings,leakage,compute}
+app.include_router(execution_router)  # /api/execution/{universe,simulate,breakdown,radar,seed}
+app.include_router(attribution_router)  # /api/attribution/{book,factors,rolling,brinson}
+app.include_router(optimize_router)  # /api/optimize/{config,run,job}
+app.include_router(swarm_router)  # /api/swarm/{config,ping,run,job,last}
+app.include_router(conditional_router)  # /api/conditional/{router,strategy}
+app.include_router(settings_router)  # /api/settings/{status,init,unlock,lock,key,password}
+app.include_router(data_router)  # /api/data/{providers,bars}
 
 
 def _require_registry() -> None:

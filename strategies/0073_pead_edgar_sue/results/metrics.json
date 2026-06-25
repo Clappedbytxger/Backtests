@@ -1,0 +1,75 @@
+{
+  "n_events": 4915,
+  "n_tickers": 98,
+  "date_range": [
+    "2009-10-23",
+    "2026-06-03"
+  ],
+  "horizons": {
+    "5": {
+      "n": 4915,
+      "ic_excess": 0.04727877418908493,
+      "perm_p_excess": 0.0,
+      "ic_raw": 0.048673059443177055
+    },
+    "22": {
+      "n": 4905,
+      "ic_excess": 0.04210683144959863,
+      "perm_p_excess": 0.0055,
+      "ic_raw": 0.04011974810707163
+    },
+    "66": {
+      "n": 4820,
+      "ic_excess": 0.0472654933431218,
+      "perm_p_excess": 0.0015,
+      "ic_raw": 0.031073750437358914
+    }
+  },
+  "monthly_ic": {
+    "5": {
+      "n_months": 138,
+      "mean_monthly_ic": 0.043361022286522145,
+      "std_monthly_ic": 0.2425104684174141,
+      "ic_ir_t_stat": 2.100431706180128,
+      "ic_ir_p_value": 0.037523573796841125,
+      "frac_positive_months": 0.6304347826086957
+    },
+    "22": {
+      "n_months": 138,
+      "mean_monthly_ic": 0.041718539223660554,
+      "std_monthly_ic": 0.22574357163552017,
+      "ic_ir_t_stat": 2.1709671119569567,
+      "ic_ir_p_value": 0.03165642512936384,
+      "frac_positive_months": 0.6231884057971014
+    },
+    "66": {
+      "n_months": 136,
+      "mean_monthly_ic": 0.058575441538411786,
+      "std_monthly_ic": 0.22575899152602227,
+      "ic_ir_t_stat": 3.0257982596492354,
+      "ic_ir_p_value": 0.0029700237551000264,
+      "frac_positive_months": 0.6029411764705882
+    }
+  },
+  "decile_spread_66d_excess": {
+    "top_decile_mean": 0.007047544596784995,
+    "bottom_decile_mean": -0.005188589632111651,
+    "spread": 0.012236134228896646,
+    "top_n": 482,
+    "bottom_n": 482,
+    "t_stat": 1.5597481935602928,
+    "p_value": 0.11915247075494613,
+    "top_decile_hit_rate": 0.5228215767634855
+  },
+  "decay_split": {
+    "pre_2017": {
+      "n": 1960,
+      "ic_excess_66d": 0.03955171261010717
+    },
+    "from_2017": {
+      "n": 2860,
+      "ic_excess_66d": 0.051428395791170034
+    }
+  },
+  "passes_screen": true
+}

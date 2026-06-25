@@ -1,0 +1,354 @@
+{
+  "e1_crypto_tsmom": {
+    "idea": "I0080",
+    "name": "Crypto TSMOM (BTC/ETH, vol-targeted)",
+    "long_only": {
+      "tag": "long_only",
+      "allow_short": false,
+      "period": "2015-01-22..2026-06-17",
+      "gross_sharpe": 0.997,
+      "net_sharpe": 0.671,
+      "net_sharpe_scaled10vol": 0.473,
+      "net_maxdd_at10vol": -0.2397,
+      "swap_ann_bps": 194.2,
+      "spread_ann_bps": 32.3,
+      "per_coin": {
+        "BTC": {
+          "gross_sharpe": 1.02,
+          "net_sharpe": 0.688
+        },
+        "ETH": {
+          "gross_sharpe": 0.652,
+          "net_sharpe": 0.437
+        }
+      },
+      "yearly_net": {
+        "2015": 0.018,
+        "2016": 0.092,
+        "2017": 0.238,
+        "2018": -0.03,
+        "2019": 0.224,
+        "2020": 0.211,
+        "2021": 0.093,
+        "2022": -0.078,
+        "2023": 0.023,
+        "2024": 0.08,
+        "2025": -0.009,
+        "2026": -0.053
+      },
+      "perm_p_timing": 0.0555
+    },
+    "long_short": {
+      "tag": "long_short",
+      "allow_short": true,
+      "period": "2015-01-22..2026-06-17",
+      "gross_sharpe": 0.793,
+      "net_sharpe": 0.362,
+      "net_sharpe_scaled10vol": 0.164,
+      "net_maxdd_at10vol": -0.3271,
+      "swap_ann_bps": 332.6,
+      "spread_ann_bps": 58.4,
+      "per_coin": {
+        "BTC": {
+          "gross_sharpe": 0.807,
+          "net_sharpe": 0.358
+        },
+        "ETH": {
+          "gross_sharpe": 0.557,
+          "net_sharpe": 0.266
+        }
+      },
+      "yearly_net": {
+        "2015": -0.042,
+        "2016": 0.066,
+        "2017": 0.238,
+        "2018": 0.065,
+        "2019": 0.289,
+        "2020": 0.067,
+        "2021": 0.036,
+        "2022": -0.065,
+        "2023": -0.121,
+        "2024": 0.062,
+        "2025": 0.012,
+        "2026": -0.052
+      },
+      "perm_p_timing": 0.0515
+    }
+  },
+  "e2_fx_xsec_mom": {
+    "idea": "I0081",
+    "name": "Cross-sectional FX momentum (12-1m, monthly)",
+    "n_pairs": 9,
+    "period": "2004-12-01..2026-06-15",
+    "gross_sharpe": -0.033,
+    "net_sharpe": -0.345,
+    "net_sharpe_scaled10vol": -0.543,
+    "net_maxdd_at10vol": -0.6267,
+    "ann_cost_bps": 131.0,
+    "perm_p_timing": 0.5596,
+    "yearly_net": {
+      "2004": -0.006,
+      "2005": 0.007,
+      "2006": -0.02,
+      "2007": -0.038,
+      "2008": 0.095,
+      "2009": -0.072,
+      "2010": 0.005,
+      "2011": -0.056,
+      "2012": -0.026,
+      "2013": 0.005,
+      "2014": -0.014,
+      "2015": -0.023,
+      "2016": -0.029,
+      "2017": -0.033,
+      "2018": -0.024,
+      "2019": -0.024,
+      "2020": -0.029,
+      "2021": -0.019,
+      "2022": -0.008,
+      "2023": -0.012,
+      "2024": 0.003,
+      "2025": -0.003,
+      "2026": -0.007
+    }
+  },
+  "e3_goldsilver_rv": {
+    "idea": "I0082",
+    "name": "Gold/Silver ratio RV mean-reversion",
+    "period": "2003-01-03..2026-06-15",
+    "n_trades": 103,
+    "exposure_frac": 0.39,
+    "gross_sharpe": 0.034,
+    "net_sharpe": -0.226,
+    "net_sharpe_scaled10vol": -0.424,
+    "net_maxdd_at10vol": -0.626,
+    "trade_win": 0.583,
+    "trade_mean_bps": -80.4,
+    "swap_ann_bps": 392.7,
+    "perm_p_timing": 0.4883,
+    "boot_trade_ci_bps": [
+      -230.97,
+      50.09
+    ],
+    "yearly_net": {
+      "2003": 0.081,
+      "2004": -0.092,
+      "2005": 0.072,
+      "2006": 0.107,
+      "2007": -0.002,
+      "2008": -0.125,
+      "2009": -0.056,
+      "2010": -0.256,
+      "2011": -0.034,
+      "2012": -0.074,
+      "2013": -0.046,
+      "2014": -0.102,
+      "2015": 0.242,
+      "2016": -0.049,
+      "2017": 0.019,
+      "2018": -0.051,
+      "2019": -0.006,
+      "2020": -0.379,
+      "2021": -0.094,
+      "2022": 0.06,
+      "2023": 0.076,
+      "2024": 0.031,
+      "2025": -0.223,
+      "2026": -0.039
+    }
+  },
+  "e4_vix_gate": {
+    "idea": "I0083",
+    "name": "VIX vol-regime sizing gate (overlay on RSI-2 book)",
+    "period": "2000-01-03..2026-06-17",
+    "ungated": {
+      "sharpe_raw": 0.43,
+      "sharpe_at10vol": 0.232,
+      "maxdd_at10vol": -0.2926,
+      "worst_day_bps": -585.4,
+      "exposure_frac": 0.268
+    },
+    "gated": {
+      "sharpe_raw": 0.35,
+      "sharpe_at10vol": 0.152,
+      "maxdd_at10vol": -0.3168,
+      "worst_day_bps": -337.6,
+      "exposure_frac": 0.257
+    },
+    "crash_gfc_2008": {
+      "ungated_ret": 0.0,
+      "gated_ret": 0.0
+    },
+    "crash_covid_2020": {
+      "ungated_ret": -0.0543,
+      "gated_ret": -0.0509
+    }
+  },
+  "e5_index_intraday_mr": {
+    "idea": "I0084",
+    "name": "Index intraday VWAP-fade MR (ES/NQ 15m)",
+    "ES": {
+      "n_trades": 18980,
+      "trades_per_day": 4.69,
+      "gross_mean_bps": -1.001,
+      "net_mean_bps": -4.001,
+      "net_sharpe_per_trade": -0.132,
+      "win": 0.438,
+      "perm_p_sign": 1.0
+    },
+    "NQ": {
+      "n_trades": 18022,
+      "trades_per_day": 4.46,
+      "gross_mean_bps": -1.325,
+      "net_mean_bps": -4.325,
+      "net_sharpe_per_trade": -0.1149,
+      "win": 0.444,
+      "perm_p_sign": 1.0
+    },
+    "combined": {
+      "net_sharpe_daily": -4.497,
+      "net_sharpe_scaled10vol": -4.695,
+      "net_maxdd_at10vol": -0.9993
+    }
+  },
+  "e6_fx_rv_coint": {
+    "idea": "I0085",
+    "name": "FX RV cointegrated pair reversion",
+    "period": "2006-05-17..2026-06-15",
+    "per_cluster": {
+      "EURUSD~GBPUSD": {
+        "n_trades": 46,
+        "exposure_frac": 0.223,
+        "gross_sharpe": 0.104,
+        "net_sharpe": -0.026,
+        "trade_win": 0.435,
+        "trade_mean_bps": -4.18
+      },
+      "AUDUSD~NZDUSD": {
+        "n_trades": 36,
+        "exposure_frac": 0.195,
+        "gross_sharpe": -0.016,
+        "net_sharpe": -0.149,
+        "trade_win": 0.5,
+        "trade_mean_bps": -29.84
+      }
+    },
+    "combined_gross_sharpe": -0.151,
+    "combined_net_sharpe": -0.128,
+    "net_sharpe_scaled10vol": -0.326,
+    "net_maxdd_at10vol": -0.4567,
+    "yearly_net": {
+      "2006": -0.002,
+      "2007": 0.05,
+      "2008": -0.135,
+      "2009": 0.058,
+      "2010": 0.025,
+      "2011": 0.032,
+      "2012": 0.009,
+      "2013": -0.006,
+      "2014": -0.0,
+      "2015": 0.019,
+      "2016": 0.006,
+      "2017": -0.04,
+      "2018": 0.002,
+      "2019": 0.011,
+      "2020": -0.025,
+      "2021": -0.015,
+      "2022": -0.01,
+      "2023": -0.01,
+      "2024": -0.005,
+      "2025": -0.01,
+      "2026": -0.022
+    }
+  },
+  "book_integration": {
+    "joint_window": "2017-11-09..2026-06-17",
+    "standalone_sharpe": {
+      "i0076_rsi2_ungated": 0.447,
+      "i0080_crypto_tsmom": 0.545,
+      "i0081_fx_xsec_mom": -0.315,
+      "i0082_goldsilver_rv": -0.356,
+      "i0083_rsi2_gated": 0.228,
+      "i0084_index_intraday_mr": -4.141,
+      "i0085_fx_rv_coint": -0.56,
+      "i0075_monthend_fx": 0.343
+    },
+    "book_survivors": [
+      "i0075_monthend_fx",
+      "i0076_rsi2_ungated",
+      "i0080_crypto_tsmom"
+    ],
+    "inverse_vol_weights": {
+      "i0075_monthend_fx": 0.717,
+      "i0076_rsi2_ungated": 0.176,
+      "i0080_crypto_tsmom": 0.107
+    },
+    "book_combined_sharpe_raw": 0.676,
+    "book_sharpe_at10vol": 0.478,
+    "book_maxdd_at10vol": -0.1845,
+    "book_gated_variant_sharpe": 0.576,
+    "naive_sqrtK_expectation": 0.771,
+    "monte_carlo": {
+      "achieved_book_s0.68_v10_1step": {
+        "p_pass": 0.439,
+        "p_bust": 0.561,
+        "median_months": 3.8
+      },
+      "achieved_book_s0.68_v10_2step": {
+        "p_pass": 0.791,
+        "p_bust": 0.207,
+        "median_months": 3.8
+      },
+      "achieved_book_s0.68_v12_1step": {
+        "p_pass": 0.435,
+        "p_bust": 0.565,
+        "median_months": 2.8
+      },
+      "achieved_book_s0.68_v12_2step": {
+        "p_pass": 0.699,
+        "p_bust": 0.301,
+        "median_months": 2.6
+      },
+      "achieved_book_s0.68_v15_1step": {
+        "p_pass": 0.397,
+        "p_bust": 0.603,
+        "median_months": 1.8
+      },
+      "achieved_book_s0.68_v15_2step": {
+        "p_pass": 0.605,
+        "p_bust": 0.395,
+        "median_months": 1.8
+      },
+      "target_1.5_s1.5_v10_1step": {
+        "p_pass": 0.645,
+        "p_bust": 0.355,
+        "median_months": 3.4
+      },
+      "target_1.5_s1.5_v10_2step": {
+        "p_pass": 0.953,
+        "p_bust": 0.047,
+        "median_months": 2.6
+      },
+      "target_1.5_s1.5_v12_1step": {
+        "p_pass": 0.595,
+        "p_bust": 0.405,
+        "median_months": 2.6
+      },
+      "target_1.5_s1.5_v12_2step": {
+        "p_pass": 0.908,
+        "p_bust": 0.092,
+        "median_months": 2.2
+      },
+      "target_1.5_s1.5_v15_1step": {
+        "p_pass": 0.555,
+        "p_bust": 0.445,
+        "median_months": 1.8
+      },
+      "target_1.5_s1.5_v15_2step": {
+        "p_pass": 0.845,
+        "p_bust": 0.155,
+        "median_months": 1.6
+      }
+    }
+  }
+}

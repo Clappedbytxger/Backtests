@@ -1,0 +1,6 @@
+# Rust / Tauri build artifacts
+/target
+/gen/schemas
+
+# Tauri generates these on first build
+Cargo.lock

@@ -8,6 +8,7 @@ to avoid spurious return jumps.
 from __future__ import annotations
 
 import hashlib
+import time
 from pathlib import Path
 
 import pandas as pd
@@ -76,6 +77,55 @@ def get_prices(
     if use_cache:
         df.to_parquet(path)
     return df
+
+
+_SPLITS_DIR = CACHE_DIR / "splits"
+
+
+def get_splits(
+    ticker: str,
+    use_cache: bool = True,
+    force_refresh: bool = False,
+    max_age_days: float = 7.0,
+) -> pd.Series:
+    """Stock split history: ``{ex_date -> ratio}`` (e.g. ``4.0`` for a 4:1 split).
+
+    Used to split-adjust the RAW intraday equities cache so charts line up with
+    TradingView (which is split-adjusted by default). Cached to Parquet with a TTL
+    since splits change rarely. Returns an empty Series when there are none or the
+    lookup fails (callers then leave prices raw).
+    """
+    _SPLITS_DIR.mkdir(parents=True, exist_ok=True)
+    safe = ticker.replace("^", "idx_").replace("=", "_").replace("/", "_")
+    path = _SPLITS_DIR / f"{safe}.parquet"
+
+    if use_cache and not force_refresh and path.exists():
+        if time.time() - path.stat().st_mtime < max_age_days * 86400:
+            try:
+                s = pd.read_parquet(path)["ratio"]
+                s.index = pd.to_datetime(s.index, utc=True)
+                return s
+            except Exception:  # noqa: BLE001 - a corrupt cache should just re-fetch
+                pass
+
+    try:
+        raw = yf.Ticker(ticker).splits  # tz-aware DatetimeIndex -> float ratios
+    except Exception:  # noqa: BLE001 - offline / bad symbol -> no adjustment
+        raw = None
+    if raw is None or len(raw) == 0:
+        s = pd.Series(dtype="float64", name="ratio")
+        s.index = pd.to_datetime(s.index, utc=True)
+    else:
+        s = raw[raw != 0].astype("float64")
+        s.index = pd.to_datetime(s.index, utc=True)
+        s.name = "ratio"
+
+    if use_cache:
+        try:
+            s.to_frame().to_parquet(path)
+        except Exception:  # noqa: BLE001
+            pass
+    return s
 
 
 def get_close(ticker: str, **kwargs) -> pd.Series:

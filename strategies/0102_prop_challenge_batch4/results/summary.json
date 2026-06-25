@@ -1,0 +1,274 @@
+{
+  "e1_monthend_fx": {
+    "idea": "I0075",
+    "name": "Month-end FX rebalancing flow (WMR 4pm fix)",
+    "daily_basket": {
+      "n_events": 281,
+      "gross_mean_bps": 9.224,
+      "net_mean_bps": 7.624,
+      "gross_sharpe_per_event": 0.2087,
+      "win": 0.5943,
+      "perm_p_vs_random_months": 0.0006,
+      "boot_mean_ci_bps": [
+        4.127,
+        14.35
+      ],
+      "period": "2003-01-31..2026-05-29"
+    },
+    "gbp_fix_window": {
+      "n_events": 125,
+      "gross_mean_bps": 4.581,
+      "net_mean_bps": 2.981,
+      "gross_sharpe_per_event": 0.1635,
+      "win": 0.552,
+      "perm_p_vs_random_months": 0.032,
+      "boot_mean_ci_bps": [
+        -0.215,
+        9.521
+      ],
+      "period": "2016-01-29..2026-05-29"
+    }
+  },
+  "e2_index_rsi2": {
+    "idea": "I0076",
+    "name": "Index RSI-2 mean-reversion (Connors + SMA200)",
+    "per_index": {
+      "US500": {
+        "n_trades": 259,
+        "gross_mean_bps": 40.86,
+        "net_mean_bps": 31.94,
+        "gross_sharpe_per_trade": 0.2394,
+        "net_sharpe_per_trade": 0.1863,
+        "win": 0.722,
+        "avg_nights": 2.96,
+        "period": "1995-10-16..2026-06-17"
+      },
+      "US30": {
+        "n_trades": 265,
+        "gross_mean_bps": 23.58,
+        "net_mean_bps": 14.54,
+        "gross_sharpe_per_trade": 0.141,
+        "net_sharpe_per_trade": 0.0865,
+        "win": 0.7057,
+        "avg_nights": 3.02,
+        "period": "1995-10-16..2026-06-17"
+      },
+      "NAS100": {
+        "n_trades": 254,
+        "gross_mean_bps": 38.88,
+        "net_mean_bps": 29.55,
+        "gross_sharpe_per_trade": 0.1422,
+        "net_sharpe_per_trade": 0.1077,
+        "win": 0.6969,
+        "avg_nights": 3.17,
+        "period": "1995-10-16..2026-06-17"
+      },
+      "GER40": {
+        "n_trades": 223,
+        "gross_mean_bps": 20.14,
+        "net_mean_bps": 10.56,
+        "gross_sharpe_per_trade": 0.0926,
+        "net_sharpe_per_trade": 0.0483,
+        "win": 0.6592,
+        "avg_nights": 3.29,
+        "period": "1995-10-17..2026-06-17"
+      }
+    },
+    "pooled": {
+      "n_trades": 1001,
+      "gross_mean_bps": 31.17,
+      "net_mean_bps": 21.96,
+      "gross_sharpe_per_trade": 0.148,
+      "net_sharpe_per_trade": 0.1038,
+      "net_sharpe_ann_approx": 0.685,
+      "win": 0.6973,
+      "boot_net_mean_ci_bps": [
+        8.48,
+        34.89
+      ],
+      "perm_p_random_entry_per_index": [
+        0.002,
+        0.004,
+        0.0259,
+        0.1557
+      ]
+    }
+  },
+  "e3_tsmom": {
+    "idea": "I0077",
+    "name": "Cross-asset daily TSMOM (dual-sleeve, vol-scaled)",
+    "book": {
+      "period": "2003-10-13..2026-06-17",
+      "net_sharpe": -0.309,
+      "gross_sharpe": 0.154,
+      "net_cagr": -0.0005,
+      "net_maxdd": -0.2427,
+      "net_calmar": -0.002,
+      "ann_turnover_cost_bps": 2001.1,
+      "avg_leg_sharpe": 0.201
+    },
+    "leg_sharpes": {
+      "US500": 0.338,
+      "NAS100": 0.337,
+      "GER40": 0.2,
+      "JP225": 0.125,
+      "Gold": 0.496,
+      "Silver": 0.313,
+      "Oil": 0.286,
+      "EURUSD": 0.086,
+      "GBPUSD": -0.055,
+      "USDJPY": 0.151,
+      "AUDUSD": -0.07
+    },
+    "crisis_years_net": {
+      "2008": 0.1277,
+      "2018": -0.0338,
+      "2020": 0.044,
+      "2022": 0.021
+    },
+    "cost_breakdown": {
+      "spread_ann_bps_unscaled": 123.6,
+      "swap_ann_bps_unscaled": 1877.5,
+      "book_scale_k": 0.1389,
+      "swap_ann_bps_scaled_to_6pct": 260.9,
+      "gross_leverage_scaled": 0.84
+    },
+    "stage1_classic_monthly_12m": {
+      "gross_sharpe": 0.741,
+      "net_sharpe": 0.232,
+      "swap_ann_bps_unscaled": 2639.0
+    }
+  },
+  "e4_usd_regime": {
+    "idea": "I0078",
+    "name": "USD-regime directional overlay",
+    "repro_0086_I0038": {
+      "timed_sharpe": 0.862,
+      "bh_basket_sharpe": 0.336,
+      "perm_p": 0.0025,
+      "frac_long": 0.492
+    },
+    "batch4_confirmed_regime": {
+      "XAUUSD": {
+        "timed_sharpe": 0.131,
+        "bh_sharpe": 0.688,
+        "perm_p": 0.2707,
+        "frac_active": 0.762
+      },
+      "US500": {
+        "timed_sharpe": 0.483,
+        "bh_sharpe": 0.576,
+        "perm_p": 0.2664,
+        "frac_active": 0.388
+      },
+      "NAS100": {
+        "timed_sharpe": 0.542,
+        "bh_sharpe": 0.764,
+        "perm_p": 0.3692,
+        "frac_active": 0.388
+      },
+      "AUDUSD": {
+        "timed_sharpe": 0.548,
+        "bh_sharpe": 0.029,
+        "perm_p": 0.0035,
+        "frac_active": 0.386
+      }
+    },
+    "overlay_book": {
+      "sharpe": 0.555,
+      "period": "2003-01-02..2026-06-17"
+    }
+  },
+  "e5_overnight": {
+    "idea": "I0079",
+    "name": "Overnight premium (regime-conditioned, re-test 0051)",
+    "cost_night_bps": 5.0,
+    "per_index": {
+      "US500": {
+        "period": "1995-01-04..2026-06-12",
+        "unconditioned": {
+          "n": 7913,
+          "gross_mean_bps": 3.95,
+          "net_mean_bps": -1.05,
+          "gross_sharpe": 0.917,
+          "net_sharpe": -0.244,
+          "win": 0.5615
+        },
+        "conditioned_K1_K2": {
+          "n": 3543,
+          "gross_mean_bps": 3.805,
+          "net_mean_bps": -1.195,
+          "gross_sharpe": 1.501,
+          "net_sharpe": -0.471,
+          "win": 0.5718
+        },
+        "buy_hold_sharpe": 0.654,
+        "frac_nights_active": 0.448,
+        "net_cond_boot_sharpe_ci": [
+          -1.275,
+          -0.265
+        ],
+        "net_cond_ttest_p": 0.0772
+      },
+      "US30": {
+        "period": "1995-01-04..2026-06-17",
+        "unconditioned": {
+          "n": 7916,
+          "gross_mean_bps": 0.334,
+          "net_mean_bps": -4.666,
+          "gross_sharpe": 0.184,
+          "net_sharpe": -2.576,
+          "win": 0.4497
+        },
+        "conditioned_K1_K2": {
+          "n": 3420,
+          "gross_mean_bps": 0.158,
+          "net_mean_bps": -4.842,
+          "gross_sharpe": 0.172,
+          "net_sharpe": -5.274,
+          "win": 0.4424
+        },
+        "buy_hold_sharpe": 0.553,
+        "frac_nights_active": 0.432,
+        "net_cond_boot_sharpe_ci": [
+          -6.786,
+          -5.537
+        ],
+        "net_cond_ttest_p": 0.0
+      },
+      "NAS100": {
+        "period": "1995-01-04..2026-06-17",
+        "unconditioned": {
+          "n": 7916,
+          "gross_mean_bps": 2.953,
+          "net_mean_bps": -2.047,
+          "gross_sharpe": 0.58,
+          "net_sharpe": -0.402,
+          "win": 0.4798
+        },
+        "conditioned_K1_K2": {
+          "n": 3399,
+          "gross_mean_bps": 4.287,
+          "net_mean_bps": -0.713,
+          "gross_sharpe": 1.393,
+          "net_sharpe": -0.232,
+          "win": 0.5099
+        },
+        "buy_hold_sharpe": 0.64,
+        "frac_nights_active": 0.429,
+        "net_cond_boot_sharpe_ci": [
+          -1.013,
+          0.065
+        ],
+        "net_cond_ttest_p": 0.3952
+      }
+    }
+  },
+  "verdicts": {
+    "I0075_monthend_fx": "LEAD (testing) \u2014 daily basket net +7.6bps/event, perm p=0.0006, boot CI [4.1,14.4] excl 0",
+    "I0076_index_rsi2": "LEAD (testing) \u2014 win 70%, net +22bps/trade, perm random-entry p=0.002-0.026 (3/4 indices)",
+    "I0077_tsmom": "REJECT as spec (weekly over-trades, gross 0.15) / DIVERSIFIER in classic 12m-monthly form (gross 0.74, net 0.23 swap-thinned)",
+    "I0078_usd_regime": "OVERLAY (original form) \u2014 0086 repro p=0.0025; batch4 gold/index reframe = drift-trap (p>0.26), only AUDUSD carries (p=0.004)",
+    "I0079_overnight": "REJECT \u2014 gross premium reproduces 0051 but CFD 5bps/night cost > premium, net Sharpe -0.24"
+  }
+}

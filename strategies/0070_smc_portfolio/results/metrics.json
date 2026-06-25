@@ -1,0 +1,276 @@
+{
+  "members": [
+    "XAUUSD",
+    "BTCUSD",
+    "SPX",
+    "NDX",
+    "GBPUSD"
+  ],
+  "per_asset": {
+    "XAUUSD": {
+      "gross": {
+        "total_return": 1.628829291517266,
+        "cagr": 0.09746768030542796,
+        "annual_volatility": 0.1548288147951485,
+        "sharpe": 0.548942620745655,
+        "sortino": 1.2272122432384154,
+        "calmar": 0.4490000317385522,
+        "max_drawdown": -0.2170772236430093,
+        "max_drawdown_duration_days": 592,
+        "n_periods": 3232
+      },
+      "net": {
+        "total_return": 0.38369362914226746,
+        "cagr": 0.03174317161238838,
+        "annual_volatility": 0.1550801624713386,
+        "sharpe": 0.15005571635946746,
+        "sortino": 0.3222517672781426,
+        "calmar": 0.1119144428366782,
+        "max_drawdown": -0.28363784698202554,
+        "max_drawdown_duration_days": 2735,
+        "n_periods": 3232
+      },
+      "bh": {
+        "total_return": 3.3018921208698107,
+        "cagr": 0.12044705296980274,
+        "annual_volatility": 0.15099512628056416,
+        "sharpe": 0.697799601895282,
+        "sortino": 0.9186464629751255,
+        "calmar": 0.5564028495299054,
+        "max_drawdown": -0.21647454370797392,
+        "max_drawdown_duration_days": 1030,
+        "n_periods": 3233
+      },
+      "perm_p": 0.33683158420789605,
+      "boot_R": [
+        -0.02704202230543178,
+        0.0792281852040515
+      ],
+      "n_trades": 3337,
+      "beats_bh": false
+    },
+    "BTCUSD": {
+      "gross": {
+        "total_return": 5.222079950143467,
+        "cagr": 0.2320119270687655,
+        "annual_volatility": 0.3288123494363727,
+        "sharpe": 0.7269636329177159,
+        "sortino": 1.966171922269151,
+        "calmar": 0.8927672635527368,
+        "max_drawdown": -0.25987951904226636,
+        "max_drawdown_duration_days": 721,
+        "n_periods": 3198
+      },
+      "net": {
+        "total_return": 2.681712951927109,
+        "cagr": 0.160393929098823,
+        "annual_volatility": 0.327726151488811,
+        "sharpe": 0.5459202552952549,
+        "sortino": 1.4028470262657022,
+        "calmar": 0.5590222245224787,
+        "max_drawdown": -0.28691869851119567,
+        "max_drawdown_duration_days": 1041,
+        "n_periods": 3198
+      },
+      "bh": {
+        "total_return": 16.278137164300194,
+        "cagr": 0.3826500265090418,
+        "annual_volatility": 0.6761937351150166,
+        "sharpe": 0.7922083845553476,
+        "sortino": 1.0665596127809698,
+        "calmar": 0.4599874743340049,
+        "max_drawdown": -0.8318705353076483,
+        "max_drawdown_duration_days": 1073,
+        "n_periods": 3210
+      },
+      "perm_p": 0.063968015992004,
+      "boot_R": [
+        -0.0018114385676054688,
+        0.26414196083531816
+      ],
+      "n_trades": 627,
+      "beats_bh": false
+    },
+    "SPX": {
+      "gross": {
+        "total_return": 2.0813274665574424,
+        "cagr": 0.11644652154513313,
+        "annual_volatility": 0.1512926198283047,
+        "sharpe": 0.666556382759953,
+        "sortino": 2.103548935386902,
+        "calmar": 0.5513737443693622,
+        "max_drawdown": -0.21119344679409735,
+        "max_drawdown_duration_days": 513,
+        "n_periods": 2595
+      },
+      "net": {
+        "total_return": 1.9371036679424014,
+        "cagr": 0.11122036283911929,
+        "annual_volatility": 0.15112253338995413,
+        "sharpe": 0.6361104334040337,
+        "sortino": 1.9740206973534056,
+        "calmar": 0.5172052616393041,
+        "max_drawdown": -0.21504105060068723,
+        "max_drawdown_duration_days": 513,
+        "n_periods": 2595
+      },
+      "bh": {
+        "total_return": 2.7885023070208317,
+        "cagr": 0.13536060664038296,
+        "annual_volatility": 0.18195412921289292,
+        "sharpe": 0.6803358254306858,
+        "sortino": 0.8074171414298147,
+        "calmar": 0.39154897357320584,
+        "max_drawdown": -0.3457054309327038,
+        "max_drawdown_duration_days": 498,
+        "n_periods": 2644
+      },
+      "perm_p": 0.47126436781609193,
+      "boot_R": [
+        0.10867273363591125,
+        0.6803269187953693
+      ],
+      "n_trades": 201,
+      "beats_bh": false
+    },
+    "NDX": {
+      "gross": {
+        "total_return": 4.417631078436063,
+        "cagr": 0.17835548262406253,
+        "annual_volatility": 0.1767835039456532,
+        "sharpe": 0.9008235182515943,
+        "sortino": 2.4109953615310964,
+        "calmar": 0.8717230177431431,
+        "max_drawdown": -0.2046010934595004,
+        "max_drawdown_duration_days": 384,
+        "n_periods": 2615
+      },
+      "net": {
+        "total_return": 4.0490587891955885,
+        "cagr": 0.17031881412932015,
+        "annual_volatility": 0.17651537914163865,
+        "sharpe": 0.8631762868947636,
+        "sortino": 2.2771547226207027,
+        "calmar": 0.8121150642519084,
+        "max_drawdown": -0.20972251547409948,
+        "max_drawdown_duration_days": 384,
+        "n_periods": 2615
+      },
+      "bh": {
+        "total_return": 5.770044543429825,
+        "cagr": 0.2000345327715649,
+        "annual_volatility": 0.2232643323805751,
+        "sharpe": 0.840152216574394,
+        "sortino": 1.0684828389290368,
+        "calmar": 0.56688137876025,
+        "max_drawdown": -0.35286841351013065,
+        "max_drawdown_duration_days": 526,
+        "n_periods": 2643
+      },
+      "perm_p": 0.2698650674662669,
+      "boot_R": [
+        0.17095785644416198,
+        0.601461756963413
+      ],
+      "n_trades": 311,
+      "beats_bh": true
+    },
+    "GBPUSD": {
+      "gross": {
+        "total_return": 0.4076067391338105,
+        "cagr": 0.03343301928685438,
+        "annual_volatility": 0.1568444898561238,
+        "sharpe": 0.15978856532288888,
+        "sortino": 0.3198830088095349,
+        "calmar": 0.10250866850281656,
+        "max_drawdown": -0.3261482153183539,
+        "max_drawdown_duration_days": 1154,
+        "n_periods": 2703
+      },
+      "net": {
+        "total_return": 0.21027501786262448,
+        "cagr": 0.01852705696903101,
+        "annual_volatility": 0.15673631388132117,
+        "sharpe": 0.06713308897783091,
+        "sortino": 0.13204805941600448,
+        "calmar": 0.05220663092101541,
+        "max_drawdown": -0.3548793829860619,
+        "max_drawdown_duration_days": 1160,
+        "n_periods": 2703
+      },
+      "bh": {
+        "total_return": -0.08755225582279602,
+        "cagr": -0.0070705717091824605,
+        "annual_volatility": 0.08324996120702416,
+        "sharpe": -0.28140472801084754,
+        "sortino": -0.37085286828245784,
+        "calmar": -0.025743030253000027,
+        "max_drawdown": -0.2746596511635795,
+        "max_drawdown_duration_days": 3106,
+        "n_periods": 3254
+      },
+      "perm_p": 0.1629185407296352,
+      "boot_R": [
+        -0.08444170803825116,
+        0.18349198209285988
+      ],
+      "n_trades": 476,
+      "beats_bh": true
+    }
+  },
+  "portfolio": {
+    "gross": {
+      "total_return": 2.814674764471367,
+      "cagr": 0.1372743022333216,
+      "annual_volatility": 0.08924729931846491,
+      "sharpe": 1.2635898246025656,
+      "sortino": 3.2197429913697344,
+      "calmar": 1.2710018770308813,
+      "max_drawdown": -0.10800479898110038,
+      "max_drawdown_duration_days": 576,
+      "n_periods": 3799
+    },
+    "net": {
+      "total_return": 1.8617548861055195,
+      "cagr": 0.10629842014079083,
+      "annual_volatility": 0.0890391951100803,
+      "sharpe": 0.9561167431968841,
+      "sortino": 2.3428930741438734,
+      "calmar": 0.8177083854834876,
+      "max_drawdown": -0.12999551188158553,
+      "max_drawdown_duration_days": 618,
+      "n_periods": 3799
+    },
+    "bh": {
+      "total_return": 5.42037697314383,
+      "cagr": 0.19543924722362616,
+      "annual_volatility": 0.17778238704089955,
+      "sharpe": 0.9822031744560958,
+      "sortino": 1.2305575426990427,
+      "calmar": 0.5630386869687091,
+      "max_drawdown": -0.34711513035779673,
+      "max_drawdown_duration_days": 778,
+      "n_periods": 3802
+    },
+    "block_boot_sharpe_ci": [
+      0.3604868183254279,
+      1.5491921904121193
+    ],
+    "ttest_p": 0.00014570718305248172,
+    "dsr": 0.9693782811166712,
+    "is_sharpe": 1.54058181193674,
+    "oos_sharpe": 0.3556297089201072,
+    "worst_day": -0.021789038782869263,
+    "longest_underwater_days": 618,
+    "top5_share": 0.06424054778009634,
+    "avg_hold_days": {
+      "XAUUSD": 22.990685246229148,
+      "BTCUSD": 9.58838383838384,
+      "SPX": 19.2939150401837,
+      "NDX": 10.137645312886471,
+      "GBPUSD": 5.460892049127343
+    },
+    "beats_bh_sharpe": false,
+    "prop_maxdd_scale": 0.7692573270613465
+  }
+}

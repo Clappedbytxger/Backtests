@@ -1,6 +1,10 @@
 import "./globals.css";
+import "katex/dist/katex.min.css";
 import type { Metadata } from "next";
-import Link from "next/link";
+import NavBar from "./NavBar";
+import LicenseGuard from "./LicenseGuard";
+import { ModeProvider } from "@/lib/mode";
+import { LicenseProvider } from "@/lib/license";
 
 export const metadata: Metadata = {
   title: "Quant-OS",
@@ -15,26 +19,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="min-h-screen bg-zinc-950 text-zinc-100 antialiased">
-        <header className="border-b border-zinc-800">
-          <nav className="mx-auto flex max-w-6xl items-center gap-6 px-8 py-4">
-            <Link href="/" className="text-sm font-semibold tracking-tight">
-              Quant-OS
-            </Link>
-            <Link href="/" className="text-sm text-zinc-400 hover:text-zinc-100">
-              Strategies
-            </Link>
-            <Link href="/live" className="text-sm text-zinc-400 hover:text-zinc-100">
-              Live Book
-            </Link>
-            <Link href="/agent" className="text-sm text-zinc-400 hover:text-zinc-100">
-              Agent
-            </Link>
-            <Link href="/ideas" className="text-sm text-zinc-400 hover:text-zinc-100">
-              Research Hub
-            </Link>
-          </nav>
-        </header>
-        {children}
+        <LicenseProvider>
+          <LicenseGuard>
+            <ModeProvider>
+              <NavBar />
+              {children}
+            </ModeProvider>
+          </LicenseGuard>
+        </LicenseProvider>
       </body>
     </html>
   );

@@ -57,6 +57,18 @@ COT_CODES: dict[str, str] = {
     "LE": "057642",  # LIVE CATTLE (CME)
     "GF": "061641",  # FEEDER CATTLE (CME)
     "HE": "054642",  # LEAN HOGS (CME)
+    # ── FX (CME currency futures) ───────────────────────────────────────────
+    "6E": "099741",  # EURO FX (CME)
+    "6B": "096742",  # BRITISH POUND (CME)
+    "6J": "097741",  # JAPANESE YEN (CME)
+    "6A": "232741",  # AUSTRALIAN DOLLAR (CME)
+    "6C": "090741",  # CANADIAN DOLLAR (CME)
+    "6S": "092741",  # SWISS FRANC (CME)
+    "DX": "098662",  # U.S. DOLLAR INDEX (ICE)
+    # ── Equity indices (CME, consolidated/e-mini) ───────────────────────────
+    "ES": "13874+",  # S&P 500 CONSOLIDATED (CME)
+    "NQ": "20974+",  # NASDAQ-100 CONSOLIDATED (CME)
+    "YM": "12460+",  # DOW JONES INDUSTRIAL AVG (CBT)
 }
 
 # Substring the returned market name must contain — typo-proofing the code map.
@@ -66,6 +78,9 @@ _NAME_CHECK: dict[str, str] = {
     "PA": "PALLADIUM", "ZC": "CORN", "ZW": "WHEAT", "ZS": "SOYBEANS",
     "ZL": "SOYBEAN OIL", "ZM": "SOYBEAN MEAL", "LE": "LIVE CATTLE",
     "GF": "FEEDER CATTLE", "HE": "LEAN HOG",
+    "6E": "EURO FX", "6B": "BRITISH POUND", "6J": "JAPANESE YEN",
+    "6A": "AUSTRALIAN DOLLAR", "6C": "CANADIAN DOLLAR", "6S": "SWISS FRANC",
+    "DX": "USD", "ES": "S&P 500", "NQ": "NASDAQ", "YM": "DJIA",
 }
 
 _FIELDS = [

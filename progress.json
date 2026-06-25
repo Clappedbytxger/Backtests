@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "user": "robin",
+  "updated_at": "2026-06-22T19:07:49Z",
+  "device_last_write": "windows-Clappedby-txger-PC",
+  "active_module": null,
+  "modules": {},
+  "totals": {
+    "xp": 0,
+    "modules_completed": 0,
+    "streak_days": 0
+  }
+}

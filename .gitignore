@@ -24,7 +24,14 @@ Thumbs.db
 
 # Secrets
 .env
+.env.local
 *.key
+.vault.json
+
+# Large local assets (never push to the remote)
+*.mp4
+*.mov
+/Quant Books/
 
 # Quant-OS: machine-specific config & generated artifacts
 config.yaml

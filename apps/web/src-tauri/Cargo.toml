@@ -1,0 +1,36 @@
+[package]
+name = "quant-os-pro"
+version = "0.1.0"
+description = "Quant OS Pro — desktop wrapper with trial & subscription gate"
+authors = ["Quant OS"]
+edition = "2021"
+rust-version = "1.77"
+
+# The library target Tauri 2 uses; binary just calls into it.
+[lib]
+name = "quant_os_pro_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+tauri-plugin-opener = "2"
+# Spawns the bundled Python API as a managed child process (sidecar).
+tauri-plugin-shell = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+# Networking for the Lemon Squeezy license validation call.
+reqwest = { version = "0.12", features = ["json"] }
+# At-rest obfuscation of the trial/license vault (AES-256-GCM, authenticated).
+aes-gcm = "0.10"
+base64 = "0.22"
+
+# Smaller, faster release binaries for distribution.
+[profile.release]
+codegen-units = 1
+lto = true
+opt-level = "s"
+panic = "abort"
+strip = true

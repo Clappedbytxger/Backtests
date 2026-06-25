@@ -1,0 +1,30 @@
+{
+  "idea": "I0075",
+  "name": "Month-end FX rebalancing flow (WMR 4pm fix)",
+  "daily_basket": {
+    "n_events": 281,
+    "gross_mean_bps": 9.224,
+    "net_mean_bps": 7.624,
+    "gross_sharpe_per_event": 0.2087,
+    "win": 0.5943,
+    "perm_p_vs_random_months": 0.0006,
+    "boot_mean_ci_bps": [
+      4.127,
+      14.35
+    ],
+    "period": "2003-01-31..2026-05-29"
+  },
+  "gbp_fix_window": {
+    "n_events": 125,
+    "gross_mean_bps": 4.581,
+    "net_mean_bps": 2.981,
+    "gross_sharpe_per_event": 0.1635,
+    "win": 0.552,
+    "perm_p_vs_random_months": 0.032,
+    "boot_mean_ci_bps": [
+      -0.215,
+      9.521
+    ],
+    "period": "2016-01-29..2026-05-29"
+  }
+}

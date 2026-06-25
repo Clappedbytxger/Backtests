@@ -1,0 +1,41 @@
+# Quant-OS API — runtime dependencies for the bundled desktop sidecar.
+#
+# Curated, unpinned, and Apple-Silicon-friendly (all have arm64 wheels). This is the set
+# the read-only decision-surface API actually needs — deliberately WITHOUT torch / LLM
+# inference backends (the autonomous-agent routes don't run inside a frozen binary).
+#
+# On the Mac:
+#     python3 -m venv .venv && source .venv/bin/activate
+#     pip install -r apps/api/requirements-api.txt
+#
+# If the frozen sidecar later complains about a missing module, pip-install it and add it
+# here, then rebuild.
+
+# web framework
+fastapi
+uvicorn[standard]
+pydantic
+pydantic-settings
+pyyaml
+
+# scientific core
+numpy
+pandas
+pyarrow
+scipy
+scikit-learn
+lightgbm
+statsmodels
+matplotlib
+
+# market data + networking
+yfinance
+httpx
+requests
+beautifulsoup4
+
+# encrypted BYOK vault
+cryptography
+
+# optional (only for the Databento futures-intraday endpoints) — uncomment if needed
+# databento

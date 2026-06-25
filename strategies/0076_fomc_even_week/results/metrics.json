@@ -1,0 +1,140 @@
+{
+  "idea_id": "I0008",
+  "oos_start": "2013-01-01",
+  "spy_headline": {
+    "days_long_frac": 0.532410888855467,
+    "gross": {
+      "total_return": 2.4530123949934577,
+      "cagr": 0.04808847192261401,
+      "annual_volatility": 0.13716392496987972,
+      "sharpe": 0.2668568510909896,
+      "sortino": 0.34336880794282937,
+      "calmar": 0.08605703091371748,
+      "max_drawdown": -0.5587977113784983,
+      "max_drawdown_duration_days": 1880,
+      "n_periods": 6649
+    },
+    "net": {
+      "total_return": 1.8446366553696865,
+      "cagr": 0.04041789606858126,
+      "annual_volatility": 0.13717449867230688,
+      "sharpe": 0.2132905813903513,
+      "sortino": 0.2746734313349511,
+      "calmar": 0.07164597118671427,
+      "max_drawdown": -0.5641335499975215,
+      "max_drawdown_duration_days": 2070,
+      "n_periods": 6649
+    },
+    "buy_hold": {
+      "total_return": 6.999997327928021,
+      "cagr": 0.08200059326812381,
+      "annual_volatility": 0.19309904310551743,
+      "sharpe": 0.40221782240246173,
+      "sortino": 0.5121491123938281,
+      "calmar": 0.1485802244078531,
+      "max_drawdown": -0.5518943964106016,
+      "max_drawdown_duration_days": 1656,
+      "n_periods": 6649
+    },
+    "trades": {
+      "n_trades": 646,
+      "win_rate": 0.5851393188854489,
+      "profit_factor": 1.2498913016024025,
+      "payoff_ratio": 0.8861663196546136,
+      "expectancy": 0.0018943338332991588,
+      "avg_holding_days": 5.479876160990712,
+      "avg_win": 0.01619266535440216,
+      "avg_loss": 0.018272715849450595
+    }
+  },
+  "diagnostic": {
+    "even_day_mean_bps": 5.689783588330461,
+    "odd_day_mean_bps": 1.8930155775246742,
+    "even_days": 3540,
+    "odd_days": 3088,
+    "even_total_pct": 476.085103012269,
+    "odd_total_pct": 43.30233946598576,
+    "share_of_gain_even_pct": 91.66280585079822
+  },
+  "per_week_mean_bps": {
+    "0": 6.316107983664019,
+    "1": 2.1651511086972004,
+    "2": 4.282441480217611,
+    "3": 4.946700219087288,
+    "4": 7.156136894745173,
+    "5": -3.7312370870906078,
+    "6": 2.9751284093370587,
+    "7": 7.813238956481833
+  },
+  "is_oos_net": {
+    "IS 2000-2012": {
+      "net_sharpe": 0.08022798090514313,
+      "gross_sharpe": 0.1285351452711252,
+      "net_cagr_pct": 0.06672563063114811
+    },
+    "OOS 2013-2026": {
+      "net_sharpe": 0.6934873104810975,
+      "gross_sharpe": 0.7541197474211188,
+      "net_cagr_pct": 8.03645949813827
+    },
+    "post-publ 2019-2026": {
+      "net_sharpe": 0.6084733392256257,
+      "gross_sharpe": 0.661399602465493,
+      "net_cagr_pct": 7.865394205370402
+    }
+  },
+  "significance": {
+    "permutation": {
+      "observed": 0.2668568510909896,
+      "p_value": 0.38492301539692064,
+      "null_mean": 0.2269080957023557,
+      "null_std": 0.13447442279580182,
+      "n_perm": 5000,
+      "metric": "sharpe"
+    },
+    "even_minus_odd_bps": 3.7967680108057866,
+    "t_test_even": {
+      "t_stat": 2.7827151065027715,
+      "p_value": 0.005419202023137516,
+      "n": 3540
+    },
+    "bootstrap_even_mean": {
+      "statistic": "mean",
+      "point": 0.0005670308761579897,
+      "ci_low": 0.00016227537275793316,
+      "ci_high": 0.0009732114988978285,
+      "alpha": 0.05
+    },
+    "deflated_sharpe": {
+      "observed_sharpe": 0.025905338686150053,
+      "expected_max_sharpe_under_null": 0.014626725634122921,
+      "sharpe_variance_used": 0.00015042117930204573,
+      "n_trials": 5,
+      "psr_deflated": 0.8193770015813195
+    },
+    "n_trials": 5
+  },
+  "phase_robustness": {
+    "-2": 0.25211649969703376,
+    "-1": 0.24279642360638384,
+    "0": 0.3576571041172877,
+    "1": 0.46742830101420924,
+    "2": 0.5536766749085353
+  },
+  "cross_market": {
+    "^NDX": {
+      "label": "Nasdaq-100",
+      "net_sharpe": 0.385524182095504,
+      "bh_sharpe": 0.421963193139504,
+      "even_mean_bps": 7.402061396329302,
+      "permutation_p": 0.19956008798240352
+    },
+    "^GDAXI": {
+      "label": "DAX",
+      "net_sharpe": 0.25027400614065815,
+      "bh_sharpe": 0.330136041579489,
+      "even_mean_bps": 4.470506676589122,
+      "permutation_p": 0.34573085382923413
+    }
+  }
+}

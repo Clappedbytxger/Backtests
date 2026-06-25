@@ -56,19 +56,27 @@ _UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120 S
 #   NASS -> https://quickstats.nass.usda.gov/api               -> .nass.key
 #   FRED -> https://fredaccount.stlouisfed.org/apikeys         -> .fred.key
 #   FAS  -> https://apps.fas.usda.gov/opendataweb/             -> .fas.key
+#   Gemini -> https://aistudio.google.com/apikey               -> .gemini.key
 _KEY_ENV = {
     "eia":  "EIA_API_KEY",
     "nass": "NASS_API_KEY",
     "fred": "FRED_API_KEY",
     "fas":  "FAS_API_KEY",
+    "gemini": "GEMINI_API_KEY",
+    "alpaca_key": "APCA_API_KEY_ID",
+    "alpaca_secret": "APCA_API_SECRET_KEY",
 }
 
 
 def read_api_key(service: str, explicit: str | None = None) -> str:
-    """Resolve a free-API key: explicit arg > env var > gitignored keyfile.
+    """Resolve an API key: explicit arg > encrypted vault > env var > gitignored keyfile.
+
+    The encrypted BYOK vault (:mod:`quantlab.keystore`) takes precedence over env/keyfile
+    when it is unlocked and holds the service — so keys entered in the Settings tab win,
+    while the legacy plaintext ``.<service>.key`` files keep working as a fallback.
 
     Args:
-        service: one of ``"eia"``, ``"nass"``, ``"fred"``, ``"fas"``.
+        service: e.g. ``"gemini"``, ``"eia"``, ``"nass"``, ``"fred"``, ``"fas"``.
         explicit: a key passed directly (wins if given).
 
     Raises:
@@ -76,6 +84,14 @@ def read_api_key(service: str, explicit: str | None = None) -> str:
     """
     if explicit:
         return explicit
+    try:  # encrypted BYOK vault (lazy import avoids any cycle)
+        from quantlab.keystore import vault_key
+
+        vk = vault_key(service)
+        if vk:
+            return vk
+    except Exception:  # noqa: BLE001 - vault must never break key resolution
+        pass
     env = os.environ.get(_KEY_ENV.get(service, ""))
     if env:
         return env
