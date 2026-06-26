@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useMode } from "@/lib/mode";
+import { useTour } from "@/lib/tour";
 
 interface NavItem {
   href: string;
@@ -29,14 +30,14 @@ const GROUPS: NavGroup[] = [
       { href: "/optimize", label: "Evolution Monitor", dev: true },
       { href: "/features", label: "Feature Store", dev: true },
       { href: "/agent", label: "Agent", dev: true },
-      { href: "/academy", label: "Academy", dev: true },
+      { href: "/academy", label: "Academy" },
     ],
   },
   {
     label: "Markets",
     accent: "text-amber-300",
     items: [
-      { href: "/radar", label: "Weather Radar", dev: true },
+      { href: "/radar", label: "Weather Radar" },
       { href: "/cot", label: "COT Positioning" },
       { href: "/seasonal", label: "Seasonal" },
       { href: "/pairs", label: "Pairs / Cointegration", dev: true },
@@ -129,6 +130,7 @@ export default function NavBar() {
 
         <div className="ml-auto flex items-center gap-2">
           <ModeToggle />
+          <TourButton />
           <Link
             href="/settings"
             aria-label="Settings"
@@ -158,6 +160,30 @@ export default function NavBar() {
         </div>
       </nav>
     </header>
+  );
+}
+
+// Restart the onboarding tour ("60-Second AHA-Moment") from anywhere.
+function TourButton() {
+  const { start } = useTour();
+  return (
+    <button
+      onClick={start}
+      aria-label="Tour starten"
+      title="Geführte Tour starten"
+      className="flex h-7 w-7 items-center justify-center rounded-md text-zinc-400 transition-colors hover:bg-zinc-900 hover:text-zinc-100"
+    >
+      <svg className="h-4 w-4" viewBox="0 0 20 20" fill="none">
+        <circle cx="10" cy="10" r="7.5" stroke="currentColor" strokeWidth="1.3" />
+        <path
+          d="M7.8 7.6a2.2 2.2 0 114.0 1.2c-.5.7-1.3 1-1.6 1.6-.15.3-.2.6-.2 1"
+          stroke="currentColor"
+          strokeWidth="1.3"
+          strokeLinecap="round"
+        />
+        <circle cx="10" cy="14.2" r="0.9" fill="currentColor" />
+      </svg>
+    </button>
   );
 }
 

@@ -82,7 +82,7 @@ export default function CotPage() {
 
   return (
     <main className="mx-auto max-w-7xl px-6 py-6">
-      <header className="mb-5 flex flex-wrap items-center gap-3">
+      <header className="mb-5 flex flex-wrap items-center gap-3" data-tour="cot">
         <div>
           <h1 className="text-lg font-semibold tracking-tight">Institutional Positioning Desk</h1>
           <p className="text-xs text-zinc-500">

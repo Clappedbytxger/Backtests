@@ -11,7 +11,10 @@
     "lint": "next lint",
     "tauri": "tauri",
     "desktop:dev": "tauri dev",
-    "desktop:build": "tauri build --target aarch64-apple-darwin"
+    "desktop:build": "tauri build",
+    "desktop:build:mac": "tauri build --target aarch64-apple-darwin",
+    "desktop:build:mac-intel": "tauri build --target x86_64-apple-darwin",
+    "desktop:build:win": "tauri build --target x86_64-pc-windows-msvc"
   },
   "dependencies": {
     "@tauri-apps/api": "^2",

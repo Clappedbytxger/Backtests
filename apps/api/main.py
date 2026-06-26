@@ -66,10 +66,21 @@ from .switchboard import router as switchboard_router  # noqa: E402
 
 app = FastAPI(title="Quant-OS API", version="0.1.0")  # news + charts routers mounted below
 
-# Allow the local Next.js dev server to call the API.
+# Allow the local Next.js dev server AND the packaged desktop app to call the API.
+# The Tauri webview is a different origin than the dev server: Windows (WebView2) serves
+# the bundle from http(s)://tauri.localhost, macOS/Linux from tauri://localhost. Without
+# these the desktop app's fetches fail with "TypeError: failed to fetch" (CORS).
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://127.0.0.1:3000"],
+    allow_origins=[
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+        "http://tauri.localhost",
+        "https://tauri.localhost",
+        "tauri://localhost",
+    ],
+    # Robustly match any Tauri custom-scheme / tauri.localhost origin across platforms.
+    allow_origin_regex=r"^(tauri://localhost|https?://tauri\.localhost)$",
     allow_methods=["*"],
     allow_headers=["*"],
 )

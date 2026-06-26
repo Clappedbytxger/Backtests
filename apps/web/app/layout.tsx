@@ -3,8 +3,10 @@ import "katex/dist/katex.min.css";
 import type { Metadata } from "next";
 import NavBar from "./NavBar";
 import LicenseGuard from "./LicenseGuard";
+import OnboardingTour from "./OnboardingTour";
 import { ModeProvider } from "@/lib/mode";
 import { LicenseProvider } from "@/lib/license";
+import { TourProvider } from "@/lib/tour";
 
 export const metadata: Metadata = {
   title: "Quant-OS",
@@ -22,8 +24,11 @@ export default function RootLayout({
         <LicenseProvider>
           <LicenseGuard>
             <ModeProvider>
-              <NavBar />
-              {children}
+              <TourProvider>
+                <NavBar />
+                {children}
+                <OnboardingTour />
+              </TourProvider>
             </ModeProvider>
           </LicenseGuard>
         </LicenseProvider>
