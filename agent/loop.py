@@ -107,7 +107,22 @@ _SIGNAL_SYSTEM = (
     "- Return NUMERIC values: cast booleans to float before any arithmetic — e.g. "
     "(h==12).astype(float) - (h==18).astype(float), or np.where(cond, 1.0, 0.0). NEVER subtract "
     "two boolean conditions directly (numpy forbids bool - bool).\n"
-    "- NO LOOK-AHEAD: row t may use only data up to row t (rolling/shift(+n) fine; never shift(-n))."
+    "- ★ NO LOOK-AHEAD — THIS IS ENFORCED, not a suggestion. Row t may use ONLY data up to and "
+    "including row t. Trailing rolling windows and shift(+n) (looking BACKWARD) are fine; anything "
+    "that reads a FUTURE bar is forbidden and will be CAUGHT and rejected automatically:\n"
+    "    • NEVER use a negative shift: prices['Close'].shift(-1), .shift(-n), .diff(-1) — these read "
+    "tomorrow. The classic cheat 'go long if Close.shift(-1) > Close' (buy because tomorrow rises) "
+    "scores a fake Sharpe of 8+ and is the #1 rejected bug.\n"
+    "    • NEVER compare today's bar to a future bar to define a 'gap'/'signal' (e.g. "
+    "Close.shift(-1) - Open).\n"
+    "    • NEVER normalise with a FULL-SAMPLE statistic (c - c.mean())/c.std() or c.max()/c.min() "
+    "over the whole series — that leaks the future into row t. Use a TRAILING rolling mean/std "
+    "(c.rolling(W).mean()) instead.\n"
+    "  The harness recomputes your signal on truncated history and verifies bar t is unchanged when "
+    "future bars are appended; if not, the run is discarded. Write a genuinely causal rule.\n"
+    "- NO DATA-MINING: propose ONE economically-motivated rule with a real cause. Do not bury many "
+    "free parameters hoping one combination fits — the search breadth is charged against the Deflated "
+    "Sharpe, so an over-tuned fluke fails the gate. A modest, robust edge beats a high-Sharpe fit."
 )
 
 _SIGNAL_EXAMPLES = '''Example A — turn-of-month, no parameters (a calm-range / quiet effect):
@@ -182,6 +197,7 @@ from quantlab.ib_data import load_prices
 from quantlab.backtest import run_backtest
 from quantlab.metrics import compute_metrics, trade_stats, equity_curve, drawdown_series, sharpe_ratio
 from quantlab.significance import permutation_test, bootstrap_ci, deflated_sharpe_ratio
+from quantlab.causality import assess_causality
 from quantlab.costs import IBKR_LIQUID_ETF, CostModel
 from quantlab.robustness.monte_carlo import block_bootstrap_paths
 
@@ -207,15 +223,27 @@ except Exception:
 params = {k: _override.get(k, PARAMS[k]) for k in PARAMS}
 
 
-def _make_signal(p):
+def _make_signal(p, px=None):
+    px = prices if px is None else px
     if p:
         try:
-            sig = generate_signal(prices, **p)
+            sig = generate_signal(px, **p)
         except TypeError:
-            sig = generate_signal(prices)  # parameter-signature fallback only
+            sig = generate_signal(px)  # parameter-signature fallback only
     else:
-        sig = generate_signal(prices)
-    return pd.Series(sig, index=prices.index).reindex(prices.index).fillna(0.0).clip(-1, 1)
+        sig = generate_signal(px)
+    return pd.Series(sig, index=px.index).reindex(px.index).fillna(0.0).clip(-1, 1)
+
+
+def _causality_check(p):
+    """HARD look-ahead guard — the harness ENFORCES decision-time causality.
+
+    Delegates to ``quantlab.causality.assess_causality`` (importable in this
+    sandboxed subprocess). A causal signal's value at bar t must not change when
+    future bars are appended; any mismatch means the signal peeked into the future
+    (e.g. ``Close.shift(-1)`` or full-sample normalisation) and the run is rejected.
+    """
+    return assess_causality(lambda px: _make_signal(p, px=px), prices)
 
 
 def _save():
@@ -235,6 +263,7 @@ prices = load_prices(INSTRUMENT, timeframe=TIMEFRAME, start=START)
 asset_ret = prices["Close"].pct_change().fillna(0.0)
 try:
     signal = _make_signal(params)
+    causality = _causality_check(params)   # HARD look-ahead guard (decision-time enforcement)
 except Exception as _sig_err:  # a broken model signal must fail gracefully, not crash blank
     with open("results/metrics.json", "w") as _f:
         json.dump({"instrument": INSTRUMENT, "timeframe": TIMEFRAME, "params": params,
@@ -268,7 +297,7 @@ if TIMEFRAME in ("1d", "1day", "daily", "d"):  # S&P 500 benchmark only makes se
 
 out = {
     "instrument": INSTRUMENT, "timeframe": TIMEFRAME, "mode": MODE, "params": params,
-    "param_grid": PARAM_GRID, "warning": warning, "metrics": {**m, **ts},
+    "param_grid": PARAM_GRID, "warning": warning, "causality": causality, "metrics": {**m, **ts},
     "vs_benchmark": {
         "strategy_total_return": float(m["total_return"]),
         "buy_hold_total_return": float(bh.iloc[-1] - 1.0),
@@ -317,7 +346,16 @@ if MODE == "full" and warning is None:
         sp_pp = float(ret.mean() / ret.std(ddof=1)) if ret.std(ddof=1) > 0 else 0.0
         out["permutation"] = {k: perm[k] for k in ("observed", "p_value", "null_mean", "null_std", "n_perm")}
         out["bootstrap_ci"] = bootstrap_ci(ret, statistic="sharpe", n_boot=1000)
-        out["deflated_sharpe"] = deflated_sharpe_ratio(sp_pp, n_obs=int(len(ret)), n_trials=1, returns=ret)
+        # Data-mining deflation: charge the Deflated Sharpe the number of hypotheses the
+        # search actually tried (the Alpha Factory streams its running trial count via
+        # QOS_N_TRIALS). With n_trials=1 the DSR ignores selection and a lucky pick among
+        # hundreds looks "significant"; the true bar rises with the breadth of the search.
+        try:
+            _ntrials = max(int(os.environ.get("QOS_N_TRIALS", "1") or 1), 1)
+        except ValueError:
+            _ntrials = 1
+        out["n_trials"] = _ntrials
+        out["deflated_sharpe"] = deflated_sharpe_ratio(sp_pp, n_obs=int(len(ret)), n_trials=_ntrials, returns=ret)
         _save()
     except Exception as e:
         out["significance_error"] = repr(e); _save()
