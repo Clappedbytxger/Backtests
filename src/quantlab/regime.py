@@ -260,7 +260,7 @@ def current_regime(classified: pd.DataFrame) -> dict:
     reg = str(row["regime"])
     direction = str(row["direction"])
     return {
-        "asof": str(valid.index[-1].date()) if hasattr(valid.index[-1], "date") else str(valid.index[-1]),
+        "asof": _isodate(valid.index[-1]),
         "regime": reg,
         "label": REGIME_LABELS.get(reg, reg),
         "color": REGIME_COLORS.get(reg, "#475569"),
@@ -412,4 +412,12 @@ def _f(x) -> float | None:
 
 
 def _isodate(ts) -> str:
-    return str(ts.date()) if hasattr(ts, "date") else str(ts)
+    # `.date()` raises for out-of-range/corrupt timestamps; never let date formatting
+    # crash an endpoint (defence-in-depth behind the loader sanitisation in data.py).
+    try:
+        return str(ts.date())
+    except Exception:  # noqa: BLE001
+        try:
+            return ts.isoformat()[:10]
+        except Exception:  # noqa: BLE001
+            return str(ts)

@@ -82,7 +82,7 @@ export default function RadarPage() {
   return (
     <main className="mx-auto max-w-7xl p-6">
       {/* ── header ─────────────────────────────────────────────── */}
-      <div className="flex flex-wrap items-end justify-between gap-4">
+      <div className="flex flex-wrap items-end justify-between gap-4" data-tour="radar">
         <div>
           <h1 className="flex items-center gap-2 text-3xl font-semibold tracking-tight">
             <span className="text-amber-300">◴</span> Market Weather Radar
@@ -117,7 +117,7 @@ export default function RadarPage() {
           <div className="flex flex-wrap items-start justify-between gap-4">
             <div>
               <div className="text-xs uppercase tracking-widest text-zinc-500">
-                {current?.meta.name} · {ticker} · Stand {snap?.asof ?? "—"}
+                {current?.meta?.name ?? ticker} · {ticker} · Stand {snap?.asof ?? "—"}
               </div>
               <div className="mt-2 flex items-center gap-3">
                 <span
@@ -141,6 +141,11 @@ export default function RadarPage() {
                 )}
               </div>
               <p className="mt-2 max-w-md text-sm text-zinc-400">{snap?.description}</p>
+              {current?.ok === false && (
+                <p className="mt-2 rounded-md border border-amber-700/50 bg-amber-950/30 px-2.5 py-1.5 text-xs text-amber-300">
+                  Regime-Daten für {ticker} momentan nicht verfügbar.
+                </p>
+              )}
             </div>
 
             {/* 2×2 weather quadrant */}
@@ -152,7 +157,7 @@ export default function RadarPage() {
                 <FragmentRow key={q.row} label={q.row}>
                   {q.cells.map((cell) => {
                     const on = cell.code === active;
-                    const color = current?.distribution[cell.code]?.color ?? "#3f3f46";
+                    const color = current?.distribution?.[cell.code]?.color ?? "#3f3f46";
                     return (
                       <div
                         key={cell.code}
@@ -184,7 +189,7 @@ export default function RadarPage() {
           </div>
 
           {/* time-in-regime distribution bar */}
-          {current && (
+          {current?.distribution && (
             <div className="mt-5">
               <div className="mb-1.5 text-[10px] uppercase tracking-wide text-zinc-500">
                 Zeitanteil je Regime (8J)
@@ -244,7 +249,7 @@ export default function RadarPage() {
       <section className="mt-6 rounded-2xl border border-zinc-800 bg-zinc-900/30 p-5">
         <div className="mb-1 flex items-center justify-between">
           <h2 className="text-sm font-semibold text-zinc-200">
-            Regime-Timeline · {current?.meta.name} (3 Jahre)
+            Regime-Timeline · {current?.meta?.name ?? ticker} (3 Jahre)
           </h2>
           <span className="text-[11px] text-zinc-500">Hintergrund = Marktregime · Linie = Kurs + MAs</span>
         </div>

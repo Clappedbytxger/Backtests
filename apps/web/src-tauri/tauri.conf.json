@@ -29,7 +29,7 @@
   },
   "bundle": {
     "active": true,
-    "targets": ["app", "dmg"],
+    "targets": "all",
     "externalBin": ["binaries/quant-os-api"],
     "resources": ["resources/**/*"],
     "icon": [
@@ -42,7 +42,7 @@
     "copyright": "© 2026 Quant OS",
     "category": "Finance",
     "shortDescription": "KI-gesteuertes Trading- & Research-Desk",
-    "longDescription": "Quant OS Pro — regime-konditionales Strategie-Routing, COT/Saisonalität, Agentenschwarm und Hedgefonds-Risikomanagement als native macOS-App.",
+    "longDescription": "Quant OS Pro — regime-konditionales Strategie-Routing, COT/Saisonalität, Agentenschwarm und Hedgefonds-Risikomanagement als native Desktop-App für macOS und Windows.",
     "macOS": {
       "minimumSystemVersion": "11.0"
     }

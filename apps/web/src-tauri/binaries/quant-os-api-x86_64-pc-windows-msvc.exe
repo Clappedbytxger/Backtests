@@ -1,0 +1,10 @@
+PLACEHOLDER — not a real executable.
+
+Tauri's `externalBin` existence check requires a file at this exact path/name before
+a Windows build will start. Replace it with the real frozen API by running, on Windows:
+
+    powershell -ExecutionPolicy Bypass -File scripts\build_sidecar_win.ps1
+
+The sidecar launch in src/lib.rs is best-effort: if this placeholder is still in place
+the app still runs (the license gate is pure Rust/JS), the dashboards just show
+"API not reachable" until the real binary is present.

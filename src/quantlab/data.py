@@ -29,6 +29,28 @@ def _cache_path(ticker: str, start: str | None, end: str | None, interval: str) 
     return CACHE_DIR / f"{safe_ticker}_{interval}_{digest}.parquet"
 
 
+# Sane bounds for a financial time series. yfinance occasionally emits a corrupt last
+# bar with a garbage timestamp (e.g. year 99902075), which then poisons the Parquet cache
+# and crashes any downstream `.date()`/formatting (observed in the regime radar). We drop
+# such rows + NaT at the loader boundary so no consumer ever sees them.
+_MIN_DATE = pd.Timestamp("1970-01-01")
+_MAX_DATE = pd.Timestamp("2100-01-01")
+
+
+def _sanitize_index(df: pd.DataFrame) -> pd.DataFrame:
+    """Coerce to a clean, sorted DatetimeIndex and drop NaT / out-of-range timestamps."""
+    if not isinstance(df.index, pd.DatetimeIndex):
+        df = df.copy()
+        df.index = pd.to_datetime(df.index, errors="coerce")
+    df = df[df.index.notna()]
+    in_range = (df.index >= _MIN_DATE) & (df.index <= _MAX_DATE)
+    if not in_range.all():
+        df = df[in_range]
+    if not df.index.is_monotonic_increasing:
+        df = df.sort_index()
+    return df
+
+
 def get_prices(
     ticker: str,
     start: str | None = "1990-01-01",
@@ -52,7 +74,14 @@ def get_prices(
     """
     path = _cache_path(ticker, start, end, interval)
     if use_cache and not force_refresh and path.exists():
-        return pd.read_parquet(path)
+        try:
+            # Sanitize on read too, so an already-poisoned cache file self-heals.
+            return _sanitize_index(pd.read_parquet(path))
+        except Exception:  # noqa: BLE001 - a corrupt/truncated cache file -> re-download
+            try:
+                path.unlink()
+            except OSError:
+                pass
 
     raw = yf.download(
         ticker,
@@ -73,6 +102,7 @@ def get_prices(
     df = raw[["Open", "High", "Low", "Close", "Volume"]].copy()
     df.index.name = "Date"
     df = df.dropna(subset=["Close"])
+    df = _sanitize_index(df)  # drop corrupt/out-of-range yfinance rows before caching
 
     if use_cache:
         df.to_parquet(path)

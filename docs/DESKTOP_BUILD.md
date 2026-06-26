@@ -1,9 +1,13 @@
-# Quant OS Pro — Komplettanleitung: Desktop-App auf den Mac bringen
+# Quant OS Pro — Komplettanleitung: Desktop-App bauen (macOS & Windows)
 
-Diese Anleitung führt dich Schritt für Schritt von „Code liegt auf dem Windows-PC" bis zu
-einer fertigen, **autarken** macOS-App (Apple Silicon) mit **7-Tage-Trial → Hard-Wall →
-Lemon-Squeezy-Abo** und eingebautem Python-Backend. Für Einsteiger geschrieben — du kannst
-sie von oben nach unten abarbeiten.
+Diese Anleitung führt dich Schritt für Schritt zu einer fertigen, **autarken** Desktop-App
+mit **7-Tage-Trial → Hard-Wall → Lemon-Squeezy-Abo** und eingebautem Python-Backend. Für
+Einsteiger geschrieben — du kannst sie von oben nach unten abarbeiten.
+
+> **macOS oder Windows?** Die Abschnitte **1–12 beschreiben den macOS-Build** (`.dmg`).
+> Der **Windows-Build** (`.exe`-Installer) steht in **Abschnitt 13** — gleicher Code,
+> gleiches Gate, nur andere Toolchain. Ein `.dmg` baust du nur auf einem Mac, einen
+> `.exe`-Installer nur auf Windows.
 
 > **Warum auf dem Mac?** Eine macOS-`.app`/`.dmg` lässt sich nur auf einem Mac bauen
 > (Xcode + Rust). Alle Dateien sind fertig vorbereitet; die Befehle führst du auf dem Mac
@@ -326,3 +330,92 @@ npm run desktop:build                      # 4) .app + .dmg
 
 Fertig — die `.dmg` liegt unter
 `apps/web/src-tauri/target/aarch64-apple-darwin/release/bundle/dmg/`.
+
+---
+
+## 13. Windows-Build (`.exe`-Installer)
+
+Die App ist **cross-platform** — derselbe Code baut auf Windows einen nativen
+NSIS-`.exe`-Installer. Den Windows-Build machst du **auf einem Windows-PC** (eine
+`.exe`/MSI kann man nur unter Windows erzeugen, genau wie die `.dmg` nur auf dem Mac).
+
+Tauri wählt das Bundle-Format automatisch nach Host-OS (`"targets": "all"` in
+`tauri.conf.json`); die Windows-spezifischen Installer-Einstellungen (NSIS, WebView2-
+Bootstrapper, Sprachen DE/EN) liegen in `apps/web/src-tauri/tauri.windows.conf.json`
+und werden von Tauri v2 beim Windows-Build automatisch dazugemischt.
+
+### 13.1 Einmalige Einrichtung (Windows)
+
+```powershell
+# (a) Rust über rustup (https://rustup.rs) — installiert das MSVC-Target automatisch.
+#     Dazu die "Microsoft C++ Build Tools" (Visual Studio Installer → "Desktop development
+#     with C++") — Tauri braucht den MSVC-Linker.
+# (b) Node.js LTS (https://nodejs.org)
+# (c) Edge WebView2 Runtime ist auf Windows 10/11 i.d.R. schon da; der Installer holt sie
+#     sonst automatisch nach (downloadBootstrapper).
+
+# Projekt holen + venv (im Repo-Wurzelordner):
+py -3 -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install --upgrade pip
+pip install -r apps/api/requirements-api.txt
+
+cd apps\web
+npm install
+```
+
+### 13.2 Gate testen (schnell, ohne kompletten Build)
+
+```powershell
+cd apps\web
+npm run desktop:dev
+```
+
+Das Hard-Gate (7-Tage-Trial → EXPIRED → Lemon-Squeezy) funktioniert identisch zum Mac.
+Der Vault liegt unter `%APPDATA%\com.quantos.pro\license.dat`. Für eine frische Trial:
+
+```powershell
+Remove-Item "$env:APPDATA\com.quantos.pro\license.dat"
+```
+
+### 13.3 Autarken `.exe`-Installer bauen
+
+```powershell
+# Repo-Wurzel, venv aktiv:
+.\.venv\Scripts\python.exe scripts\build_registry.py   # 0) Registry-DB (falls noch nicht da)
+powershell -ExecutionPolicy Bypass -File scripts\build_sidecar_win.ps1   # 1) Backend -> .exe einfrieren
+powershell -ExecutionPolicy Bypass -File scripts\bundle_data.ps1         # 2) Registry + Plots ins Bundle
+cd apps\web
+npm run tauri icon C:\pfad\logo.png                    # 3) Icons (einmalig; erzeugt auch icon.ico)
+npm run desktop:build:win                              # 4) NSIS-.exe-Installer
+```
+
+Ergebnis:
+
+```
+apps\web\src-tauri\target\x86_64-pc-windows-msvc\release\bundle\
+└── nsis\Quant OS Pro_0.1.0_x64-setup.exe
+```
+
+> **MSI zusätzlich?** In `tauri.windows.conf.json` bei `bundle.targets` `"msi"` ergänzen
+> (`["nsis", "msi"]`). Tauri lädt WiX automatisch nach. NSIS ist der empfohlene Default.
+>
+> **Code-Signing:** Ein nicht-signierter Installer zeigt eine SmartScreen-Warnung
+> („Windows hat Ihren PC geschützt" → *Weitere Informationen* → *Trotzdem ausführen*).
+> Für die Weitergabe ohne Warnung brauchst du ein **Authenticode-Code-Signing-Zertifikat**
+> (OV/EV) — ein separater, späterer Schritt; in `tauri.windows.conf.json` unter
+> `bundle.windows.signCommand`/`certificateThumbprint` konfigurierbar.
+
+### 13.4 Windows-Fehlerbehebung
+
+| Symptom | Ursache / Lösung |
+|---|---|
+| `link.exe not found` / Linker-Fehler | MSVC Build Tools fehlen → Visual Studio Installer, „Desktop development with C++". |
+| `external binary not found` | Den Platzhalter `binaries\quant-os-api-x86_64-pc-windows-msvc.exe` nicht löschen, oder Schritt 1 (Sidecar bauen). |
+| App startet, Desks zeigen „API not reachable" | Im Dev-Modus läuft das Backend nicht automatisch → Backend manuell starten oder Sidecar bauen (Schritt 1). |
+| PyInstaller „module not found" | Paket in `requirements-api.txt` ergänzen + `--collect-submodules`/`--hidden-import` in `scripts\build_sidecar_win.ps1`. |
+| SmartScreen blockiert den Installer | Nicht-signiert → *Weitere Informationen* → *Trotzdem ausführen*. Dauerhaft: Authenticode-Zertifikat. |
+
+> **Hinweis:** Wenn du keinen MSVC-Linker installieren willst, läuft `bundle_data.ps1` und
+> `build_sidecar_win.ps1` auch ohne Rust — aber der finale `tauri build` braucht zwingend
+> die MSVC Build Tools.

@@ -67,3 +67,8 @@ snapshot_at,event_id,sport_key,commence_time,home,away,pin_h,pin_d,pin_a
 2026-06-23T16:30:07.058108+00:00,bf112f8e6ad000f9b7b7a3c8f507f10c,soccer_finland_veikkausliiga,2026-06-23T17:00:00Z,IFK Mariehamn,HJK Helsinki,8.0,6.05,1.34
 2026-06-25T11:55:52.687627+00:00,13342042edf06671a7e285f7d4c18d9e,soccer_china_superleague,2026-06-26T11:35:00Z,Qingdao Hainiu FC,Yunnan Yukun,2.79,3.68,2.41
 2026-06-25T16:30:05.980363+00:00,13342042edf06671a7e285f7d4c18d9e,soccer_china_superleague,2026-06-26T11:35:00Z,Qingdao Hainiu FC,Yunnan Yukun,2.79,3.68,2.41
+2026-06-26T10:22:51.941999+00:00,13342042edf06671a7e285f7d4c18d9e,soccer_china_superleague,2026-06-26T11:35:00Z,Qingdao Hainiu FC,Yunnan Yukun,2.87,3.93,2.29
+2026-06-26T10:22:51.941999+00:00,fb1142b848c89e389d43ebf77203b422,soccer_league_of_ireland,2026-06-26T18:30:00Z,Shamrock Rovers,Galway United,1.44,4.64,7.3
+2026-06-26T10:22:51.941999+00:00,8ffcaf1c0eed110c69a22fcbf2fda025,soccer_league_of_ireland,2026-06-26T18:45:00Z,Derry City,Drogheda United,1.58,4.01,6.12
+2026-06-26T10:22:51.941999+00:00,f399a97e1d974dcf51eb337608bbec3b,soccer_league_of_ireland,2026-06-26T18:45:00Z,Dundalk,Waterford FC,1.59,4.48,5.21
+2026-06-26T10:22:51.941999+00:00,d1a99d9b0902583cfe8bc427040c3d39,soccer_league_of_ireland,2026-06-26T19:00:00Z,Bohemians,St Patricks Athletic,2.54,3.27,2.95

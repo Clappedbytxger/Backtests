@@ -60,6 +60,8 @@ class GateThresholds:
     min_wf_windows: int = 3
     require_beats_buyhold: bool = True
     require_mc_p5_positive: bool = True  # 5th-pct block-bootstrap Sharpe > 0
+    require_causal: bool = True          # hard look-ahead guard must pass
+    max_sane_sharpe: float = 4.0         # net-of-cost Sharpe above this ⇒ look-ahead/data bug
 
 
 def _num(d, *path, default=None):
@@ -91,6 +93,8 @@ def evaluate_gate(metrics: dict, th: GateThresholds) -> dict:
     strat_tr = _num(metrics, "vs_benchmark", "strategy_total_return")
     bh_tr = _num(metrics, "vs_benchmark", "buy_hold_total_return")
     mc_p5 = _num(metrics, "monte_carlo", "p5")
+    full_sharpe = _num(metrics, "metrics", "sharpe")
+    causal = metrics.get("causality") if isinstance(metrics.get("causality"), dict) else None
 
     checks = {
         "trades": {"ok": n_trades is not None and n_trades >= th.min_trades, "value": n_trades, "threshold": f">= {th.min_trades}"},
@@ -107,6 +111,19 @@ def evaluate_gate(metrics: dict, th: GateThresholds) -> dict:
         checks["beats_buy_hold"] = {"ok": ok, "value": (None if strat_tr is None else round(strat_tr, 3)), "threshold": f"> buy&hold ({bh_tr})"}
     if th.require_mc_p5_positive:
         checks["mc_p5_positive"] = {"ok": mc_p5 is not None and mc_p5 > 0, "value": mc_p5, "threshold": "> 0"}
+    if th.require_causal:
+        # HARD look-ahead gate: the harness's causality probe must have run AND passed.
+        ok = bool(causal and causal.get("causal") is True)
+        checks["causal_no_lookahead"] = {
+            "ok": ok,
+            "value": (f"{causal.get('violations')} viol / {causal.get('boundary_bars_checked')} bars"
+                      if causal else "MISSING"),
+            "threshold": "no future data (0 violations)"}
+    # Sanity ceiling: a net-of-cost Sharpe this high is not a real edge — it is the
+    # signature of look-ahead or a data artifact (e.g. the shift(-1) cheat → Sharpe 8).
+    checks["sane_sharpe"] = {
+        "ok": full_sharpe is not None and abs(full_sharpe) <= th.max_sane_sharpe,
+        "value": full_sharpe, "threshold": f"|Sharpe| <= {th.max_sane_sharpe}"}
 
     failed = [k for k, v in checks.items() if not v["ok"]]
     return {"passed": not failed, "checks": checks,
@@ -235,8 +252,10 @@ _NARRATIVE_SYSTEM = (
     "### 5. Fazit & Risikowarnung des Agenten\n"
     "Section 1: why this alpha should exist (economic cause). Section 2: the precise rules in "
     "words (entry, exit, sizing, risk) consistent with the code. Section 5: an HONEST verdict — "
-    "where are the weaknesses, look-ahead/cost/regime risks, is it standalone or overlay. "
-    "Be concise and specific. Do NOT invent numbers; refer to the metrics qualitatively."
+    "where are the weaknesses, cost/regime risks, is it standalone or overlay. Explicitly state "
+    "that the signal passed the harness's causality (no-look-ahead) probe and is decision-time "
+    "honest, and flag if the edge looks like beta rather than timing skill. Be concise and "
+    "specific. Do NOT invent numbers; refer to the metrics qualitatively."
 )
 
 
@@ -456,6 +475,11 @@ def run_forever(*, backend_name: str | None = None, max_iter: int | None = None,
                 print(f"[{n_iter}] duplicate/empty hypothesis, skipping", flush=True)
                 continue
             seen.add(slug)
+
+            # Data-mining deflation: tell the harness how broad the search has been so the
+            # Deflated Sharpe is charged for multiple testing (a lucky pick among hundreds of
+            # tried hypotheses must clear a much higher bar than a single pre-registered test).
+            os.environ["QOS_N_TRIALS"] = str(max(len(seen), n_iter, 1))
 
             # B+C. backtest + robustness in an isolated subprocess (heavy data freed on exit)
             result = run_iteration(hypothesis, slug, backend, settings, timeout=timeout)
